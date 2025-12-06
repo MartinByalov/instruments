@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="bg">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Интерактивен Изходен Билет</title>
+
+    <link rel="stylesheet" href="styles/padlet-teacher.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+</head>
+
+<body>
+
+    <div id="teacher-app-container">
+
+        <div class="header">
+
+            <div id="countdown-display" class="timer-display">Няма активен таймер.</div>
+        </div>
+
+        <div id="answers-board">
+            <div id="add-card" class="question-column add-new-card">
+                <button id="add-question-btn-card" title="Добавяне на нов въпрос">
+                    <span style="font-size: 3em;">+</span>
+                    <p style="margin: 0; font-size: 1.2em; font-weight: bold;">Добави Въпрос</p>
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="fab-menu-container">
+        <div class="corner-menu-inner">
+            <div id="fab-menu-list">
+
+                <button id="new-padlet-btn" class="corner-menu-item" title="Нова Дъска">
+                    🆕
+                </button>
+
+                <button id="show-qr-btn" class="corner-menu-item" title="Стартиране на Сесия / QR код">
+                    🔳
+                </button>
+
+                <button id="download-btn" class="corner-menu-item" title="Изтегляне на Отговорите">
+                    ⬇️
+                </button>
+
+            </div>
+            <div class="corner-menu-btn-holder">
+                <button id="fab-main-btn" title="Меню">
+                    ⚙️
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+    <div id="add-question-modal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-btn" id="close-add-question-modal">&times;</span>
+            <h3>Добавяне на нов въпрос</h3>
+
+            <form id="question-form">
+                <label for="question-text-input">Текст на въпроса:</label>
+                <textarea id="question-text-input" required rows="4" placeholder="Напишете въпроса..."></textarea>
+
+                <label for="question-webpage-url-input">Линк към уебстраница (URL):</label>
+                <input type="url" id="question-webpage-url-input"
+                    placeholder="Поставeте линк към статия, видео и т.н. (по избор)">
+
+                <label for="question-image-url-input">Изображение (URL):</label>
+                <input type="url" id="question-image-url-input" placeholder="Поставeте линк към изображение (по избор)">
+
+                <label for="question-image-file-input">Изображение (от компютъра):</label>
+                <input type="file" id="question-image-file-input" accept="image/*">
+
+                <button type="submit">Добави Въпрос</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="qr-modal-overlay" class="qr-modal-overlay hidden"
+        onclick="if(event.target.id === 'qr-modal-overlay') toggleQRCodeModal()">
+        <div class="qr-modal-content">
+            <span class="qr-close-btn" id="qr-close-btn">&times;</span>
+            <h1 id="qr-modal-title">QR ЗА ОТГОВОРИ</h1>
+
+            <div id="projection-area" class="projection-area">
+                <div id="general-qr-code" class="qrcode-box"></div>
+                <div id="timer-controls" class="qr-settings">
+                    <p style="margin-bottom: 5px; font-weight: bold;">Време за отговори:</p>
+                    <div class="timer-input-group">
+                        <div class="time-part">
+                            <label for="timer-minutes">Минути:</label>
+                            <input type="number" id="timer-minutes" min="0" max="60" value="5">
+                        </div>
+                        <div class="time-part">
+                            <label for="timer-seconds">Секунди:</label>
+                            <input type="number" id="timer-seconds" min="0" max="59" value="0" step="1">
+                        </div>
+                    </div>
+
+                    <button id="start-timer-button">Старт</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="image-modal" class="modal hidden">
+        <div class="modal-content large-image-content">
+            <span class="close-btn" id="close-image-modal">&times;</span>
+            <img id="modal-image-display" src="" alt="Уголемено изображение"
+                style="max-width: 100%; max-height: 80vh; display: block; margin: auto;">
+        </div>
+    </div>
+
+    <script src="scripts/padlet-teacher.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,1342 @@
+/*
+=================================================
+ГЛОБАЛНИ СТИЛОВЕ
+=================================================
+*/
+body {
+    background: linear-gradient(135deg, #f0f4f8, #e2e8f0);
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 20px;
+    font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+    color: #333;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+#app {
+    width: 100%;
+    max-width: 1024px;
+    position: relative;
+    padding-bottom: 50px;
+}
+
+/*
+=================================================
+КОНТРОЛЕН ПАНЕЛ (HEADER)
+=================================================
+*/
+#control-panel {
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    padding: 24px;
+    margin-bottom: 32px;
+    position: relative;
+    border: 1px solid #e5e7eb;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    align-items: center;
+}
+
+#lesson-topic {
+    border: none;
+    border-bottom: 2px solid #ccc;
+    width: 100%;
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+    padding: 4px 0 4px;
+    text-align: center;
+    transition: border-bottom-color 0.3s ease-in-out;
+}
+
+#lesson-topic:focus {
+    outline: none;
+    border-bottom-color: #3b82f6;
+}
+
+.timer-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-top: 10px;
+    position: relative;
+    min-height: 60px;
+}
+
+#main-timer-display {
+    font-size: 64px;
+    font-weight: 900;
+    color: #1e40af;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+}
+
+#start-btn {
+    padding: 12px 24px;
+    background-color: #10b981;
+    color: white;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.1s;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+#start-btn:hover:not(:disabled) {
+    background-color: #10b981;
+    transform: translateY(-52%);
+}
+
+#start-btn:active:not(:disabled) {
+    transform: translateY(-48%);
+}
+
+#start-btn:disabled {
+    background-color: #9ca3af;
+    cursor: not-allowed;
+    opacity: 0.8;
+}
+
+/* Бутон за Нулиране - заема позицията на Старт */
+#reset-btn-corner {
+    padding: 12px 24px;
+    background-color: #ef9144;
+    color: white;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.1s;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    display: none;
+    /* Начално скрит - управлява се от JavaScript */
+}
+
+#reset-btn-corner:hover {
+    background-color: #dc2626;
+    transform: translateY(-52%);
+}
+
+#reset-btn-corner:active {
+    transform: translateY(-48%);
+}
+
+/*
+=================================================
+ТАЙМЛАЙН ЛИНИИ (КОРЕКЦИЯ НА ОТСТЪПА)
+=================================================
+*/
+.timeline-container-centered {
+    position: relative;
+    /* Намален padding-top, за да започне по-близо до START */
+    padding: 0 0 40px 0;
+    min-height: 150px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* 1. Главна (сива/фонова) линия */
+.timeline-line {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 4px;
+    background-color: #e5e7eb;
+    z-index: 1;
+
+    /* Линията започва от 10px */
+    top: 10px;
+
+    /* Височината се коригира спрямо новия padding-top/bottom */
+    height: calc(100% - 30px);
+}
+
+/* 2. Прогрес линия (която се запълва) */
+#timeline-progress {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 4px;
+    background-color: #10b981;
+    z-index: 2;
+
+    /* Започва от същото място като timeline-line */
+    top: 10px;
+    height: 0px;
+    transition: height 0.5s ease-out;
+}
+
+#timeline-progress-info {
+    /* Позиционирането се коригира спрямо новия timeline-container-centered padding */
+    position: absolute;
+    top: -5px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 5;
+
+    background-color: #f3f4f6;
+    padding: 5px 10px;
+    border-radius: 4px;
+
+    text-align: center;
+    font-size: 14px;
+    color: #6b7280;
+    margin-bottom: 20px;
+}
+
+#timeline-progress-info b {
+    font-weight: bold;
+    color: #dc2626;
+}
+
+#timeline-progress-info span {
+    font-weight: bold;
+    color: #f59e0b;
+}
+
+/*
+=================================================
+ЕТИКЕТИ / LABELS
+=================================================
+*/
+.timeline-label {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 12px;
+    font-weight: 800;
+    /* Намален вертикален padding за по-компактен етикет */
+    padding: 6px 20px;
+    border-radius: 9999px;
+    z-index: 15;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    white-space: nowrap;
+    min-width: 100px;
+}
+
+.label-start {
+    /* top: -15px - за да компенсира намаления padding-top на timeline-container-centered */
+    top: -15px;
+    background: #10b981;
+    color: white;
+    border: 2px solid white;
+}
+
+.label-end {
+    background-color: #1f2937;
+    color: #fff;
+    border: 2px dashed #fff;
+    position: absolute;
+    /* bottom: -5px - остава същото спрямо bottom padding-а на контейнера */
+    bottom: -5px;
+    left: 50%;
+    transform: translateX(-50%);
+    margin: 0;
+}
+
+
+/*
+=================================================
+КАРТИ / ACTIVITY CARDS 
+=================================================
+*/
+.timeline-item-wrapper {
+    width: 100%;
+    display: flex;
+    position: relative;
+    /* Намален padding-bottom */
+    padding-bottom: 20px;
+    /* Намален padding-top */
+    padding-top: 5px;
+    box-sizing: border-box;
+    transition: background 0.2s;
+}
+
+.left-side {
+    /* КОРИГИРАНО: Максимално близо до оста */
+    padding-right: 50%;
+    justify-content: flex-end;
+}
+
+.right-side {
+    /* КОРИГИРАНО: Максимално близо до оста */
+    padding-left: 50%;
+    justify-content: flex-start;
+}
+
+.timeline-content {
+    /* Коригиран width на 100% за да се разположи плътно до 50% отстъп */
+    width: 100%;
+    max-width: 450px;
+    cursor: grab;
+    position: relative;
+    z-index: 20;
+    min-height: 120px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    background: white;
+    border-radius: 0.75rem;
+    /* Основен padding: 10px отвсякъде, като bottom е 50px заради таймера */
+    padding: 10px 10px 50px 10px;
+    border: 1px solid #e5e7eb;
+    transition: all 0.3s ease-in-out;
+    overflow: hidden;
+}
+
+/* НОВ СТИЛ: Свиване на полето, ако няма изображение */
+.timeline-content.no-image {
+    min-height: 80px;
+    /* Намалена минимална височина */
+    padding: 10px 10px 50px 10px;
+    /* Запазваме bottom padding за контролите */
+}
+
+.timeline-content:hover {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    cursor: grab;
+}
+
+.timeline-content:active {
+    cursor: grabbing;
+}
+
+.pending-activity:hover {
+    border-color: #bfdbfe;
+    cursor: grab;
+}
+
+/* СТИЛОВЕ ЗА СЪСТОЯНИЕ */
+.current-activity {
+    border-color: #f59e0b !important;
+    box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.2), 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    animation: pulse 3s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.7), 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    }
+
+    70% {
+        box-shadow: 0 0 0 15px rgba(245, 158, 11, 0), 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    }
+
+    100% {
+        box-shadow: 0 0 0 0 rgba(245, 158, 11, 0), 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    }
+}
+
+.dot-done {
+    background: #10b981 !important;
+}
+
+.dot-current {
+    background: #f59e0b !important;
+}
+
+/*
+=================================================
+БУТОН ЗА СМЯНА НА СТРАНА (SIDE SWITCH BUTTON)
+*** НОВА КОРЕКЦИЯ: Позициониран ВЪТРЕ в абсолютния ДОЛЕН ДЕСЕН ъгъл на картата ***
+=================================================
+*/
+
+.side-switch-button {
+    position: absolute;
+
+    /* НОВА ПОЗИЦИЯ: Вътре в картата, в долния десен ъгъл */
+    bottom: 10px;
+    right: 10px;
+    left: auto;
+    top: auto;
+
+    width: 35px;
+    /* Ширина на лентата */
+    height: 35px;
+    /* Височина на лентата */
+
+    border-radius: 8px;
+    /* Заоблени краищи */
+    border: none;
+    /* Премахваме старата рамка */
+    background-color: #ffffff;
+    /* Бял фон */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    /* Лека сянка за 3D ефект */
+
+    cursor: pointer;
+    z-index: 50;
+    /* Z-INDEX, същият като другите контроли */
+
+    transform: none;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    transition: all 0.2s;
+    line-height: 0;
+}
+
+/* Премахваме специфичните стилове за left-side и right-side, тъй като позицията вече е вътрешна */
+.timeline-item-wrapper.left-side .side-switch-button,
+.timeline-item-wrapper.right-side .side-switch-button {
+    left: auto;
+    right: 10px;
+    bottom: 10px;
+}
+
+.side-switch-button:hover:not(:disabled) {
+    transform: scale(1.1);
+    /* Лек зуум при hover */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.side-switch-button:disabled {
+    opacity: 0.5;
+    cursor: default;
+    transform: none;
+}
+
+/*
+=================================================
+КРЪГЧЕТО (DOT) - АКТИВНОСТ (ПРЕМАХНАТО)
+=================================================
+*/
+.absolute-dot {
+    display: none;
+}
+
+
+/*
+=================================================
+СЪДЪРЖАНИЕ НА КАРТАТА и КОНТРОЛИ
+=================================================
+*/
+
+.timeline-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    width: 100%;
+    margin-top: 4px;
+    margin-bottom: 4px;
+    min-height: 20px;
+}
+
+.title-area {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    min-width: 0;
+    margin-right: 8px;
+    width: 100%;
+    height: 90px;
+}
+
+.title-row {
+
+    align-items: center;
+    width: 100%;
+}
+
+.activity-title {
+    font-weight: bold;
+    color: #1f2937;
+    font-size: 18px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-height: 24px;
+    display: block;
+
+    margin: 0;
+    padding: 0;
+    font-family: inherit;
+    text-align: left;
+}
+
+.activity-plan-text {
+    font-size: 12px;
+    color: #6b7280;
+
+}
+
+.timer-controls-area {
+    /* ПОЗИЦИЯ: долу вляво */
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    flex-shrink: 0;
+    min-width: 100px;
+    z-index: 10;
+}
+
+.activity-timer-display {
+    font-size: 24px;
+    font-weight: 900;
+    font-variant-numeric: tabular-nums;
+}
+
+.current-timer {
+    color: #f59e0b;
+}
+
+.done-timer {
+    color: #10b981;
+}
+
+.pending-timer {
+    color: #9ca3af;
+}
+
+/*
+=================================================
+КОНТРОЛИ (ГОРЕ ВДЯСНО)
+=================================================
+*/
+.activity-controls {
+    /* ПОЗИЦИЯ: горе вдясно */
+    position: absolute;
+    top: 10px;
+    right: 10px;
+
+    /* Хоризонтално разположение */
+    display: flex;
+    flex-direction: row;
+    gap: 6px;
+    z-index: 50;
+    align-items: center;
+    justify-content: flex-end;
+    width: auto;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* ОБЩИ СТИЛОВЕ ЗА БУТОНИТЕ В КОНТРОЛИТЕ */
+.controls-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: background 0.15s ease-in-out, color 0.15s ease-in-out, transform 0.1s;
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 14px;
+    line-height: 1.2;
+    color: #6b7280;
+    min-width: 36px;
+    text-align: center;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    background-color: white;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.controls-btn:hover {
+    background-color: #f9fafb;
+    border-color: #d1d5db;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* СТИЛОВЕ ЗА КОНКРЕТНИ БУТОНИ */
+.finish-btn {
+    color: #047857;
+    font-weight: 700;
+    font-size: 14px;
+    padding: 6px 10px;
+    background-color: rgba(5, 150, 105, 0.05);
+    border-color: #a7f3d0;
+}
+
+.finish-btn:hover {
+    color: #064e3b;
+    background-color: rgba(5, 150, 105, 0.1);
+    border-color: #34d399;
+}
+
+.edit-btn {
+    color: #2563eb;
+}
+
+.edit-btn:hover {
+    color: #1d4ed8;
+    background-color: rgba(37, 99, 235, 0.05);
+    border-color: #93c5fd;
+}
+
+.delete-btn {
+    color: #dc2626;
+    background-color: rgba(220, 38, 38, 0.05);
+    border-color: #fca5a5;
+}
+
+.delete-btn:hover {
+    color: #b91c1c;
+    background-color: rgba(220, 38, 38, 0.1);
+    border-color: #f87171;
+}
+
+.link-btn {
+    color: #7c3aed;
+    font-size: 14px;
+    padding: 6px 10px;
+    background-color: rgba(124, 58, 237, 0.05);
+    border-color: #c4b5fd;
+}
+
+.link-btn:hover {
+    color: #5b21b6;
+    background-color: rgba(124, 58, 237, 0.1);
+    border-color: #a78bfa;
+}
+
+/* (Останалата част от Controls CSS, която е останала непроменена) */
+
+
+/*
+=================================================
+СЪДЪРЖАНИЕ (ИЗОБРАЖЕНИЯ)
+=================================================
+*/
+.content-area {
+    margin-top: 8px;
+    margin-bottom: 40px;
+    width: 100%;
+}
+
+.image-container {
+    margin-top: 4px;
+    width: 100%;
+    height: 128px;
+    border-radius: 6px;
+    overflow: hidden;
+    cursor: pointer;
+    background-color: #f9fafb;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #e5e7eb;
+    transition: transform 0.2s ease;
+}
+
+.image-container:hover {
+    transform: scale(1.02);
+}
+
+.activity-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease-in-out;
+}
+
+.activity-image:hover {
+    transform: scale(1.05);
+}
+
+/*
+=================================================
+БУТОН + / ADD BUTTON
+=================================================
+*/
+#add-activity-btn-single {
+    /* Центриране и отстояние в нормалния поток */
+    margin: 20px auto 0 auto;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: #10b981;
+    color: white;
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 40;
+    transition: all 0.3s ease;
+    font-size: 24px;
+    line-height: 1;
+    font-weight: bold;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border: 3px dashed #10b981;
+    padding: 0;
+}
+
+#add-activity-btn-single:hover {
+    transform: scale(1.1);
+    background: #059669;
+    border-color: #059669;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* КЛАС ЗА СКРИВАНЕ */
+.is-hidden {
+    display: none !important;
+}
+
+/*
+=================================================
+DRAG & DROP СТИЛОВЕ
+=================================================
+*/
+.dragging {
+    opacity: 0.5;
+    transform: scale(0.95);
+    cursor: grabbing !important;
+}
+
+.drop-target-above {
+    border-top: 3px solid #3b82f6;
+    margin-top: 10px;
+}
+
+.drop-target-below {
+    border-bottom: 3px solid #3b82f6;
+    margin-bottom: 10px;
+}
+
+/*
+=================================================
+МОДАЛ И LIGHTBOX / VICTORY SCREEN
+=================================================
+*/
+#activity-modal {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 50;
+    overflow-y: auto;
+    padding: 20px;
+}
+
+#activity-modal.is-active {
+    display: flex;
+}
+
+#activity-modal>div {
+    background-color: white;
+    border-radius: 12px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    padding: 24px;
+    width: 100%;
+    max-width: 448px;
+    margin: 40px 0;
+    box-sizing: border-box;
+}
+
+#modal-title {
+    font-size: 24px;
+    font-weight: bold;
+    color: #1f2937;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.modal-form label {
+    display: block;
+    font-weight: bold;
+    color: #4b5563;
+    margin-top: 12px;
+    margin-bottom: 4px;
+    font-size: 14px;
+}
+
+.modal-form input[type="text"],
+.modal-form input[type="number"],
+.modal-form select {
+    /* НОВ СТИЛ ЗА SELECT */
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 16px;
+    box-sizing: border-box;
+    /* Стил за disabled select, ако се наложи */
+    transition: background-color 0.2s;
+}
+
+.modal-form select:disabled {
+    background-color: #f3f4f6;
+    cursor: not-allowed;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+.modal-btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background-color 0.2s ease-in-out;
+    font-size: 16px;
+}
+
+#modal-cancel-btn {
+    background-color: #f3f4f6;
+    color: #374151;
+}
+
+#modal-cancel-btn:hover {
+    background-color: #e5e7eb;
+}
+
+#modal-save-btn {
+    background-color: #2563eb;
+    color: white;
+}
+
+#modal-save-btn:hover {
+    background-color: #1d4ed8;
+}
+
+/* LIGHTBOX СТИЛОВЕ */
+#lightbox {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+#lightbox.is-active {
+    display: flex;
+}
+
+#lightbox-img {
+    max-width: 90%;
+    max-height: 80vh;
+    object-fit: contain;
+    border-radius: 8px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+}
+
+.lightbox-close-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 1001;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.lightbox-close-btn:hover {
+    background: rgba(255, 255, 255, 0.4);
+    transform: scale(1.1);
+}
+
+/*
+=================================================
+VICTORY SCREEN (Победен екран)
+=================================================
+*/
+#victory-screen {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background: rgba(255, 255, 255, 0.98);
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 90;
+    cursor: pointer;
+    animation: fadeIn 0.5s ease-out;
+    padding: 20px;
+}
+
+#victory-screen.is-active {
+    display: flex;
+}
+
+#victory-screen h2 {
+    font-size: 48px;
+    color: #10b981;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+#victory-screen p {
+    font-size: 20px;
+    color: #4b5563;
+    text-align: center;
+    margin-top: 0;
+    max-width: 600px;
+}
+
+.trophy {
+    font-size: 160px;
+    animation: bounce 1.5s infinite alternate ease-in-out;
+    margin-bottom: 30px;
+}
+
+@keyframes bounce {
+    0% {
+        transform: translateY(0) scale(1);
+    }
+
+    100% {
+        transform: translateY(-20px) scale(1.05);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+/*
+=================================================
+МЕДИЯ ЗАЯВКИ (RESPONSIVE)
+=================================================
+*/
+@media (max-width: 768px) {
+    #control-panel {
+        padding: 16px;
+        margin-bottom: 20px;
+    }
+
+    #lesson-topic {
+        font-size: 20px;
+    }
+
+    #main-timer-display {
+        font-size: 48px;
+    }
+
+    #start-btn,
+    #reset-btn-corner {
+        padding: 10px 18px;
+        font-size: 14px;
+    }
+
+    /* Всички карти стават централно позиционирани */
+    .timeline-item-wrapper.left-side,
+    .timeline-item-wrapper.right-side {
+        padding-left: 0;
+        padding-right: 0;
+        justify-content: center;
+    }
+
+    .timeline-content {
+        width: 100%;
+        max-width: 300px;
+        min-height: 140px;
+        padding: 10px 10px 50px 10px !important;
+    }
+
+    .timeline-content.no-image {
+        min-height: 80px;
+        /* Запазваме свиването и за мобилен изглед */
+    }
+
+    /* Линии и точки остават центрирани */
+    .timeline-line,
+    .timeline-progress {
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+    /* Позициониране на бутона за смяна на страна при мобилен изглед */
+    .timeline-item-wrapper.left-side .side-switch-button,
+    .timeline-item-wrapper.right-side .side-switch-button {
+        left: auto;
+        right: 10px;
+        /* Консистентно 10px от десния край */
+        bottom: 10px;
+        /* Консистентно 10px от долния край */
+        top: auto;
+        z-index: 50;
+        transform: none;
+    }
+
+    /* Коригираме hover-a за мобилен изглед */
+    .timeline-item-wrapper.left-side .side-switch-button:hover,
+    .timeline-item-wrapper.right-side .side-switch-button:hover {
+        transform: scale(1.1);
+    }
+
+    .timeline-label {
+        font-size: 10px;
+        padding: 6px 15px;
+        min-width: 80px;
+    }
+
+    /* label-end да е центриран и при мобилен изглед */
+    .label-end {
+        position: absolute;
+        bottom: -5px;
+        left: 50%;
+        transform: translateX(-50%);
+        margin: 0;
+    }
+
+    .activity-title {
+        font-size: 16px;
+    }
+
+    /* За мобилен изглед */
+    .activity-controls {
+        left: auto;
+        right: 8px;
+        top: 8px;
+        bottom: auto;
+        transform: none;
+        align-items: center;
+        justify-content: flex-end;
+    }
+
+    /* ТАЙМЕР - ДОЛУ ВЛЯВО */
+    .timer-controls-area {
+        bottom: 8px;
+        left: 8px;
+        min-width: 80px;
+    }
+
+    .activity-timer-display {
+        font-size: 20px;
+    }
+
+    /* Бутоните стават по-малки на мобилни устройства */
+    .controls-btn {
+        min-width: 36px;
+        max-width: 36px;
+        width: 36px;
+        height: 36px;
+        padding: 8px;
+        justify-content: center;
+        border-radius: 50%;
+    }
+
+    .controls-btn .btn-text {
+        display: none;
+    }
+
+    .controls-btn .btn-icon {
+        width: 16px;
+        height: 16px;
+    }
+
+    /* Съдържанието има по-малко място */
+    .content-area {
+        margin-bottom: 35px;
+    }
+
+    .image-container {
+        height: 100px;
+    }
+
+    .side-switch-button {
+        /* На мобилен вид бутонът е по-малък */
+        width: 30px;
+        height: 30px;
+        font-size: 14px;
+        padding: 5px;
+    }
+}
+
+@media (max-width: 480px) {
+    #control-panel {
+        gap: 12px;
+    }
+
+    #lesson-topic {
+        font-size: 18px;
+    }
+
+    #main-timer-display {
+        font-size: 40px;
+    }
+
+    #start-btn,
+    #reset-btn-corner {
+        padding: 8px 15px;
+        font-size: 12px;
+    }
+
+    .activity-timer-display {
+        font-size: 18px;
+    }
+
+    /* На много малки екрани бутоните остават само с икони */
+    .finish-btn,
+    .edit-btn,
+    .delete-btn,
+    .link-btn {
+        min-width: 32px;
+        max-width: 32px;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+    }
+
+    .controls-btn {
+        min-width: 32px;
+        max-width: 32px;
+        width: 32px;
+        height: 32px;
+        padding: 6px;
+    }
+
+    .controls-btn .btn-icon {
+        width: 18px;
+        height: 18px;
+    }
+
+    /* Още по-малко място за съдържанието */
+    .content-area {
+        margin-bottom: 30px;
+    }
+
+    .image-container {
+        height: 80px;
+    }
+
+    .modal-btn {
+        font-size: 14px;
+        padding: 8px 15px;
+    }
+
+    #activity-modal>div {
+        margin: 20px 0;
+        padding: 18px;
+    }
+}
+
+/* Общи стилове за скриване/показване */
+.is-hidden {
+    display: none !important;
+}
+
+/* Общи стилове за Модал, Lightbox, Victory Screen */
+#activity-modal,
+#lightbox,
+#victory-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+#activity-modal.is-active,
+#lightbox.is-active,
+#victory-screen.is-active {
+    display: flex;
+    opacity: 1;
+}
+
+#victory-screen {
+    background-color: rgba(16, 185, 129, 0.95);
+    color: white;
+    text-align: center;
+}
+
+#victory-screen div {
+    padding: 40px;
+    max-width: 400px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+#victory-screen h2 {
+    font-size: 36px;
+    margin-bottom: 10px;
+}
+
+#victory-screen .trophy {
+    font-size: 150px;
+    display: block;
+
+    animation: pulse 1s infinite alternate;
+}
+
+@keyframes pulse {
+    from {
+        transform: scale(1);
+    }
+
+    to {
+        transform: scale(1.2);
+    }
+}
+
+/* Lightbox specific */
+#lightbox-img {
+    max-width: 90%;
+    max-height: 90%;
+    object-fit: contain;
+}
+
+.lightbox-close-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    padding: 10px;
+    z-index: 1001;
+}
+
+/* Modal specific */
+#activity-modal>div {
+    background-color: white;
+    padding: 30px;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 400px;
+}
+
+.modal-form label {
+    display: block;
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+.modal-form input {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.modal-actions {
+    margin-top: 20px;
+    text-align: right;
+}
+
+.modal-btn {
+    padding: 10px 15px;
+    margin-left: 10px;
+    cursor: pointer;
+    border: none;
+    border-radius: 4px;
+}
+
+#modal-save-btn {
+    background-color: #10b981;
+    color: white;
+}
+
+#modal-cancel-btn {
+    background-color: #f59e0b;
+    color: white;
+}
+
+/* Timeline specific - ensures the progress bar works */
+.timeline-container-centered {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.timeline-item-wrapper {
+    width: 100%;
+    padding: 10px 0;
+    position: relative;
+}
+
+/* Бутон за добавяне */
+#add-activity-btn-single {
+    position: sticky;
+    bottom: 20px;
+    margin-top: 20px;
+    width: 60px;
+    height: 60px;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+    border-radius: 50%;
+    border: 3px solid white;
+    background-color: #10b981;
+    color: white;
+    cursor: pointer;
+    z-index: 50;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+#add-activity-btn-single.is-hidden {
+    display: none;
+}

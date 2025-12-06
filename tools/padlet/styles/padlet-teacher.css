@@ -1,0 +1,710 @@
+/* tools/padlet/styles/padlet-teacher.css */
+
+body {
+    font-family: 'Arial', sans-serif;
+    /* ПРОМЯНА: Обърнат gradient. Светлата част е долу вдясно. */
+    background: linear-gradient(315deg, #0077b6 0%, #a0d2eb 100%); 
+    color: #333;
+    margin: 0;
+    padding: 0; 
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.header {
+    width: 100%;
+    max-width: 1200px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    color: white;
+    box-sizing: border-box;
+}
+
+.header h1 {
+    margin: 0;
+    font-size: 1.5em;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.timer-display {
+    font-size: 1.1em;
+    font-weight: bold;
+    background-color: rgba(255, 255, 255, 0.2);
+    padding: 5px 10px;
+    border-radius: 5px;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* ------------------------------------------------ */
+/* --- ДЪСКА С ВЪПРОСИ И ОТГОВОРИ (УЧИТЕЛ) --- */
+/* ------------------------------------------------ */
+
+#teacher-app-container {
+    padding: 20px;
+    width: 100%;
+    max-width: 1200px;
+}
+
+#answers-board {
+    display: grid; 
+    grid-template-columns: repeat(4, 1fr); 
+    gap: 20px;
+    padding: 0; 
+    background-color: transparent; 
+    min-height: 400px;
+}
+
+.question-column {
+    display: flex;
+    flex-direction: column; 
+    gap: 10px; 
+}
+
+.question-card.question-header {
+    background-color: #ffffff;
+    border: 2px solid #007bff;
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    position: relative; 
+}
+
+/* Контейнер за номериране (горе вляво) */
+.question-controls {
+    position: absolute;
+    top: 5px;
+    left: 5px; 
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Бутонът X се мести горе вдясно на картата */
+.remove-question-btn {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: none;
+    border: none;
+    color: #dc3545;
+    font-size: 1.2em;
+    cursor: pointer;
+    padding: 5px;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+    line-height: 1;
+}
+.remove-question-btn:hover {
+    opacity: 1;
+    color: #c82333;
+}
+.question-number {
+    background-color: #007bff;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.9em;
+    font-weight: bold;
+}
+
+.question-text {
+    font-weight: bold;
+    font-size: 1.2em;
+    color: #333;
+    margin-top: 30px; 
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+    word-wrap: break-word; 
+    overflow: hidden; 
+}
+
+.question-image {
+    max-width: 100%;
+    height: auto;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    cursor: pointer; 
+    transition: opacity 0.2s;
+}
+.question-image:hover {
+    opacity: 0.8;
+}
+
+.webpage-link-container {
+    margin: -5px 0 10px 0;
+    font-size: 0.9em;
+}
+.webpage-link-container a {
+    color: #17a2b8; 
+    text-decoration: none;
+    font-weight: bold;
+}
+.webpage-link-container a:hover {
+    text-decoration: underline;
+}
+
+/* Бутонът за отговор е зелен */
+.answer-btn {
+    background-color: #28a745 !important; 
+    color: white !important;
+    padding: 8px 15px;
+    border-radius: 4px;
+    width: 100%;
+    margin-top: 5px;
+    transition: background-color 0.2s;
+}
+.answer-btn:hover {
+    background-color: #1e7e34 !important;
+}
+
+.answer-list {
+    list-style: none;
+    padding-left: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px; 
+}
+
+.answer-item {
+    background-color: #f7f7f7;
+    border: 1px solid #ddd;
+    border-left: 5px solid #28a745; 
+    border-radius: 6px;
+    padding: 15px; 
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    word-wrap: break-word;
+}
+
+.answer-content strong {
+    color: #555;
+    margin-right: 10px;
+    display: block;
+    margin-bottom: 5px;
+    font-size: 0.9em;
+}
+
+/* ------------------------------------------------ */
+/* --- СТАТИЧНА КАРТА ЗА ДОБАВЯНЕ (+) --- */
+/* ------------------------------------------------ */
+.question-column.add-new-card {
+    border: 2px dashed #007bff; 
+    border-radius: 10px;
+    background-color: #f7f7f7;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 200px; 
+    box-shadow: none; 
+    transition: background-color 0.2s;
+    padding: 0; 
+}
+
+.question-column.add-new-card:hover {
+    background-color: #e6f2ff; 
+}
+
+#add-question-btn-card {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #007bff;
+    text-align: center;
+    padding: 20px;
+    transition: color 0.2s;
+    width: 100%; 
+    height: 100%; 
+    box-sizing: border-box; 
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#add-question-btn-card:hover {
+    color: #0056b3;
+}
+
+/* ------------------------------------------------ */
+/* --- ИЗСКАЧАЩО МЕНЮ (FAB) - POP OUT СТИЛОВЕ --- */
+/* ------------------------------------------------ */
+
+div.fab-menu-container {
+    position: fixed;
+    bottom: 25px;
+    right: 25px;
+    z-index: 1000;
+}
+
+.corner-menu-inner {
+    position: relative;
+    /* Подреждаме елементите отдолу нагоре (обратен ред) */
+    display: flex;
+    flex-direction: column-reverse; 
+    align-items: flex-end;
+}
+
+.corner-menu-btn-holder{
+    position: relative;
+    z-index: 2; 
+}
+
+/* Основен размер: 60px */
+#fab-main-btn {
+    width: 60px;
+    height: 60px;
+    background-color: #007bff;
+    color: white;
+    border-radius: 50%;
+    border: none;
+    font-size: 1.5em;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.2s, transform 0.3s;
+    line-height: 1; 
+}
+#fab-main-btn:hover {
+    background-color: #0056b3;
+}
+
+.fab-menu-container.show #fab-main-btn {
+    transform: rotate(45deg); 
+}
+
+#fab-menu-list {
+    position: absolute;
+    /* Позиционираме списъка отгоре */
+    top: 0;
+    right: 0;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+/* Бутоните са със същия размер като основния бутон (60px) */
+.corner-menu-item {
+    width: 60px;
+    height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+    transition: all 0.4s ease-in-out;
+    opacity: 0;
+    position: absolute; 
+    top: 0; /* Позициониране спрямо горния край на #fab-menu-list */
+    right: 0;
+    font-size: 1.2em;
+    color: #333; 
+    border: none;
+    cursor: pointer;
+    background-color: #f0f0f0; 
+}
+
+.corner-menu-item:hover {
+    background-color: #e0e0e0;
+}
+
+/* Начални пози (скрити зад основния бутон) */
+#new-padlet-btn { 
+    transform: translate(0px, 0px) scale(0.1); 
+    transition-delay: 0.3s; 
+}
+#show-qr-btn { 
+    transform: translate(0px, 0px) scale(0.1); 
+    transition-delay: 0.2s;
+}
+#download-btn { 
+    transform: translate(0px, 0px) scale(0.1); 
+    transition-delay: 0.1s; 
+}
+
+
+/* КРАЙНИ ПОЗИЦИИ при отворено меню (.show) */
+.fab-menu-container.show .corner-menu-item {
+    opacity: 1;
+    transform: scale(1);
+}
+
+/* Разстоянието е 60px (размер) + ~10px отстъп = 70px. */
+
+/* 1. Нов Padlet (🆕) - Най-отдалечен (3 * 70px = 210px) */
+.fab-menu-container.show #new-padlet-btn {
+    transform: translate(0px, -210px) scale(1); 
+}
+/* 2. QR/Старт (🔳) (2 * 70px = 140px) */
+.fab-menu-container.show #show-qr-btn {
+    transform: translate(0px, -140px) scale(1);
+}
+/* 3. Изтегляне (⬇️) - Най-близо (1 * 70px = 70px) */
+.fab-menu-container.show #download-btn {
+    transform: translate(0px, -70px) scale(1);
+}
+
+
+/* ------------------------------------------------ */
+/* --- АНИМАЦИИ (КОРИГИРАНО) --- */
+/* ------------------------------------------------ */
+
+@keyframes glow {
+    0% {
+        /* Манипулираме само box-shadow, за да избегнем конфликт с transform */
+        box-shadow: 0 0 5px rgba(255, 165, 0, 0.4), 0 0 10px rgba(255, 165, 0, 0.2);
+    }
+    50% { 
+        box-shadow: 0 0 15px rgba(255, 165, 0, 1), 0 0 25px rgba(255, 165, 0, 0.7);
+    }
+    100% {
+        box-shadow: 0 0 5px rgba(255, 165, 0, 0.4), 0 0 10px rgba(255, 165, 0, 0.2);
+    }
+}
+
+/* Прилагане на анимацията към бутоните с клас 'glow-indicator' */
+.glow-indicator {
+    animation: glow 1s ease-in-out infinite; 
+    border: 2px solid #ff9800 !important; 
+    /* Гарантираме, че анимацията няма странични ефекти върху transform */
+    animation-fill-mode: forwards; 
+    z-index: 1002 !important; 
+}
+
+/* Главен FAB бутон (⚙️ / ⬇️) */
+#fab-main-btn.glow-indicator {
+    background-color: #ffc107; /* Жълт фон */
+    color: #333;
+    z-index: 1001; 
+}
+
+/* Изтегляне бутон (⬇️) - може да свети и когато менюто е отворено */
+#download-btn.glow-indicator {
+    background-color: #ffc107; /* Жълт фон */
+    color: #333 !important;
+    font-weight: bold;
+    z-index: 1002; 
+}
+
+
+/* ------------------------------------------------ */
+/* --- СТИЛОВЕ ЗА МОДАЛИ (КОРИГИРАНО ЗА МИНУТИ/СЕКУНДИ) --- */
+/* ------------------------------------------------ */
+
+/* QR МОДАЛ */
+.qr-modal-overlay {
+    position: fixed;
+    z-index: 2000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.9);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.qr-modal-content {
+    background-color: #fefefe;
+    padding: 30px;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 600px; 
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.8);
+    position: relative;
+    text-align: center;
+    min-height: 400px;
+}
+
+.qr-modal-content h1 {
+    color: #007bff;
+    margin-bottom: 30px;
+    font-size: 2em;
+}
+
+.qr-close-btn {
+    color: #aaa;
+    position: absolute;
+    top: 15px;
+    right: 30px;
+    font-size: 40px;
+    font-weight: bold;
+    cursor: pointer;
+    line-height: 1;
+    transition: color 0.2s;
+}
+
+.qr-close-btn:hover,
+.qr-close-btn:focus {
+    color: #dc3545; 
+}
+
+.projection-area {
+    display: flex; 
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Контейнер за QR кода */
+#general-qr-code { 
+    width: 300px; 
+    height: 300px; 
+    padding: 10px; 
+    background-color: white;
+    border: 3px solid #007bff;
+    display: inline-block;
+    box-sizing: content-box;
+    margin-bottom: 20px;
+}
+
+.qr-settings {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.timer-input-group {
+    /* ПРОМЯНА: Позволява минути и секунди да са един до друг */
+    display: flex;
+    justify-content: center;
+    align-items: flex-end; 
+    margin-bottom: 15px;
+    gap: 20px; /* Разстояние между минути и секунди */
+}
+
+.time-part {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.time-part label {
+    font-size: 0.9em;
+    font-weight: normal;
+    margin-bottom: 5px;
+}
+
+#timer-minutes,
+#timer-seconds {
+    width: 70px; /* Малко по-широки полета */
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5s;
+    text-align: center;
+    font-size: 16px;
+}
+
+#start-timer-button {
+    padding: 10px 20px;
+    background-color: #28a745; 
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.2s;
+    margin-bottom: 10px;
+}
+
+#start-timer-button:hover {
+    background-color: #218838;
+}
+
+#timer-status-modal { 
+    font-size: 1.1em;
+    font-weight: bold;
+    color: #007bff;
+    margin-top: 10px;
+}
+
+
+/* ОБЩИ МОДАЛИ */
+.modal {
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.6); 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: #fefefe;
+    padding: 30px;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 400px; 
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+    position: relative;
+}
+
+/* Специален стил за модала с голямо изображение */
+.large-image-content {
+    background-color: rgba(0, 0, 0, 0.8);
+    max-width: 95%; 
+    max-height: 95%; 
+    padding: 15px;
+}
+.large-image-content .close-btn {
+    color: white;
+    font-size: 36px;
+    top: 5px;
+    right: 15px;
+    z-index: 1001;
+}
+
+
+.modal-content label {
+    display: block;
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+.modal-content input[type="text"],
+.modal-content input[type="url"],
+.modal-content textarea,
+.modal-content input[type="file"],
+.modal-content input[type="number"] {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.modal-content button {
+    background-color: #28a745;
+    color: white;
+    width: 100%;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.2s;
+}
+
+.modal-content button:hover {
+    background-color: #1e7e34;
+}
+
+.close-btn {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    cursor: pointer;
+    transition: color 0.2s; 
+}
+
+.close-btn:hover,
+.close-btn:focus {
+    color: #dc3545; 
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* ------------------------------------------------ */
+/* --- MEDIA QUERIES (УЧИТЕЛ) --- */
+/* ------------------------------------------------ */
+@media (max-width: 992px) {
+    #answers-board {
+        grid-template-columns: repeat(2, 1fr); 
+    }
+}
+
+@media (max-width: 600px) {
+    body {
+        padding: 0;
+    }
+    
+    .header {
+        padding: 10px;
+    }
+
+    #answers-board {
+        grid-template-columns: 1fr; 
+        gap: 15px;
+        padding: 10px;
+    }
+    
+    .modal-content {
+        max-width: 95%;
+        padding: 20px;
+    }
+
+    div.fab-menu-container {
+        bottom: 15px;
+        right: 15px;
+    }
+    
+    /* Основните и FAB бутони са 50px на мобилна версия */
+    #fab-main-btn {
+        width: 50px;
+        height: 50px;
+        font-size: 1.3em;
+    }
+    
+    .corner-menu-item {
+        width: 50px;
+        height: 50px;
+        font-size: 1.1em;
+        top: 0; 
+    }
+    
+    /* Корекция на Pop-out позициите за 50px бутони + ~10px отстъп = 60px разстояние */
+    /* 1. Нов Padlet (🆕) - Най-отдалечен (3 * 60px = 180px) */
+    .fab-menu-container.show #new-padlet-btn {
+        transform: translate(0px, -180px) scale(1); 
+    }
+    /* 2. QR/Старт (🔳) (2 * 60px = 120px) */
+    .fab-menu-container.show #show-qr-btn {
+        transform: translate(0px, -120px) scale(1);
+    }
+    /* 3. Изтегляне (⬇️) - Най-близо (1 * 60px = 60px) */
+    .fab-menu-container.show #download-btn {
+        transform: translate(0px, -60px) scale(1);
+    }
+
+
+    /* Добавяме и за мобилен, ако трябва да анимира */
+    .glow-indicator {
+        animation: glow 1s ease-in-out infinite;
+    }
+    
+    /* Корекция на input полетата за мобилен */
+    #timer-minutes,
+    #timer-seconds {
+        width: 60px;
+        padding: 8px;
+    }
+    
+    .timer-input-group {
+        gap: 15px;
+    }
+}

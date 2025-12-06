@@ -1,0 +1,50 @@
+{
+  "name": "classmood",
+  "version": "1.0.0",
+  "description": "Classroom Mood/Timer Regulator",
+  "main": "mood.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "keywords": [
+    "class",
+    "timer",
+    "tailwind"
+  ],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "autoprefixer": "^10.4.19",
+    "nodemon": "^3.1.11",
+    "postcss": "^8.4.38",
+    "tailwindcss": "^3.4.4"
+  },
+  "dependencies": {
+    "braces": "^3.0.3",
+    "child_process": "^1.0.2",
+    "detect-libc": "^1.0.3",
+    "enhanced-resolve": "^5.18.3",
+    "express": "^5.2.1",
+    "fill-range": "^7.1.1",
+    "graceful-fs": "^4.2.11",
+    "is-extglob": "^2.1.1",
+    "is-glob": "^4.0.3",
+    "is-number": "^7.0.0",
+    "jiti": "^2.6.1",
+    "lightningcss": "^1.30.2",
+    "lightningcss-win32-x64-msvc": "^1.30.2",
+    "magic-string": "^0.30.21",
+    "micromatch": "^4.0.8",
+    "mri": "^1.2.0",
+    "nanoid": "^3.3.11",
+    "node-addon-api": "^7.1.1",
+    "picocolors": "^1.1.1",
+    "picomatch": "^2.3.1",
+    "socket.io": "^4.8.1",
+    "source-map-js": "^1.2.1",
+    "tapable": "^2.3.0",
+    "to-regex-range": "^5.0.1"
+  },
+  "type": "commonjs"
+}

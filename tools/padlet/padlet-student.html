@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="bg">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Интерактивен Изходен Билет - Ученик</title>
+
+    <link rel="stylesheet" href="styles/padlet-student.css"> 
+</head>
+
+<body>
+    <div id="loading-overlay" class="loading-overlay">
+        <div class="spinner"></div>
+        <p>Изчаква се стартиране на сесията от учителя...</p>
+        <p id="wait-message"></p>
+    </div>
+
+    <div id="student-app-container" class="hidden">
+        <h1 id="session-title">Интерактивен Изходен Билет</h1>
+        
+        <div id="status-bar">
+            <div id="timer-status">00:00</div> 
+            <div id="lock-status" class="status-message"></div>
+        </div>
+        
+        <div id="answers-board-student">
+            <p>Изчакайте учителя да добави въпроси.</p>
+        </div>
+        
+        <p class="status-message" id="submit-message"></p>
+    </div>
+
+    <div id="answer-modal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal('answer-modal')">&times;</span>
+            <h3 id="modal-question-text"></h3>
+
+            <form id="modal-form">
+                <input type="hidden" id="modal-question-id">
+                <input type="hidden" id="modal-answer-id"> 
+
+                <label for="modal-student-name">Име/Псевдоним:</label>
+                <input type="text" id="modal-student-name" required placeholder="Иван Петров" maxlength="50">
+
+                <label for="modal-answer-text">Вашият Отговор:</label>
+                <textarea id="modal-answer-text" required rows="5" placeholder="Напишете отговора си тук..."></textarea>
+
+                <button type="submit" id="modal-submit-btn">Потвърди</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="image-modal" class="modal hidden">
+        <div class="modal-content large-image-content">
+            <span class="close-btn" onclick="closeModal('image-modal')">&times;</span>
+            <img id="modal-image-display" src="" alt="Уголемено изображение"
+                style="max-width: 100%; max-height: 80vh; display: block; margin: auto;">
+        </div>
+    </div>
+
+    <script src="scripts/socket.io.js"></script>
+    <script src="scripts/padlet-student.js"></script>
+</body>
+</html>
