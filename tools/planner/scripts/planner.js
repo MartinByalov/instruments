@@ -47,10 +47,10 @@ const ACTIVITY_TEMPLATES = {
     'exercise': {
         title: 'Упражнение',
         duration: 10,
-        imageUrl: './images/task.jpg',
+        imageUrl: 'https://raw.githubusercontent.com/MartinByalov/instruments/refs/heads/main/tools/planner/images/task.png?token=GHSAT0AAAAAADQYMVVGIFQN4ZD7VFSZRFI62JVJQ3Q',
     },
     'practical_task': {
-        title: 'Практическа задача/Кодиране',
+        title: 'Практическа задача',
         duration: 20,
         imageUrl: 'https://i.imgur.com/V7R6P1r.png',
     },
