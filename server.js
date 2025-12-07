@@ -18,13 +18,13 @@ const PORT = process.env.PORT || 3000;
 
 // 2. ✅ Дефинираме CSHARP_API_URL: Чете от средата (Render)
 const CSHARP_API_URL = process.env.CSHARP_API_URL || "http://localhost:5170"; 
-
+ 
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
 
 // Може да премахнете този fetch, тъй като Render може да го интерпретира като неуспешен health check
-// fetch(`${CSHARP_API_URL}/some-endpoint`) 
+// fetch(`${CSHARP_API_URL}/some-endpoint`)
 
 
 let padletState = {
