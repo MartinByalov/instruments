@@ -31,7 +31,7 @@ let activityCompleteSound;
 let lessonCompleteSound;
 
 let scheduleData = [
-    { title: '', duration: 5, linkUrl: '', imageUrl: '', status: 'pending', side: 'left' },
+    { title: '', duration: 5, linkUrl: '', imageUrl: '', status: 'pending', side: 'right' },
 ];
 let totalDurationSeconds = 0;
 let mainTimerInterval;
