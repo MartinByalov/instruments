@@ -1,20 +1,16 @@
 # 1. BUILD STAGE
-# Използваме SDK образа за компилиране
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /src
 
-# Копираме само файла на проекта, за да оптимизираме кеширането
-# Пътят е относително спрямо корена на хранилището (Build Context)
-COPY tools/compiler/Backend/Backend.csproj tools/compiler/Backend/
+# Копираме САМО папката Backend/ от нашето хранилище в корена на Docker WORKDIR.
+# Пътят е относително спрямо корена на Git хранилището
+COPY tools/compiler/Backend ./Backend
 
-# Сменяме работната директория към папката с проекта
-WORKDIR /src/tools/compiler/Backend
+# Сменяме работната директория към папката с C# проекта
+WORKDIR /src/Backend 
 
-# Възстановяваме зависимостите
+# Възстановяваме зависимостите (Backend.csproj вече е в текущата директория)
 RUN dotnet restore "Backend.csproj"
-
-# Копираме всички останали файлове на C# проекта (Program.cs, Controllers и т.н.)
-COPY tools/compiler/Backend/. .
 
 # Публикуваме проекта
 RUN dotnet publish "Backend.csproj" -c Release -o /app/publish
@@ -25,7 +21,7 @@ FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS final
 WORKDIR /app
 COPY --from=build /app/publish .
 
-# Задаваме порта (5170, както е конфигурирано)
+# Задаваме порта
 ENV ASPNETCORE_URLS=http://+:5170
 
 # Стартова команда
