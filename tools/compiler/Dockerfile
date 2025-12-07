@@ -2,16 +2,17 @@
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /src
 
-# Copy the Backend directory from the root of the repository
-COPY Backend ./Backend
+# Копираме САМО папката Backend/ от нашето хранилище в корена на Docker WORKDIR.
+# Пътят е относително спрямо корена на Git хранилището
+COPY tools/compiler/Backend ./Backend  # <-- This is CORRECT for your structure!
 
-# Change to the Backend directory
+# Сменяме работната директория към папката с C# проекта
 WORKDIR /src/Backend 
 
-# Restore dependencies
+# Възстановяваме зависимостите (Backend.csproj вече е в текущата директория)
 RUN dotnet restore "Backend.csproj"
 
-# Publish the project
+# Публикуваме проекта
 RUN dotnet publish "Backend.csproj" -c Release -o /app/publish
 
 # -----------------------------------------------------------
@@ -20,8 +21,8 @@ FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS final
 WORKDIR /app
 COPY --from=build /app/publish .
 
-# Set the port
+# Задаваме порта
 ENV ASPNETCORE_URLS=http://+:5170
 
-# Startup command
+# Стартова команда
 ENTRYPOINT ["dotnet", "Backend.dll"]
