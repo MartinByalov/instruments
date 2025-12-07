@@ -1,23 +1,27 @@
 <!DOCTYPE html>
 <html lang="bg">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Регулировчик</title>
     <link rel="stylesheet" href="tools/control/styles/control.css">
 </head>
+
 <body>
 
     <div class="container">
         <div class="emojis">
-            <button id="happy-btn" class="emoji-btn" onclick="setMode('happy')">
-                😊
-            </button>
-            <button id="angry-btn" class="emoji-btn" onclick="setMode('angry')">
-                😠
-            </button>
+            <button id="happy-btn" class="emoji-btn" onclick="setMode('happy')" data-content="😊" data-hover-content="😄">
+                </button>
+            <button id="angry-btn" class="emoji-btn" onclick="setMode('angry')" data-content="🤨" data-hover-content="😠">
+                </button>
+        </div>
+
+        <div id="status-display" class="status">
         </div>
     </div>
-<script src="tools/control/scripts/control.js"></script>
+    <script src="tools/control/scripts/control.js"></script>
 </body>
+
 </html>

@@ -1,37 +1,27 @@
 body {
-    /* Добавяме transition за плавна смяна на цвета */
     transition: background-color 0.5s ease-in-out; 
-    
-    /* Настройки за центриране и оформление */
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
     margin: 0;
     font-family: sans-serif;
-    background-color: #f4f4f9; /* Основен фон при стартиране */
+    background-color: #f4f4f9;
 }
 
-/* --- СТИЛОВЕ ЗА ФОНА НА BODY --- */
-
 .bg-happy {
-    /* Светлозелен фон за "щастливо" състояние */
     background-color: #e6ffe6 !important; 
 }
 
 .bg-angry {
-    /* Светлочервен фон за "сърдито" състояние */
     background-color: #ffe6e6 !important; 
 }
-
-/* -------------------------------------- */
-
 
 .container {
     text-align: center;
     padding: 30px;
     border-radius: 10px;
-    background-color: white; /* Контейнерът остава бял, за да изпъква */
+    background-color: white;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
@@ -40,29 +30,43 @@ body {
 }
 
 .emoji-btn {
-    /* Увеличаваме размера на емоджито от 80px на 120px */
     font-size: 120px; 
     background: none;
     border: none;
     cursor: pointer;
     padding: 10px 20px;
-    transition: transform 0.2s;
+    /* Запазваме оригиналната трансформация за плавност */
+    transition: transform 0.2s; 
     outline: none;
+    /* Допълнителни стилове за позициониране на псевдо-елемента */
+    position: relative; 
+    text-align: center;
+    line-height: 1; /* За центриране на емотикона */
 }
 
+/* При hover се запазва увеличението */
 .emoji-btn:hover {
-    transform: scale(1.1);
+    transform: scale(1.1); 
+}
+
+/* Скрива съдържанието на самия бутон */
+.emoji-btn::before {
+    content: attr(data-content); /* Показва основния емотикон */
+    transition: content 0.2s; /* Добавяме преход и за смяната на съдържанието */
+}
+
+/* При hover се сменя емотиконът */
+.emoji-btn:hover::before {
+    content: attr(data-hover-content); /* Показва емотикона при hover */
 }
 
 .status {
-    /* Увеличаваме размера на текста на таймера/състоянието от 24px на 32px */
     font-size: 32px; 
     padding: 15px;
     border-radius: 5px;
     min-height: 50px; 
 }
 
-/* Стил за "Сърдито" състояние */
 .status.angry {
     background-color: #ffdddd;
     color: #cc0000;
@@ -70,7 +74,6 @@ body {
     font-weight: bold;
 }
 
-/* Стил за "Усмихнато" състояние */
 .status.happy {
     background-color: #ddffdd;
     color: #008800;
