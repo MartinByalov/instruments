@@ -1,3 +1,4 @@
+/* compiler.css */
 * {
     margin: 0;
     padding: 0;
@@ -6,26 +7,26 @@
 }
 
 :root {
-    --main-bg: #0d1117; 
-    --container-bg: #161b22; 
-    --text-color: #c9d1d9; 
-    --secondary-text: #8b949e; 
+    --main-bg: #0d1117;
+    --container-bg: #161b22;
+    --text-color: #c9d1d9;
+    --secondary-text: #8b949e;
     --label-color: #ffffff;
-    --border-color: #30363d; 
-    --input-bg: #0d1117; 
-    
+    --border-color: #30363d;
+    --input-bg: #0d1117;
+
     --github-green: #2da44e;
-    --github-green-hover: #2c974b; 
-    --github-blue: #58a6ff; 
-    --success-bg: rgba(46, 164, 79, 0.15); 
+    --github-green-hover: #2c974b;
+    --github-blue: #58a6ff;
+    --success-bg: rgba(46, 164, 79, 0.15);
     --success-text: #3fb950;
-    --error-bg: rgba(248, 81, 73, 0.15); 
-    --error-color: #f85149; 
+    --error-bg: rgba(248, 81, 73, 0.15);
+    --error-color: #f85149;
     --completed-color: #3fb950;
 }
 
 body {
-    background-color: var(--main-bg); 
+    background-color: var(--main-bg);
     color: var(--text-color);
     min-height: 100vh;
 }
@@ -41,20 +42,29 @@ body {
 }
 
 .main-header {
-    display: none; 
+    display: none;
 }
 
 .admin-panel {
-    position: relative; 
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: flex-start;
-    gap: 15px; 
-    margin-bottom: 5px; 
-    padding: 10px 0; 
-    background-color: transparent; 
-    border: none; 
-    box-shadow: none; 
+    gap: 15px;
+    /* Разстояние между admin-controls и add-exercise-btn */
+    margin-bottom: 5px;
+    padding: 10px 0;
+    background-color: transparent;
+    border: none;
+    box-shadow: none;
+}
+
+/* 🔑 НОВ СТИЛ: Контейнер, който държи ПИН полето и Катинарчето заедно */
+#admin-controls {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    /* Разстояние между ПИН полето и Катинарчето */
 }
 
 .pin-label {
@@ -74,7 +84,7 @@ body {
 }
 
 .pin-button {
-    background-color: var(--container-bg); 
+    background-color: var(--container-bg);
     color: var(--text-color);
     padding: 8px 12px;
     border: 1px solid var(--border-color);
@@ -86,15 +96,15 @@ body {
 }
 
 .pin-button:hover {
-    background-color: #21262d; 
+    background-color: #21262d;
     border-color: #8b949e;
 }
 
 .add-button {
-    background-color: var(--github-green); 
+    background-color: var(--github-green);
     color: white;
     padding: 8px 15px;
-    border: 1px solid rgba(27, 31, 36, 0.15); 
+    border: 1px solid rgba(27, 31, 36, 0.15);
     border-radius: 6px;
     cursor: pointer;
     font-size: 14px;
@@ -112,9 +122,9 @@ body {
 .output-group {
     padding: 16px;
     border-radius: 6px;
-    background-color: var(--container-bg); 
+    background-color: var(--container-bg);
     border: 1px solid var(--border-color);
-    box-shadow: 0 1px 0 rgba(1, 4, 9, 0.2), 0 0 0 2px rgba(1, 4, 9, 0.2); 
+    box-shadow: 0 1px 0 rgba(1, 4, 9, 0.2), 0 0 0 2px rgba(1, 4, 9, 0.2);
 }
 
 .select-group {
@@ -171,22 +181,25 @@ body {
 }
 
 #code-editor-container {
-    height: 400px; 
+    height: 400px;
     width: 100%;
     border: 1px solid var(--border-color);
     border-radius: 6px;
     overflow: hidden;
     margin-bottom: 1rem;
-    font-size: 1.1rem; 
+    font-size: 1.1rem;
     font-family: ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, Liberation Mono, monospace;
 }
 
 #exercise-status {
-    display: none; 
+    display: block;
+    padding: 0.5rem 0;
+    min-height: 24px;
+    font-weight: bold;
 }
 
 #exercise-status .text-green-600 {
-    color: var(--success-text); 
+    color: var(--success-text);
     background-color: var(--success-bg);
     border: 1px solid #3fb950;
     display: block;
@@ -194,7 +207,7 @@ body {
 }
 
 #exercise-status .text-red-600 {
-    color: var(--error-color); 
+    color: var(--error-color);
     background-color: var(--error-bg);
     border: 1px solid #f85149;
     display: block;
@@ -202,7 +215,7 @@ body {
 }
 
 .run-button {
-    background-color: var(--github-green); 
+    background-color: var(--github-green);
     color: white;
     padding: 10px 20px;
     border: 1px solid rgba(27, 31, 36, 0.15);
@@ -222,7 +235,7 @@ body {
 }
 
 .run-button:disabled {
-    background-color: #31583d; 
+    background-color: #31583d;
     color: rgba(255, 255, 255, 0.6);
     cursor: not-allowed;
 }
@@ -232,10 +245,10 @@ body {
     padding: 15px;
     border: 1px solid var(--border-color);
     border-radius: 6px;
-    background-color: #010409; 
-    color: #3fb950; 
+    background-color: #010409;
+    color: #3fb950;
     font-family: ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, Liberation Mono, monospace;
-    font-size: 1rem; 
+    font-size: 1rem;
     resize: vertical;
 }
 
@@ -245,7 +258,7 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.8); 
+    background-color: rgba(0, 0, 0, 0.8);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -335,22 +348,106 @@ body {
     .main-header {
         font-size: 1.5rem;
     }
-    
+
     .admin-panel {
         flex-wrap: wrap;
         justify-content: space-between;
     }
-    
-    .pin-input {
-        width: 100%;
-        margin-bottom: 5px;
-    }
-    
-    .pin-button {
+
+    /* Коригираме мобилното поведение на новия контролен контейнер */
+    #admin-controls {
         flex-grow: 1;
+        justify-content: space-between;
+        width: 100%;
+    }
+
+    .pin-input {
+        flex-grow: 1;
+    }
+
+    #pin-input-container {
+        flex-grow: 1;
+    }
+
+
+    .pin-button {
+        /* В мобилен режим бутонът трябва да е по-малък */
+        flex-grow: 0;
+        width: auto;
     }
 
     .add-button {
         flex-grow: 1;
+        margin-top: 10px;
+        /* За да има разстояние, ако се пренесе на нов ред */
     }
+}
+
+#code-editor-container {
+    height: 400px;
+    width: 100%;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    overflow: hidden;
+    margin-bottom: 1rem;
+}
+
+#exercise-status {
+    padding: 0.5rem 0;
+    min-height: 24px;
+    font-weight: bold;
+}
+
+#exercise-list-admin {
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    overflow: hidden;
+    background-color: var(--input-bg);
+    display: none;
+}
+
+.admin-exercise-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 12px;
+    cursor: pointer;
+    color: var(--text-color);
+    border-bottom: 1px solid var(--border-color);
+    transition: background-color 0.15s ease;
+}
+
+.admin-exercise-row:hover {
+    background-color: #21262d;
+}
+
+.admin-exercise-row.selected {
+    background-color: #30363d;
+    border-left: 3px solid var(--github-blue);
+    padding-left: 9px;
+}
+
+.admin-exercise-row.completed-option {
+    background-color: rgba(63, 185, 80, 0.2);
+    color: #3fb950;
+    font-weight: 600;
+}
+
+.remove-exercise-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.2rem;
+    margin-left: 10px;
+    line-height: 1;
+    padding: 0;
+    color: #ff5555;
+}
+
+.pin-button {
+    font-size: 1.2rem;
+    padding: 0.3rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    margin-left: 2px;
 }

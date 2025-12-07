@@ -5,78 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>C# Онлайн Компилатор</title>
     
-    <link rel="stylesheet" href="compiler.css">
+    <link rel="stylesheet" href="/tools/compiler/Frontend/compiler.css">
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs/loader.min.js"></script>
-    <style>
-        #code-editor-container {
-            height: 400px; 
-            width: 100%;
-            border: 2px solid #d1d5db;
-            border-radius: 0.5rem;
-            overflow: hidden;
-            margin-bottom: 1rem;
-        }
-        
-        #exercise-status {
-            padding: 0.5rem 0;
-            min-height: 24px; 
-            font-weight: bold;
-        }
-        
-        #exercise-list-admin {
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-            overflow: hidden;
-            background-color: var(--input-bg);
-            display: none; 
-        }
-
-        .admin-exercise-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 8px 12px;
-            cursor: pointer;
-            color: var(--text-color);
-            border-bottom: 1px solid var(--border-color);
-            transition: background-color 0.15s ease;
-        }
-
-        .admin-exercise-row:hover {
-            background-color: #21262d; 
-        }
-
-        .admin-exercise-row.selected {
-            background-color: #30363d;
-            border-left: 3px solid var(--github-blue);
-            padding-left: 9px;
-        }
-
-        .admin-exercise-row.completed-option {
-            background-color: rgba(63, 185, 80, 0.2); 
-            color: #3fb950;
-            font-weight: 600;
-        }
-        
-        .remove-exercise-btn {
-            background: none;
-            border: none;
-            cursor: pointer;
-            font-size: 1.2rem; 
-            margin-left: 10px;
-            line-height: 1;
-            padding: 0;
-            color: #ff5555; 
-        }
-        
-        .pin-button {
-             font-size: 1.2rem;
-             padding: 0.5rem;
-             border-radius: 0.5rem;
-             cursor: pointer;
-        }
-    </style>
+    
 </head>
 <body>
 
@@ -121,13 +53,17 @@
         <h1 class="main-header">C# Онлайн Среда за Упражнения</h1>
         
         <div id="admin-panel" class="admin-panel">
-            <div id="pin-input-container" style="display: flex; align-items: center;"> 
+            
+            <div id="pin-controls" style="display: flex; align-items: center;"> 
                 <input type="password" id="pin-input" placeholder="Въведи ПИН за достъп..." class="pin-input">
-                <button id="lock-btn" onclick="checkPin()" class="pin-button">🔒</button> 
+                <button id="lock-btn" class="pin-button">🔒</button> 
             </div>
-            <button id="add-exercise-btn" class="add-button" style="display: none;">
-                ➕ Добави Ново Упражнение
-            </button>
+
+            <div id="admin-actions" style="display: none; align-items: center;">
+                <button id="add-exercise-btn" class="add-button">
+                    ➕ Добави Упражнение
+                </button>
+                </div>
         </div>
         
         <div class="exercise-panel">
@@ -148,24 +84,20 @@
         <div class="editor-group">
             <label for="code-editor-container">Вашият C# Код:</label>
             
-            <div id="exercise-status" class="status-message">
-                <span style="color: gray;">Очаква се изпълнение...</span>
-            </div>
-            
             <div id="code-editor-container"></div>
             
             <button id="run-button" onclick="runCode()" class="run-button">
-                ▶️ Изпълни Кода
+                ▶️ Изпълни
             </button>
 
             </div>
 
         <div class="output-group">
-            <label for="output-window">Конзолен Изход / Грешки:</label>
+            <label for="output-window">Конзола:</label>
             <textarea id="output-window" rows="10" readonly></textarea>
         </div>
     </div>
 
-    <script src="compiler.js"></script>
+    <script src="/tools/compiler/Frontend/compiler.js" type="module"></script>
 </body>
 </html>

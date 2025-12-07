@@ -1,39 +1,27 @@
-using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-
+// Program.cs
 var builder = WebApplication.CreateBuilder(args);
 
-// --- 1. ДОБАВЯНЕ НА СЕРВИЗИТЕ ---
-
-// Добавяне на поддръжка за контролери (тук е CompilerController)
+// Добавяне на контролери
 builder.Services.AddControllers();
 
-// ** КРИТИЧНО! ** Добавяне на CORS политика
+// Добавяне на CORS (трябва да е преди app.Build())
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend",
         policy =>
         {
-            // Позволява достъп от всеки източник (*), което е необходимо при разработка.
-            // При production, заменете "*" с конкретния домейн на вашия фронтенд.
             policy.AllowAnyOrigin() 
                   .AllowAnyHeader()
                   .AllowAnyMethod();
         });
 });
 
-
-// --- 2. КОНФИГУРИРАНЕ НА HTTP ПАЙПЛАЙНА ---
-
 var app = builder.Build();
 
-// Премахване на несъществени компоненти (като WeatherForecast, OpenApi, HttpsRedirection)
-
-// Използване на CORS политиката (ТРЯБВА ДА Е ТУК)
+// ИЗПОЛЗВАНЕ на CORS (трябва да е рано)
 app.UseCors("AllowFrontend");
 
-// Маршрутизиране на заявките към контролерите (CompilerController)
-app.MapControllers();
+// АКТИВИРАНЕ НА МАРШРУТИЗИРАНЕТО (ТРЯБВА ДА Е ПРЕДИ app.Run())
+app.MapControllers(); // <-- КРИТИЧНО!
 
 app.Run();

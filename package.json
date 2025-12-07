@@ -21,13 +21,16 @@
     "tailwindcss": "^3.4.4"
   },
   "dependencies": {
+    "axios": "^1.13.2",
     "braces": "^3.0.3",
     "child_process": "^1.0.2",
     "detect-libc": "^1.0.3",
+    "dotenv": "^17.2.3",
     "enhanced-resolve": "^5.18.3",
     "express": "^5.2.1",
     "fill-range": "^7.1.1",
     "graceful-fs": "^4.2.11",
+    "http-proxy-middleware": "^3.0.5",
     "is-extglob": "^2.1.1",
     "is-glob": "^4.0.3",
     "is-number": "^7.0.0",
@@ -44,7 +47,8 @@
     "socket.io": "^4.8.1",
     "source-map-js": "^1.2.1",
     "tapable": "^2.3.0",
-    "to-regex-range": "^5.0.1"
+    "to-regex-range": "^5.0.1",
+    "vite": "^7.2.6"
   },
   "type": "commonjs"
 }
