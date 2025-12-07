@@ -46,17 +46,17 @@ const ACTIVITY_TEMPLATES = {
     'exercise': {
         title: 'Упражнение',
         duration: 5,
-        imageUrl: 'https://github.com/MartinByalov/instruments/blob/main/tools/planner/images/task.png?raw=true',
+        imageUrl: 'https://i.ibb.co/49X7VMs/task.png',
     },
     'practical_task': {
         title: 'Практическа задача',
         duration: 10,
-        imageUrl: 'https://github.com/MartinByalov/instruments/blob/main/tools/planner/images/practical-task.jpg?raw=true',
+        imageUrl: 'https://i.ibb.co/2153GK5s/practical-task.jpg',
     },
     'group_task': {
         title: 'Групова задача',
         duration: 15,
-        imageUrl: 'https://github.com/MartinByalov/instruments/blob/7901f335b08eb2c33512d5f14a257998b39e9472/tools/planner/images/team-task.jpg?raw=true',
+        imageUrl: 'https://i.ibb.co/DH6zMLYW/team-task.jpg',
     },
     'custom': {
         title: '',
