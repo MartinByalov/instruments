@@ -52,12 +52,12 @@ const ACTIVITY_TEMPLATES = {
     'practical_task': {
         title: 'Практическа задача',
         duration: 20,
-        imageUrl: 'https://raw.githubusercontent.com/MartinByalov/instruments/refs/heads/main/tools/planner/images/practical-task.jpg?token=GHSAT0AAAAAADQYMVVHTDNGGG6CCONIUZDK2JVKMNQ',
+        imageUrl: 'https://raw.githubusercontent.com/MartinByalov/instruments/refs/heads/main/tools/planner/images/practical-task.jpg?token=GHSAT0AAAAAADQYMVVHWCLF6B3ZDCXB2L4U2JVKQJA',
     },
     'group_task': {
-        title: 'https://raw.githubusercontent.com/MartinByalov/instruments/refs/heads/main/tools/planner/images/practical-task.jpg?token=GHSAT0AAAAAADQYMVVHTDNGGG6CCONIUZDK2JVKMNQ',
+        title: 'Групова задача/Дискусия',
         duration: 15,
-        imageUrl: 'https://i.imgur.com/8Qz9h6o.png',
+        imageUrl: 'https://raw.githubusercontent.com/MartinByalov/instruments/refs/heads/main/tools/planner/images/team-task.jpg?token=GHSAT0AAAAAADQYMVVGSR5X5OUUPWLFPDJM2JVKQ2A',
     },
     'break': {
         title: 'Почивка',
