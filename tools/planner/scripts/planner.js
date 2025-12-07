@@ -47,7 +47,7 @@ const ACTIVITY_TEMPLATES = {
     'exercise': {
         title: 'Упражнение',
         duration: 10,
-        imageUrl: 'https://raw.githubusercontent.com/MartinByalov/instruments/refs/heads/main/tools/planner/images/task.png?token=GHSAT0AAAAAADQYMVVGIFQN4ZD7VFSZRFI62JVJQ3Q',
+        imageUrl: 'https://raw.githubusercontent.com/MartinByalov/instruments/refs/heads/main/tools/planner/images/task.png?token=GHSAT0AAAAAADQYMVVHJQCCEZE76EFEP6IU2JVKRYQ',
     },
     'practical_task': {
         title: 'Практическа задача',
