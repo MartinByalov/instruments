@@ -14,7 +14,8 @@ const server = http.createServer(app);
 const io = new Server(server);
 
 const PORT = 3000;
-const CSHARP_API_URL = 'http://localhost:5170';
+const API_URL = process.env.API_URL || "http://localhost:5170";
+fetch(`${API_URL}/some-endpoint`)
 
 
 let padletState = {
@@ -225,5 +226,5 @@ server.listen(PORT, () => {
     console.log(`├─ Контролен панел: http://localhost:${PORT}/control`);
     console.log(`├─ Таймер: http://localhost:${PORT}/planner`);
     console.log(`├─ Компилатор: http://localhost:${PORT}/compiler`);
-    console.log(`└─ C# API Target: ${CSHARP_API_URL}/run-code`);
+    console.log(`└─ C# API Target: https://instruments-0z1g.onrender.com`);
 });
