@@ -46,23 +46,18 @@ let dragOverTargetIndex = null;
 const ACTIVITY_TEMPLATES = {
     'exercise': {
         title: 'Упражнение',
-        duration: 10,
+        duration: 5,
         imageUrl: 'https://raw.githubusercontent.com/MartinByalov/instruments/refs/heads/main/tools/planner/images/task.png?token=GHSAT0AAAAAADQYMVVHJQCCEZE76EFEP6IU2JVKRYQ',
     },
     'practical_task': {
         title: 'Практическа задача',
-        duration: 20,
+        duration: 10,
         imageUrl: 'https://raw.githubusercontent.com/MartinByalov/instruments/refs/heads/main/tools/planner/images/practical-task.jpg?token=GHSAT0AAAAAADQYMVVHWCLF6B3ZDCXB2L4U2JVKQJA',
     },
     'group_task': {
-        title: 'Групова задача/Дискусия',
+        title: 'Групова задача',
         duration: 15,
         imageUrl: 'https://raw.githubusercontent.com/MartinByalov/instruments/refs/heads/main/tools/planner/images/team-task.jpg?token=GHSAT0AAAAAADQYMVVGSR5X5OUUPWLFPDJM2JVKQ2A',
-    },
-    'break': {
-        title: 'Почивка',
-        duration: 5,
-        imageUrl: 'https://i.imgur.com/J7t0M4w.png',
     },
     'custom': {
         title: '',
