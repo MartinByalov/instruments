@@ -22,21 +22,16 @@
                 </button>
             </div>
         </div>
-
         <div class="timeline-container-centered" id="timeline-container-centered">
-                <div class="timeline-line"></div>
+            <div class="timeline-line"></div>
+            <div class="timeline-progress" id="timeline-progress"></div>
+            <div class="timeline-label label-start" id="label-start">СТАРТ</div>
 
-                    <div class="timeline-progress" id="timeline-progress"></div>
-
-                    <div class="timeline-label label-start" id="label-start">СТАРТ</div>
-
-                <div class="timeline-label label-end" id="label-end">КРАЙ</div>
-
-                <button id="add-activity-btn-single" title="Добави нова дейност">+</button>
+            <div class="timeline-label label-end" id="label-end">КРАЙ</div>
+            <button id="add-activity-btn-single" title="Добави нова дейност">+</button>
         </div>
-
         <div id="activity-modal">
-            <div>
+            <div class="modal-content">
                 <h3 id="modal-title">Добавяне на Дейност</h3>
                 <div class="modal-form">
 
@@ -44,8 +39,8 @@
                         <label for="activity-template-select">Избери Тип Дейност</label>
                         <select id="activity-template-select">
                             <option value="custom">-- Избери шаблон --</option>
-                            <option value="exercise">Упражнение/Демонстрация</option>
-                            <option value="practical_task">Практическа задача/Кодиране</option>
+                            <option value="exercise">Упражнение</option>
+                            <option value="practical_task">Практическа задача</option>
                             <option value="group_task">Групова задача/Дискусия</option>
                             <option value="break">Почивка</option>
                             <option value="custom">Друго (Ръчно въвеждане)</option>
@@ -56,31 +51,43 @@
                         <label for="activity-title-input">Заглавие</label>
                         <input type="text" id="activity-title-input" required>
                     </div>
-                    <label for="activity-title-input">Име на дейността</label>
-                    <input type="text" id="activity-title-input">
 
-                    <label for="activity-duration-input">Продължителност (минути)</label>
-                    <input type="number" id="activity-duration-input">
+                    <div class="modal-field">
+                        <label for="activity-duration-input">Продължителност (минути)</label>
+                        <input type="number" id="activity-duration-input" required min="1">
+                    </div>
 
-                    <label for="activity-link-input">Връзка (линк)</label>
-                    <input type="text" id="activity-link-input">
+                    <div class="modal-field">
+                        <label for="activity-link-input">Връзка (линк)</label>
+                        <input type="text" id="activity-link-input" placeholder="https://...">
+                    </div>
 
-                    <label for="activity-image-input">Изображение (URL)</label>
-                    <input type="text" id="activity-image-input">
+                    <div class="modal-field">
+                        <label for="activity-image-input">
+                            <span id="image-upload-container" class="upload-btn-container"
+                                title="Качи изображение от компютъра">
+                                <span class="upload-btn">⬆️</span>
+                            </span>
+                            Изображение (URL)
+                        </label>
+
+                        <input type="text" id="activity-image-input" placeholder="Въведете URL или качете файл">
+
+                        <input type="file" id="image-upload-input" accept="image/*" style="display: none;">
+                    </div>
                 </div>
 
-                <div class="modal-actions">
-                    <button id="modal-cancel-btn" class="modal-btn">Отказ</button>
-                    <button id="modal-save-btn" class="modal-btn">Запази</button>
+                <div class="modal-actions modal-footer">
+                    <button id="modal-save-btn" class="modal-btn btn-primary">Запази</button>
+                    <button id="modal-cancel-btn" class="modal-btn btn-secondary">Отказ</button>
                 </div>
             </div>
         </div>
-
         <div id="victory-screen">
             <div>
                 <h2 class="trophy">🏆</h2>
-                <h2>Урокът е завършен!</h2>
-                <p>Поздравления!</p>
+                <h2 style="color: white;">Урокът е завършен!</h2>
+                <p style="color: white;">Поздравления!</p>
             </div>
         </div>
 
@@ -91,11 +98,13 @@
                     <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                 </svg>
             </button>
-
             <img id="lightbox-img" src="" alt="Full size image">
         </div>
-
     </div>
+
+    <audio id="sound-start" src="/tools/planner/sounds/start-sound.mp3" preload="auto"></audio>
+    <audio id="sound-activity-complete" src="/tools/planner/sounds/activity-complete.mp3" preload="auto"></audio>
+    <audio id="sound-lesson-complete" src="/tools/planner/sounds/lesson-complete.mp3" preload="auto"></audio>
 
     <script src="https://unpkg.com/tone@14.7.77/build/Tone.js"></script>
     <script src="/tools/planner/scripts/planner.js"></script>

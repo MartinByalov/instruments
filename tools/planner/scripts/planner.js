@@ -1,7 +1,3 @@
-// =================================================
-// ГЛОБАЛНИ КОНСТАНТИ И ЕЛЕМЕНТИ (ДЕКЛАРАЦИЯ)
-// =================================================
-
 let appContainer;
 let controlPanel;
 let lessonTopicInput;
@@ -12,25 +8,28 @@ let timelineContainer;
 let addActivityBtn;
 let timelineProgress;
 let endLabel;
-let victoryTrophyDisplay; // 🏆 Голямата анимирана купа (victory-screen)
+let victoryTrophyDisplay;
 
-// Модал елементи
 let activityModal;
 let modalTitle;
-let activityTemplateSelect; // НОВ ЕЛЕМЕНТ
+let activityTemplateSelect;
 let activityTitleInput;
 let activityDurationInput;
 let activityLinkInput;
 let activityImageInput;
+let imageUploadInput;
 let modalSaveBtn;
 let modalCancelBtn;
+let imageUploadContainer;
 
-// Lightbox елементи
 let lightbox;
 let lightboxImg;
 let lightboxCloseBtn;
 
-// Глобално състояние
+let startSound;
+let activityCompleteSound;
+let lessonCompleteSound;
+
 let scheduleData = [
     { title: 'Въведение', duration: 5, linkUrl: 'https://developer.mozilla.org/en-US/docs/Web/JavaScript', imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/6/6a/JavaScript-logo.png', status: 'pending', side: 'left' },
     { title: 'Демо на функционалност', duration: 10, linkUrl: '', imageUrl: '', status: 'pending', side: 'right' },
@@ -42,32 +41,28 @@ let isRunning = false;
 let currentActivityIndex = -1;
 let editActivityIndex = null;
 let draggedItem = null;
-let dragOverTargetIndex = null; // Индекс на мястото, където ще бъде пуснат елементът
+let dragOverTargetIndex = null;
 
-/**
- * Дефиниции на шаблони за дейности.
- * Използва се за автоматично попълване на заглавието и изображението.
- */
 const ACTIVITY_TEMPLATES = {
     'exercise': {
-        title: 'Упражнение/Демонстрация',
-        duration: 10, // Минути по подразбиране
-        imageUrl: 'https://i.imgur.com/x3rJ22f.png', // Примерна икона за упражнение/демо
+        title: 'Упражнение',
+        duration: 10,
+        imageUrl: './images/task.jpg',
     },
     'practical_task': {
         title: 'Практическа задача/Кодиране',
         duration: 20,
-        imageUrl: 'https://i.imgur.com/V7R6P1r.png', // Примерна икона за кодиране/задача
+        imageUrl: 'https://i.imgur.com/V7R6P1r.png',
     },
     'group_task': {
         title: 'Групова задача/Дискусия',
         duration: 15,
-        imageUrl: 'https://i.imgur.com/8Qz9h6o.png', // Примерна икона за група/дискусия
+        imageUrl: 'https://i.imgur.com/8Qz9h6o.png',
     },
     'break': {
         title: 'Почивка',
         duration: 5,
-        imageUrl: 'https://i.imgur.com/J7t0M4w.png', // Примерна икона за почивка
+        imageUrl: 'https://i.imgur.com/J7t0M4w.png',
     },
     'custom': {
         title: '',
@@ -76,10 +71,12 @@ const ACTIVITY_TEMPLATES = {
     }
 };
 
-
-// =================================================
-// ФУНКЦИИ ЗА РАБОТА С ВРЕМЕТО
-// =================================================
+function playNotificationSound(sound) {
+    if (sound) {
+        sound.currentTime = 0; 
+        sound.play().catch(e => console.error("Could not play sound:", e));
+    }
+}
 
 function formatTime(totalSeconds) {
     const minutes = Math.floor(totalSeconds / 60);
@@ -155,6 +152,7 @@ function startTimer() {
     }
 
     isRunning = true;
+    playNotificationSound(startSound);
     startBtn.textContent = 'ПАУЗА';
     startBtn.style.backgroundColor = '#f59e0b';
     startBtn.style.transform = 'translateY(-50%)';
@@ -271,6 +269,8 @@ function checkActivityCompletion() {
 function completeActivity(index) {
     if (index < 0 || index >= scheduleData.length) return;
 
+    playNotificationSound(activityCompleteSound);
+
     const completedActivity = scheduleData[index];
 
     let timeAtEndOfActivity = 0;
@@ -327,6 +327,8 @@ function finishLesson() {
     renderSchedule();
     updateMainTimerDisplay();
 
+    playNotificationSound(lessonCompleteSound);
+
     if (victoryTrophyDisplay) {
         victoryTrophyDisplay.classList.add('is-active');
     }
@@ -335,10 +337,6 @@ function finishLesson() {
     }
 }
 
-/**
- * Сменя страната (ляво/дясно) на дадена активност.
- * @param {number} index Индекс на активността в scheduleData.
- */
 function toggleActivitySide(index) {
     if (isRunning || index < 0 || index >= scheduleData.length) return;
 
@@ -346,10 +344,6 @@ function toggleActivitySide(index) {
     scheduleData[index].side = currentSide === 'left' ? 'right' : 'left';
     renderSchedule();
 }
-
-// =================================================
-// ФУНКЦИИ ЗА РЕНДИРАНЕ НА UI
-// =================================================
 
 function renderSchedule() {
     if (!timelineContainer || !timelineProgress) return;
@@ -359,7 +353,6 @@ function renderSchedule() {
     const line = timelineContainer.querySelector('.timeline-line');
     const progress = timelineContainer.querySelector('#timeline-progress');
 
-    // Изчистване на предишните карти
     Array.from(timelineContainer.children).forEach(child => {
         if (child.classList.contains('timeline-item-wrapper')) {
             child.remove();
@@ -377,7 +370,6 @@ function renderSchedule() {
         item.id = `activity-${index}`;
         item.className = 'timeline-content';
 
-        // Добавяне на клас за свиване на полето, ако няма изображение
         if (!activity.imageUrl) {
             item.classList.add('no-image');
         }
@@ -397,10 +389,10 @@ function renderSchedule() {
         titleArea.className = 'title-area';
 
         titleArea.innerHTML = `
-            <div class="title-row">
-                <span class="activity-title" title="${activity.title}">${activity.title}</span>
-            </div>
-        `;
+            <div class="title-row">
+                <span class="activity-title" title="${activity.title}">${activity.title}</span>
+            </div>
+        `;
 
         const rightArea = document.createElement('div');
         rightArea.className = 'timer-controls-area';
@@ -432,7 +424,6 @@ function renderSchedule() {
         const controls = document.createElement('div');
         controls.className = 'activity-controls';
 
-        // 1. Бутон за смяна на страна (ПЪРВИ по ред, ако таймерът е спрян)
         const sideSwitchBtn = document.createElement('button');
         sideSwitchBtn.className = 'controls-btn side-switch-button-control';
         sideSwitchBtn.title = activity.side === 'left' ? 'Премести надясно' : 'Премести наляво';
@@ -443,7 +434,6 @@ function renderSchedule() {
             controls.appendChild(sideSwitchBtn);
         }
 
-        // 2. Бутон за връзка (следващ по ред, ако има linkUrl)
         if (activity.linkUrl) {
             const linkBtn = document.createElement('button');
             linkBtn.className = 'controls-btn link-btn';
@@ -453,11 +443,6 @@ function renderSchedule() {
             linkBtn.onclick = () => window.open(activity.linkUrl, '_blank');
         }
 
-        // =========================================================================
-        // ⭐ ПРОМЯНА ТУК: Показва ✅ бутона САМО ако таймерът е стартиран (`isRunning`)
-        // =========================================================================
-
-        // 3. Бутон за приключване (следващ по ред, ако не е done И таймерът работи)
         if (activity.status !== 'done' && isRunning) {
             const finishBtn = document.createElement('button');
             finishBtn.className = 'controls-btn finish-btn';
@@ -466,7 +451,6 @@ function renderSchedule() {
             controls.appendChild(finishBtn);
         }
 
-        // 4. Бутон за редактиране (следващ по ред, ако таймерът е спрян)
         const editBtn = document.createElement('button');
         editBtn.className = 'controls-btn edit-btn';
         editBtn.innerHTML = '✏️';
@@ -475,7 +459,6 @@ function renderSchedule() {
             controls.appendChild(editBtn);
         }
 
-        // 5. Бутон за изтриване (последен по ред, ако таймерът е спрян)
         const deleteBtn = document.createElement('button');
         deleteBtn.className = 'controls-btn delete-btn';
         deleteBtn.innerHTML = '❌';
@@ -484,7 +467,7 @@ function renderSchedule() {
             controls.appendChild(deleteBtn);
         }
 
-        item.appendChild(controls); // Добавяме controls към item
+        item.appendChild(controls);
 
         if (activity.imageUrl) {
             const imgContainer = document.createElement('div');
@@ -543,31 +526,43 @@ function renderSchedule() {
     updateProgressDisplay();
 }
 
-// =================================================
-// ФУНКЦИИ (МОДАЛ, ИЗТРИВАНЕ, LIGHTBOX)
-// =================================================
-
-/**
- * Автоматично попълва полетата за заглавие, продължителност и изображение
- * въз основа на избрания шаблон.
- */
 function autoFillActivity() {
     const selectedKey = activityTemplateSelect.value;
     const template = ACTIVITY_TEMPLATES[selectedKey];
 
     if (!template) return;
 
-    // Автоматично попълване
     activityTitleInput.value = template.title;
     activityDurationInput.value = template.duration;
     activityImageInput.value = template.imageUrl;
 
-    // Блокиране на полетата, ако не е избран 'custom'
     const isDisabled = selectedKey !== 'custom';
     activityTitleInput.readOnly = isDisabled;
     activityDurationInput.readOnly = isDisabled;
     activityImageInput.readOnly = isDisabled;
     activityLinkInput.readOnly = isDisabled;
+
+    if (imageUploadInput) imageUploadInput.value = ''; 
+}
+
+function handleImageUpload(event) {
+    const file = event.target.files[0];
+    if (file) {
+        if (!file.type.startsWith('image/')) {
+            alert('Моля, изберете валиден графичен файл.');
+            event.target.value = ''; 
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            activityImageInput.value = e.target.result;
+            activityImageInput.readOnly = true; 
+        };
+        reader.readAsDataURL(file);
+    } else {
+        activityImageInput.readOnly = false;
+    }
 }
 
 function openModal(index = null) {
@@ -575,35 +570,46 @@ function openModal(index = null) {
 
     editActivityIndex = index;
 
-    // Първо нулираме контролите и активираме всички input полета по подразбиране
+    activityTitleInput.value = '';
+    activityDurationInput.value = 15;
+    activityLinkInput.value = '';
+    activityImageInput.value = '';
+    if (imageUploadInput) imageUploadInput.value = '';
+
     activityTitleInput.readOnly = false;
     activityDurationInput.readOnly = false;
     activityLinkInput.readOnly = false;
     activityImageInput.readOnly = false;
+
     activityTemplateSelect.value = 'custom';
-    activityTemplateSelect.disabled = false; // <<< ГАРАНТИРАМЕ, че е АКТИВЕН по подразбиране
+    activityTemplateSelect.disabled = false;
 
     if (index !== null) {
         modalTitle.textContent = 'Редактиране на Дейност';
         const activity = scheduleData[index];
 
-        // Попълваме текущите стойности
         activityTitleInput.value = activity.title;
         activityDurationInput.value = activity.duration;
         activityLinkInput.value = activity.linkUrl || '';
-        activityImageInput.value = activity.imageUrl || '';
+          
+        if (activity.imageUrl && activity.imageUrl.startsWith('data:image/')) {
+            activityImageInput.value = "Качен файл (редактирането е забранено)";
+            activityImageInput.readOnly = true; 
+            if (imageUploadInput) imageUploadInput.disabled = true;
+        } else {
+            activityImageInput.value = activity.imageUrl || '';
+        }
 
-        // При РЕДАКТИРАНЕ: Деактивираме избора на шаблон, тъй като работим с конкретен елемент
         activityTemplateSelect.disabled = true;
-
+        if (imageUploadInput) imageUploadInput.disabled = false;
+        
     } else {
         modalTitle.textContent = 'Добавяне на Дейност';
 
-        // При ДОБАВЯНЕ: Селекторът е АКТИВЕН (disabled = false).
-        // Инициализираме с 'custom' (който не блокира полетата)
         activityTemplateSelect.value = 'custom';
         activityTemplateSelect.disabled = false;
         autoFillActivity();
+        if (imageUploadInput) imageUploadInput.disabled = false; 
     }
 
     activityModal.classList.add('is-active');
@@ -612,14 +618,27 @@ function openModal(index = null) {
 function closeModal() {
     activityModal.classList.remove('is-active');
     editActivityIndex = null;
-    activityTemplateSelect.disabled = false; // ОТКЛЮЧВАМЕ СЕЛЕКТОРА
+    activityTemplateSelect.disabled = false;
+    activityImageInput.readOnly = false;
+    if (imageUploadInput) imageUploadInput.disabled = false;
 }
 
 function saveActivity() {
     const title = activityTitleInput.value.trim();
     const duration = parseFloat(activityDurationInput.value.replace(',', '.'));
     const linkUrl = activityLinkInput.value.trim();
-    const imageUrl = activityImageInput.value.trim();
+    
+    let imageUrl = activityImageInput.value.trim();
+
+    if (imageUrl === "Качен файл (редактирането е забранено)") {
+        if (editActivityIndex !== null) {
+             imageUrl = scheduleData[editActivityIndex].imageUrl;
+        } else {
+             imageUrl = '';
+        }
+    } else if (imageUrl.includes("Качен файл")) {
+        imageUrl = '';
+    }
 
     if (!title || isNaN(duration) || duration <= 0) {
         alert('Моля, въведете валидно име и продължителност (по-голяма от 0).');
@@ -686,12 +705,7 @@ function closeLightbox() {
     lightboxImg.src = '';
 }
 
-// =================================================
-// ИНИЦИАЛИЗАЦИЯ И ОБРАБОТКА НА СЪБИТИЯ
-// =================================================
-
 function initializeDOM() {
-    // Елементи от DOM
     appContainer = document.getElementById('app');
     controlPanel = document.getElementById('control-panel');
     lessonTopicInput = document.getElementById('lesson-topic');
@@ -705,21 +719,25 @@ function initializeDOM() {
 
     victoryTrophyDisplay = document.getElementById('victory-screen');
 
-    // Модал елементи
     activityModal = document.getElementById('activity-modal');
     modalTitle = document.getElementById('modal-title');
-    activityTemplateSelect = document.getElementById('activity-template-select'); // НОВ ЕЛЕМЕНТ
+    activityTemplateSelect = document.getElementById('activity-template-select');
     activityTitleInput = document.getElementById('activity-title-input');
     activityDurationInput = document.getElementById('activity-duration-input');
     activityLinkInput = document.getElementById('activity-link-input');
     activityImageInput = document.getElementById('activity-image-input');
+    imageUploadInput = document.getElementById('image-upload-input');
+    imageUploadContainer = document.getElementById('image-upload-container');
     modalSaveBtn = document.getElementById('modal-save-btn');
     modalCancelBtn = document.getElementById('modal-cancel-btn');
 
-    // Lightbox елементи
     lightbox = document.getElementById('lightbox');
     lightboxImg = document.getElementById('lightbox-img');
     lightboxCloseBtn = document.querySelector('.lightbox-close-btn');
+
+    startSound = document.getElementById('sound-start');
+    activityCompleteSound = document.getElementById('sound-activity-complete');
+    lessonCompleteSound = document.getElementById('sound-lesson-complete');
 }
 
 function setupEventListeners() {
@@ -731,9 +749,20 @@ function setupEventListeners() {
     if (modalSaveBtn) modalSaveBtn.addEventListener('click', saveActivity);
     if (modalCancelBtn) modalCancelBtn.addEventListener('click', closeModal);
 
-    // Обработка на избор на шаблон
     if (activityTemplateSelect) {
         activityTemplateSelect.addEventListener('change', autoFillActivity);
+    }
+
+    if (imageUploadInput) {
+        imageUploadInput.addEventListener('change', handleImageUpload);
+    }
+    
+    if (imageUploadContainer) {
+        imageUploadContainer.addEventListener('click', () => {
+            if (imageUploadInput && !imageUploadInput.disabled) {
+                 imageUploadInput.click();
+            }
+        });
     }
 
     if (lightboxCloseBtn) lightboxCloseBtn.addEventListener('click', closeLightbox);
@@ -759,7 +788,6 @@ function setupEventListeners() {
         });
     }
 
-    // DRAG & DROP
     if (timelineContainer) {
         timelineContainer.addEventListener('dragstart', (e) => {
             const target = e.target.closest('.timeline-item-wrapper');
@@ -780,7 +808,6 @@ function setupEventListeners() {
 
             const targetWrapper = e.target.closest('.timeline-item-wrapper');
 
-            // Премахваме само класовете за drop target
             timelineContainer.querySelectorAll('.drop-target-above, .drop-target-below').forEach(el => {
                 el.classList.remove('drop-target-above', 'drop-target-below');
             });
@@ -788,11 +815,9 @@ function setupEventListeners() {
 
             if (!draggedItem) return;
 
-            // Логика за пренареждане върху ДРУГА карта
             if (targetWrapper && draggedItem !== targetWrapper) {
                 const rect = targetWrapper.getBoundingClientRect();
 
-                // Прагът за вертикално пускане
                 const dropThreshold = rect.height / 4;
                 const isAbove = e.clientY < rect.top + dropThreshold;
                 const isBelow = e.clientY > rect.bottom - dropThreshold;
@@ -805,13 +830,11 @@ function setupEventListeners() {
                     dragOverTargetIndex = parseInt(targetWrapper.getAttribute('data-index')) + 1;
                 }
             } else if (draggedItem) {
-                // Ако е пуснато над End Label или Add Button
                 if (e.target.closest('#label-end') || e.target.closest('#add-activity-btn-single')) {
                     dragOverTargetIndex = scheduleData.length;
                 }
             }
         });
-
 
         timelineContainer.addEventListener('drop', (e) => {
             e.preventDefault();
@@ -823,7 +846,6 @@ function setupEventListeners() {
                 return;
             }
 
-            // Логика за ПРЕНАРЕЖДАНЕ (СОРТИРАНЕ)
             const toIndex = dragOverTargetIndex;
 
             if (toIndex !== null && fromIndex !== toIndex && fromIndex + 1 !== toIndex) {
@@ -833,7 +855,6 @@ function setupEventListeners() {
 
                 scheduleData.splice(finalIndex, 0, movedActivity);
 
-                // Актуализация на currentActivityIndex
                 if (currentActivityIndex !== -1) {
                     if (currentActivityIndex === fromIndex) {
                         currentActivityIndex = finalIndex;
@@ -848,8 +869,6 @@ function setupEventListeners() {
                 renderSchedule();
             }
 
-
-            // Почистване
             timelineContainer.querySelectorAll('.drop-target-above, .drop-target-below').forEach(el => {
                 el.classList.remove('drop-target-above', 'drop-target-below');
             });
@@ -873,13 +892,11 @@ function setupEventListeners() {
     }
 }
 
-// =================================================
-// СТАРТ
-// =================================================
-
 document.addEventListener('DOMContentLoaded', () => {
     initializeDOM();
     setupEventListeners();
     calculateTotalDuration();
     renderSchedule();
 });
+
+

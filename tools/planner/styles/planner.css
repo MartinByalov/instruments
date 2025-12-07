@@ -1,8 +1,3 @@
-/*
-=================================================
-ГЛОБАЛНИ СТИЛОВЕ
-=================================================
-*/
 body {
     background: linear-gradient(135deg, #f0f4f8, #e2e8f0);
     display: flex;
@@ -23,11 +18,6 @@ body {
     padding-bottom: 50px;
 }
 
-/*
-=================================================
-КОНТРОЛЕН ПАНЕЛ (HEADER)
-=================================================
-*/
 #control-panel {
     background-color: white;
     border-radius: 12px;
@@ -109,7 +99,6 @@ body {
     opacity: 0.8;
 }
 
-/* Бутон за Нулиране - заема позицията на Старт */
 #reset-btn-corner {
     padding: 12px 24px;
     background-color: #ef9144;
@@ -126,7 +115,6 @@ body {
     top: 50%;
     transform: translateY(-50%);
     display: none;
-    /* Начално скрит - управлява се от JavaScript */
 }
 
 #reset-btn-corner:hover {
@@ -138,14 +126,8 @@ body {
     transform: translateY(-48%);
 }
 
-/*
-=================================================
-ТАЙМЛАЙН ЛИНИИ (КОРЕКЦИЯ НА ОТСТЪПА)
-=================================================
-*/
 .timeline-container-centered {
     position: relative;
-    /* Намален padding-top, за да започне по-близо до START */
     padding: 0 0 40px 0;
     min-height: 150px;
     width: 100%;
@@ -154,7 +136,6 @@ body {
     align-items: center;
 }
 
-/* 1. Главна (сива/фонова) линия */
 .timeline-line {
     position: absolute;
     left: 50%;
@@ -162,15 +143,10 @@ body {
     width: 4px;
     background-color: #e5e7eb;
     z-index: 1;
-
-    /* Линията започва от 10px */
     top: 10px;
-
-    /* Височината се коригира спрямо новия padding-top/bottom */
     height: calc(100% - 30px);
 }
 
-/* 2. Прогрес линия (която се запълва) */
 #timeline-progress {
     position: absolute;
     left: 50%;
@@ -178,25 +154,20 @@ body {
     width: 4px;
     background-color: #10b981;
     z-index: 2;
-
-    /* Започва от същото място като timeline-line */
     top: 10px;
     height: 0px;
     transition: height 0.5s ease-out;
 }
 
 #timeline-progress-info {
-    /* Позиционирането се коригира спрямо новия timeline-container-centered padding */
     position: absolute;
     top: -5px;
     left: 50%;
     transform: translateX(-50%);
     z-index: 5;
-
     background-color: #f3f4f6;
     padding: 5px 10px;
     border-radius: 4px;
-
     text-align: center;
     font-size: 14px;
     color: #6b7280;
@@ -213,18 +184,12 @@ body {
     color: #f59e0b;
 }
 
-/*
-=================================================
-ЕТИКЕТИ / LABELS
-=================================================
-*/
 .timeline-label {
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
     font-size: 12px;
     font-weight: 800;
-    /* Намален вертикален padding за по-компактен етикет */
     padding: 6px 20px;
     border-radius: 9999px;
     z-index: 15;
@@ -237,7 +202,6 @@ body {
 }
 
 .label-start {
-    /* top: -15px - за да компенсира намаления padding-top на timeline-container-centered */
     top: -15px;
     background: #10b981;
     color: white;
@@ -249,45 +213,33 @@ body {
     color: #fff;
     border: 2px dashed #fff;
     position: absolute;
-    /* bottom: -5px - остава същото спрямо bottom padding-а на контейнера */
     bottom: -5px;
     left: 50%;
     transform: translateX(-50%);
     margin: 0;
 }
 
-
-/*
-=================================================
-КАРТИ / ACTIVITY CARDS 
-=================================================
-*/
 .timeline-item-wrapper {
     width: 100%;
     display: flex;
     position: relative;
-    /* Намален padding-bottom */
     padding-bottom: 20px;
-    /* Намален padding-top */
     padding-top: 5px;
     box-sizing: border-box;
     transition: background 0.2s;
 }
 
 .left-side {
-    /* КОРИГИРАНО: Максимално близо до оста */
     padding-right: 50%;
     justify-content: flex-end;
 }
 
 .right-side {
-    /* КОРИГИРАНО: Максимално близо до оста */
     padding-left: 50%;
     justify-content: flex-start;
 }
 
 .timeline-content {
-    /* Коригиран width на 100% за да се разположи плътно до 50% отстъп */
     width: 100%;
     max-width: 450px;
     cursor: grab;
@@ -299,19 +251,16 @@ body {
     flex-direction: column;
     background: white;
     border-radius: 0.75rem;
-    /* Основен padding: 10px отвсякъде, като bottom е 50px заради таймера */
     padding: 10px 10px 50px 10px;
     border: 1px solid #e5e7eb;
     transition: all 0.3s ease-in-out;
     overflow: hidden;
+    margin-top: 20px;
 }
 
-/* НОВ СТИЛ: Свиване на полето, ако няма изображение */
 .timeline-content.no-image {
     min-height: 80px;
-    /* Намалена минимална височина */
     padding: 10px 10px 50px 10px;
-    /* Запазваме bottom padding за контролите */
 }
 
 .timeline-content:hover {
@@ -328,7 +277,6 @@ body {
     cursor: grab;
 }
 
-/* СТИЛОВЕ ЗА СЪСТОЯНИЕ */
 .current-activity {
     border-color: #f59e0b !important;
     box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.2), 0 10px 15px -3px rgba(0, 0, 0, 0.1);
@@ -357,42 +305,21 @@ body {
     background: #f59e0b !important;
 }
 
-/*
-=================================================
-БУТОН ЗА СМЯНА НА СТРАНА (SIDE SWITCH BUTTON)
-*** НОВА КОРЕКЦИЯ: Позициониран ВЪТРЕ в абсолютния ДОЛЕН ДЕСЕН ъгъл на картата ***
-=================================================
-*/
-
 .side-switch-button {
     position: absolute;
-
-    /* НОВА ПОЗИЦИЯ: Вътре в картата, в долния десен ъгъл */
     bottom: 10px;
     right: 10px;
     left: auto;
     top: auto;
-
     width: 35px;
-    /* Ширина на лентата */
     height: 35px;
-    /* Височина на лентата */
-
     border-radius: 8px;
-    /* Заоблени краищи */
     border: none;
-    /* Премахваме старата рамка */
     background-color: #ffffff;
-    /* Бял фон */
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-    /* Лека сянка за 3D ефект */
-
     cursor: pointer;
     z-index: 50;
-    /* Z-INDEX, същият като другите контроли */
-
     transform: none;
-
     display: flex;
     align-items: center;
     justify-content: center;
@@ -401,7 +328,6 @@ body {
     line-height: 0;
 }
 
-/* Премахваме специфичните стилове за left-side и right-side, тъй като позицията вече е вътрешна */
 .timeline-item-wrapper.left-side .side-switch-button,
 .timeline-item-wrapper.right-side .side-switch-button {
     left: auto;
@@ -411,7 +337,6 @@ body {
 
 .side-switch-button:hover:not(:disabled) {
     transform: scale(1.1);
-    /* Лек зуум при hover */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
@@ -421,21 +346,9 @@ body {
     transform: none;
 }
 
-/*
-=================================================
-КРЪГЧЕТО (DOT) - АКТИВНОСТ (ПРЕМАХНАТО)
-=================================================
-*/
 .absolute-dot {
     display: none;
 }
-
-
-/*
-=================================================
-СЪДЪРЖАНИЕ НА КАРТАТА и КОНТРОЛИ
-=================================================
-*/
 
 .timeline-header {
     display: flex;
@@ -458,7 +371,6 @@ body {
 }
 
 .title-row {
-
     align-items: center;
     width: 100%;
 }
@@ -472,7 +384,6 @@ body {
     text-overflow: ellipsis;
     min-height: 24px;
     display: block;
-
     margin: 0;
     padding: 0;
     font-family: inherit;
@@ -482,11 +393,9 @@ body {
 .activity-plan-text {
     font-size: 12px;
     color: #6b7280;
-
 }
 
 .timer-controls-area {
-    /* ПОЗИЦИЯ: долу вляво */
     position: absolute;
     bottom: 10px;
     left: 10px;
@@ -516,18 +425,10 @@ body {
     color: #9ca3af;
 }
 
-/*
-=================================================
-КОНТРОЛИ (ГОРЕ ВДЯСНО)
-=================================================
-*/
 .activity-controls {
-    /* ПОЗИЦИЯ: горе вдясно */
     position: absolute;
     top: 10px;
     right: 10px;
-
-    /* Хоризонтално разположение */
     display: flex;
     flex-direction: row;
     gap: 6px;
@@ -539,7 +440,6 @@ body {
     box-sizing: border-box;
 }
 
-/* ОБЩИ СТИЛОВЕ ЗА БУТОНИТЕ В КОНТРОЛИТЕ */
 .controls-btn {
     background: none;
     border: none;
@@ -569,7 +469,6 @@ body {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-/* СТИЛОВЕ ЗА КОНКРЕТНИ БУТОНИ */
 .finish-btn {
     color: #047857;
     font-weight: 700;
@@ -621,14 +520,6 @@ body {
     border-color: #a78bfa;
 }
 
-/* (Останалата част от Controls CSS, която е останала непроменена) */
-
-
-/*
-=================================================
-СЪДЪРЖАНИЕ (ИЗОБРАЖЕНИЯ)
-=================================================
-*/
 .content-area {
     margin-top: 8px;
     margin-bottom: 40px;
@@ -665,13 +556,7 @@ body {
     transform: scale(1.05);
 }
 
-/*
-=================================================
-БУТОН + / ADD BUTTON
-=================================================
-*/
 #add-activity-btn-single {
-    /* Центриране и отстояние в нормалния поток */
     margin: 20px auto 0 auto;
     position: relative;
     display: flex;
@@ -700,16 +585,10 @@ body {
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
 }
 
-/* КЛАС ЗА СКРИВАНЕ */
 .is-hidden {
     display: none !important;
 }
 
-/*
-=================================================
-DRAG & DROP СТИЛОВЕ
-=================================================
-*/
 .dragging {
     opacity: 0.5;
     transform: scale(0.95);
@@ -726,11 +605,6 @@ DRAG & DROP СТИЛОВЕ
     margin-bottom: 10px;
 }
 
-/*
-=================================================
-МОДАЛ И LIGHTBOX / VICTORY SCREEN
-=================================================
-*/
 #activity-modal {
     position: fixed;
     top: 0;
@@ -781,14 +655,12 @@ DRAG & DROP СТИЛОВЕ
 .modal-form input[type="text"],
 .modal-form input[type="number"],
 .modal-form select {
-    /* НОВ СТИЛ ЗА SELECT */
     width: 100%;
     padding: 10px;
     border: 1px solid #d1d5db;
     border-radius: 6px;
     font-size: 16px;
     box-sizing: border-box;
-    /* Стил за disabled select, ако се наложи */
     transition: background-color 0.2s;
 }
 
@@ -797,11 +669,15 @@ DRAG & DROP СТИЛОВЕ
     cursor: not-allowed;
 }
 
+/* 🚀 КОРЕКЦИЯ: Добавяне на width: 100% за гарантиране на пълна ширина */
 .modal-actions {
     display: flex;
-    justify-content: flex-end;
-    gap: 12px;
+    /* ✅ ПРОМЯНА: Подрежда първия елемент вляво, а последния вдясно */
+    justify-content: space-between; 
+    gap: 300px;
     margin-top: 20px;
+    /* ДОБАВЯМЕ ТОВА: За да може space-between да работи на пълна ширина */
+    width: 100%;
 }
 
 .modal-btn {
@@ -813,10 +689,15 @@ DRAG & DROP СТИЛОВЕ
     transition: background-color 0.2s ease-in-out;
     font-size: 16px;
 }
-
 #modal-cancel-btn {
-    background-color: #f3f4f6;
-    color: #374151;
+    background-color: #f59e0b;
+    color: white;
+    order: 2; /* втори бутон вдясно */
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-left: 144px;
 }
 
 #modal-cancel-btn:hover {
@@ -826,13 +707,17 @@ DRAG & DROP СТИЛОВЕ
 #modal-save-btn {
     background-color: #2563eb;
     color: white;
+    order: 1; /* първи бутон в реда */
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
 }
 
 #modal-save-btn:hover {
     background-color: #1d4ed8;
 }
 
-/* LIGHTBOX СТИЛОВЕ */
 #lightbox {
     position: fixed;
     top: 0;
@@ -885,11 +770,6 @@ DRAG & DROP СТИЛОВЕ
     transform: scale(1.1);
 }
 
-/*
-=================================================
-VICTORY SCREEN (Победен екран)
-=================================================
-*/
 #victory-screen {
     position: fixed;
     top: 0;
@@ -952,11 +832,6 @@ VICTORY SCREEN (Победен екран)
     }
 }
 
-/*
-=================================================
-МЕДИЯ ЗАЯВКИ (RESPONSIVE)
-=================================================
-*/
 @media (max-width: 768px) {
     #control-panel {
         padding: 16px;
@@ -977,7 +852,6 @@ VICTORY SCREEN (Победен екран)
         font-size: 14px;
     }
 
-    /* Всички карти стават централно позиционирани */
     .timeline-item-wrapper.left-side,
     .timeline-item-wrapper.right-side {
         padding-left: 0;
@@ -994,30 +868,24 @@ VICTORY SCREEN (Победен екран)
 
     .timeline-content.no-image {
         min-height: 80px;
-        /* Запазваме свиването и за мобилен изглед */
     }
 
-    /* Линии и точки остават центрирани */
     .timeline-line,
     .timeline-progress {
         left: 50%;
         transform: translateX(-50%);
     }
 
-    /* Позициониране на бутона за смяна на страна при мобилен изглед */
     .timeline-item-wrapper.left-side .side-switch-button,
     .timeline-item-wrapper.right-side .side-switch-button {
         left: auto;
         right: 10px;
-        /* Консистентно 10px от десния край */
         bottom: 10px;
-        /* Консистентно 10px от долния край */
         top: auto;
         z-index: 50;
         transform: none;
     }
 
-    /* Коригираме hover-a за мобилен изглед */
     .timeline-item-wrapper.left-side .side-switch-button:hover,
     .timeline-item-wrapper.right-side .side-switch-button:hover {
         transform: scale(1.1);
@@ -1029,7 +897,6 @@ VICTORY SCREEN (Победен екран)
         min-width: 80px;
     }
 
-    /* label-end да е центриран и при мобилен изглед */
     .label-end {
         position: absolute;
         bottom: -5px;
@@ -1042,7 +909,6 @@ VICTORY SCREEN (Победен екран)
         font-size: 16px;
     }
 
-    /* За мобилен изглед */
     .activity-controls {
         left: auto;
         right: 8px;
@@ -1053,7 +919,6 @@ VICTORY SCREEN (Победен екран)
         justify-content: flex-end;
     }
 
-    /* ТАЙМЕР - ДОЛУ ВЛЯВО */
     .timer-controls-area {
         bottom: 8px;
         left: 8px;
@@ -1064,7 +929,6 @@ VICTORY SCREEN (Победен екран)
         font-size: 20px;
     }
 
-    /* Бутоните стават по-малки на мобилни устройства */
     .controls-btn {
         min-width: 36px;
         max-width: 36px;
@@ -1084,7 +948,6 @@ VICTORY SCREEN (Победен екран)
         height: 16px;
     }
 
-    /* Съдържанието има по-малко място */
     .content-area {
         margin-bottom: 35px;
     }
@@ -1094,7 +957,6 @@ VICTORY SCREEN (Победен екран)
     }
 
     .side-switch-button {
-        /* На мобилен вид бутонът е по-малък */
         width: 30px;
         height: 30px;
         font-size: 14px;
@@ -1125,7 +987,6 @@ VICTORY SCREEN (Победен екран)
         font-size: 18px;
     }
 
-    /* На много малки екрани бутоните остават само с икони */
     .finish-btn,
     .edit-btn,
     .delete-btn,
@@ -1150,7 +1011,6 @@ VICTORY SCREEN (Победен екран)
         height: 18px;
     }
 
-    /* Още по-малко място за съдържанието */
     .content-area {
         margin-bottom: 30px;
     }
@@ -1170,12 +1030,6 @@ VICTORY SCREEN (Победен екран)
     }
 }
 
-/* Общи стилове за скриване/показване */
-.is-hidden {
-    display: none !important;
-}
-
-/* Общи стилове за Модал, Lightbox, Victory Screen */
 #activity-modal,
 #lightbox,
 #victory-screen {
@@ -1222,7 +1076,6 @@ VICTORY SCREEN (Победен екран)
 #victory-screen .trophy {
     font-size: 150px;
     display: block;
-
     animation: pulse 1s infinite alternate;
 }
 
@@ -1236,7 +1089,6 @@ VICTORY SCREEN (Победен екран)
     }
 }
 
-/* Lightbox specific */
 #lightbox-img {
     max-width: 90%;
     max-height: 90%;
@@ -1255,7 +1107,6 @@ VICTORY SCREEN (Победен екран)
     z-index: 1001;
 }
 
-/* Modal specific */
 #activity-modal>div {
     background-color: white;
     padding: 30px;
@@ -1279,14 +1130,8 @@ VICTORY SCREEN (Победен екран)
     border-radius: 4px;
 }
 
-.modal-actions {
-    margin-top: 20px;
-    text-align: right;
-}
-
 .modal-btn {
     padding: 10px 15px;
-    margin-left: 10px;
     cursor: pointer;
     border: none;
     border-radius: 4px;
@@ -1302,7 +1147,6 @@ VICTORY SCREEN (Победен екран)
     color: white;
 }
 
-/* Timeline specific - ensures the progress bar works */
 .timeline-container-centered {
     position: relative;
     display: flex;
@@ -1316,7 +1160,6 @@ VICTORY SCREEN (Победен екран)
     position: relative;
 }
 
-/* Бутон за добавяне */
 #add-activity-btn-single {
     position: sticky;
     bottom: 20px;
@@ -1339,4 +1182,36 @@ VICTORY SCREEN (Победен екран)
 
 #add-activity-btn-single.is-hidden {
     display: none;
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: flex-start;
+    gap: 10px;
+    padding-top: 20px;
+}
+
+.upload-btn-container {
+    margin-left: 2px;
+    cursor: pointer;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.upload-btn {
+    background-color: #3b82f6;
+    color: white;
+    padding: 5px 5px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    transition: background-color 0.2s;
+}
+
+.upload-btn:hover {
+    background-color: #2563eb;
+}
+
+#activity-image-input[readonly] {
+    background-color: #f3f4f6;
+    cursor: not-allowed;
 }
