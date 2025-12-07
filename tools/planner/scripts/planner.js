@@ -138,7 +138,7 @@ function updateProgressDisplay() {
 }
 
 function startTimer() {
-    if (isRunning) return;
+    if (isRunning) return; // Ако таймерът вече работи, не прави нищо
 
     if (scheduleData.length === 0) {
         alert('Моля, добавете поне една активност преди да стартирате.');
@@ -147,7 +147,10 @@ function startTimer() {
 
     isRunning = true;
     playNotificationSound(startSound);
+    
+    // Актуализираме бутона, за да покажем, че вече работи
     startBtn.style.backgroundColor = '#f59e0b';
+    startBtn.textContent = 'РАБОТИ'; // Показваме, че работи
     startBtn.style.transform = 'translateY(-50%)';
     resetBtnCorner.style.display = 'block';
 
@@ -180,38 +183,30 @@ function startTimer() {
     }, 1000);
 }
 
-function pauseTimer() {
-    if (!isRunning) return;
-
-    isRunning = false;
-    clearInterval(mainTimerInterval);
-    startBtn.textContent = 'ПРОДЪЛЖИ';
-    startBtn.style.backgroundColor = '#10b981';
-    startBtn.style.transform = 'translateY(-50%)';
-
-    if (addActivityBtn) {
-        addActivityBtn.classList.remove('is-hidden');
-    }
-
-    renderSchedule();
-}
+/* * Премахната функция pauseTimer()
+ */
 
 function resetSchedule() {
-    const isFinished = elapsedTimeSeconds >= totalDurationSeconds && totalDurationSeconds > 0;
-
+    // Ако таймерът работи, първо го спираме (премахваме интервала)
     if (isRunning) {
         if (!confirm('Таймерът работи. Сигурни ли сте, че искате да нулирате целия урок?')) {
             return;
         }
-    } else if (scheduleData.length > 0 || elapsedTimeSeconds > 0 || isFinished) {
-        if (!isFinished && !confirm('Сигурни ли сте, че искате да нулирате целия график и време?')) {
+    } else {
+        const isFinished = elapsedTimeSeconds >= totalDurationSeconds && totalDurationSeconds > 0;
+        if (scheduleData.length > 0 || elapsedTimeSeconds > 0 || isFinished) {
+            if (!isFinished && !confirm('Сигурни ли сте, че искате да нулирате целия график и време?')) {
+                return;
+            }
+        } else {
             return;
         }
-    } else {
-        return;
     }
 
-    pauseTimer();
+    // Спираме интервала, ако е активен
+    clearInterval(mainTimerInterval);
+    
+    // Нулиране на състоянието
     elapsedTimeSeconds = 0;
     currentActivityIndex = -1;
     isRunning = false;
@@ -219,6 +214,7 @@ function resetSchedule() {
     scheduleData.forEach(a => a.status = 'pending');
     calculateTotalDuration();
 
+    // Настройваме бутона за стартиране
     startBtn.textContent = 'СТАРТ';
     startBtn.style.backgroundColor = '#10b981';
     resetBtnCorner.style.display = 'none';
@@ -328,10 +324,18 @@ function finishLesson() {
     if (addActivityBtn) {
         addActivityBtn.classList.add('is-hidden');
     }
+    
+    // Актуализираме бутона, за да покажем, че е завършено
+    startBtn.textContent = 'ЗАВЪРШЕНО';
+    startBtn.style.backgroundColor = '#10b981';
+    startBtn.style.transform = 'translateY(-50%)';
 }
 
 function toggleActivitySide(index) {
-    if (isRunning || index < 0 || index >= scheduleData.length) return;
+    // Вече не проверяваме isRunning тук, тъй като isRunning режимът е за пускане/спиране на таймера,
+    // но бутонът "Премести" се показва само когато таймерът не работи, както е дефинирано във renderSchedule().
+    // if (isRunning || index < 0 || index >= scheduleData.length) return; 
+    if (index < 0 || index >= scheduleData.length) return;
 
     const currentSide = scheduleData[index].side;
     scheduleData[index].side = currentSide === 'left' ? 'right' : 'left';
@@ -502,17 +506,17 @@ function renderSchedule() {
             startBtn.style.backgroundColor = '#10b981';
             resetBtnCorner.style.display = 'block';
         } else if (isRunning) {
+            startBtn.textContent = 'РАБОТИ'; // Промяна: показва 'РАБОТИ' вместо 'ПАУЗА' или 'ПРОДЪЛЖИ'
             startBtn.style.backgroundColor = '#f59e0b';
             resetBtnCorner.style.display = 'block';
-        } else if (elapsedTimeSeconds > 0) {
-            startBtn.textContent = 'ПРОДЪЛЖИ';
-            startBtn.style.backgroundColor = '#10b981';
-            resetBtnCorner.style.display = 'block';
-        } else {
+        } else { // Таймерът е спрян и не е завършен
             startBtn.textContent = 'СТАРТ';
             startBtn.style.backgroundColor = '#10b981';
-            resetBtnCorner.style.display = 'none';
+            resetBtnCorner.style.display = elapsedTimeSeconds > 0 ? 'block' : 'none'; // Показваме нулиране, ако има изминало време
         }
+        
+        // Премахваме транформацията при спрян таймер
+        startBtn.style.transform = 'translateY(-50%)'; 
     }
 
     updateProgressDisplay();
@@ -733,7 +737,9 @@ function initializeDOM() {
 }
 
 function setupEventListeners() {
-    if (startBtn) startBtn.addEventListener('click', () => isRunning ? pauseTimer() : startTimer());
+    // Промяна: Премахнато е 'isRunning ? pauseTimer() : startTimer()'
+    // Сега бутонът 'startBtn' извиква само 'startTimer()'
+    if (startBtn) startBtn.addEventListener('click', startTimer); 
     if (resetBtnCorner) resetBtnCorner.addEventListener('click', resetSchedule);
 
     if (addActivityBtn) addActivityBtn.addEventListener('click', () => openModal(null));
@@ -890,5 +896,3 @@ document.addEventListener('DOMContentLoaded', () => {
     calculateTotalDuration();
     renderSchedule();
 });
-
-
