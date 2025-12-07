@@ -2,21 +2,29 @@
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
-# Копираме .csproj файла и възстановяваме зависимостите
-COPY ["Backend.csproj", "."]
-RUN dotnet restore "Backend.csproj"
+# Копираме цялото хранилище (от корена, който Render клонира)
+# Render изпълнява това от корена на хранилището (поради празно Root Directory)
+# Трябва да промените тази COPY команда, за да работи с Render
+# АКО Render работи от корена на Git репото:
+COPY . .
+
+# Променяме работната директория към папката на C# проекта
+WORKDIR /src/tools/compiler
+
+# Възстановяваме зависимостите (Backend.csproj вече е в текущата директория /src/tools/compiler)
+# Ако Render вече е в 'tools/compiler' поради Root Directory:
+# RUN dotnet restore "Backend.csproj" 
 
 # Копираме останалия код и го компилираме
-COPY . .
+RUN dotnet restore "Backend.csproj"
 RUN dotnet publish "Backend.csproj" -c Release -o /app/publish
 
 # 2. Използваме Runtime образа за изпълнение (Final stage)
-# Това прави крайния контейнер малък и сигурен
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
 WORKDIR /app
 COPY --from=build /app/publish .
 
-# Задаваме порта (Render обикновено използва 8080/443, но може да го промените)
+# Задаваме порта
 ENV ASPNETCORE_URLS=http://+:5170
 
 # Стартова команда
