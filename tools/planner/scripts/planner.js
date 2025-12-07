@@ -52,10 +52,10 @@ const ACTIVITY_TEMPLATES = {
     'practical_task': {
         title: 'Практическа задача',
         duration: 20,
-        imageUrl: 'https://i.imgur.com/V7R6P1r.png',
+        imageUrl: 'https://raw.githubusercontent.com/MartinByalov/instruments/refs/heads/main/tools/planner/images/practical-task.jpg?token=GHSAT0AAAAAADQYMVVHTDNGGG6CCONIUZDK2JVKMNQ',
     },
     'group_task': {
-        title: 'Групова задача/Дискусия',
+        title: 'https://raw.githubusercontent.com/MartinByalov/instruments/refs/heads/main/tools/planner/images/practical-task.jpg?token=GHSAT0AAAAAADQYMVVHTDNGGG6CCONIUZDK2JVKMNQ',
         duration: 15,
         imageUrl: 'https://i.imgur.com/8Qz9h6o.png',
     },
