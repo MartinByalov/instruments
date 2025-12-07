@@ -2,9 +2,12 @@
 **/.git
 **/.github
 **/node_modules
-# REMOVE THIS LINE: **/tools  <-- This is the problem!
 **/.vscode
+# Don't exclude Backend/ since that's what we need
 # Игнорираме всички компилирани и временни файлове
 **/bin
 **/obj
 **/out
+# Optionally exclude Frontend if not needed
+Frontend/
+documents/
