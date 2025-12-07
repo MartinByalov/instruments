@@ -2,7 +2,7 @@
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /src
 
-COPY tools/compiler/Backend ./Backend
+COPY Backend ./Backend
 
 WORKDIR /src/Backend
 
