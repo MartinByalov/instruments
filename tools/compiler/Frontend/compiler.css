@@ -1,4 +1,3 @@
-/* --- ГЛОБАЛНИ НАСТРОЙКИ И ПРОМЕНЛИВИ --- */
 * {
     margin: 0;
     padding: 0;
@@ -7,29 +6,23 @@
 }
 
 :root {
-    /* Цветове на GitHub Dark Mode */
     --main-bg: #0d1117; 
     --container-bg: #161b22; 
     --text-color: #c9d1d9; 
     --secondary-text: #8b949e; 
-    --label-color: #ffffff; /* Чисто бяло за надписите */
+    --label-color: #ffffff;
     --border-color: #30363d; 
     --input-bg: #0d1117; 
     
-    /* Акцентни цветове */
-    --github-green: #2da44e; /* Зелен бутон */
+    --github-green: #2da44e;
     --github-green-hover: #2c974b; 
     --github-blue: #58a6ff; 
     --success-bg: rgba(46, 164, 79, 0.15); 
     --success-text: #3fb950;
     --error-bg: rgba(248, 81, 73, 0.15); 
     --error-color: #f85149; 
-    --completed-color: #3fb950; /* Зелен цвят за завършено упражнение */
+    --completed-color: #3fb950;
 }
-
-/* ======================================================= */
-/* ОСНОВЕН ДИЗАЙН И ФОН */
-/* ======================================================= */
 
 body {
     background-color: var(--main-bg); 
@@ -50,10 +43,6 @@ body {
 .main-header {
     display: none; 
 }
-
-/* ======================================================= */
-/* АДМИН ПАНЕЛ (ПИН/Бутон) - ПОЗИЦИОНИРАНЕ НАД SELECT */
-/* ======================================================= */
 
 .admin-panel {
     position: relative; 
@@ -95,6 +84,7 @@ body {
     font-weight: 500;
     transition: background-color 0.15s ease;
 }
+
 .pin-button:hover {
     background-color: #21262d; 
     border-color: #8b949e;
@@ -112,13 +102,10 @@ body {
     transition: background-color 0.15s ease;
     box-shadow: 0 1px 0 rgba(1, 4, 9, 0.2);
 }
+
 .add-button:hover {
     background-color: var(--github-green-hover);
 }
-
-/* ======================================================= */
-/* КОНТЕЙНЕРИ НА СЕКЦИИТЕ (Карти) */
-/* ======================================================= */
 
 .exercise-panel,
 .editor-group,
@@ -130,22 +117,17 @@ body {
     box-shadow: 0 1px 0 rgba(1, 4, 9, 0.2), 0 0 0 2px rgba(1, 4, 9, 0.2); 
 }
 
-/* ======================================================= */
-/* УСЛОВИЕ И SELECT */
-/* ======================================================= */
-
 .select-group {
     margin-bottom: 15px;
     display: flex;
     flex-direction: column;
 }
 
-/* 🟢 АКТУАЛИЗИРАН СТИЛ - ТЕКСТЪТ ДА Е БЯЛ */
 .exercise-panel label,
 .editor-group label,
 .output-group label {
     font-weight: 600;
-    color: var(--label-color); /* 👈 БЯЛ ЦВЯТ */
+    color: var(--label-color);
     margin-bottom: 5px;
     display: block;
     font-size: 0.85rem;
@@ -165,8 +147,8 @@ body {
 }
 
 #exercise-select option.completed-option {
-    background-color: rgba(63, 185, 80, 0.2); /* Лек зелен фон */
-    color: #3fb950; /* Зелен текст */
+    background-color: rgba(63, 185, 80, 0.2);
+    color: #3fb950;
     font-weight: 600;
 }
 
@@ -179,18 +161,14 @@ body {
     line-height: 1.5;
 }
 
-/* 🟢 АКТУАЛИЗИРАН СТИЛ - ТЕКСТЪТ НА УСЛОВИЕТО ДА Е БЯЛ/ПО-СВЕТЪЛ */
 #exercise-condition .font-medium {
-    color: var(--label-color); /* Бял за "Условие:" */
+    color: var(--label-color);
     font-weight: 600;
 }
-#exercise-condition .text-gray-700 {
-    color: var(--text-color); /* По-светъл сив за текста на условието */
-}
 
-/* ======================================================= */
-/* РЕДАКТОР И СТАТУС */
-/* ======================================================= */
+#exercise-condition .text-gray-700 {
+    color: var(--text-color);
+}
 
 #code-editor-container {
     height: 400px; 
@@ -249,10 +227,6 @@ body {
     cursor: not-allowed;
 }
 
-/* ======================================================= */
-/* КОНЗОЛЕН ИЗХОД (Monospace) */
-/* ======================================================= */
-
 #output-window {
     width: 100%;
     padding: 15px;
@@ -264,10 +238,6 @@ body {
     font-size: 1rem; 
     resize: vertical;
 }
-
-/* ======================================================= */
-/* МОДАЛЕН ПРОЗОРЕЦ */
-/* ======================================================= */
 
 .modal-overlay {
     position: fixed;
@@ -360,10 +330,6 @@ body {
     color: var(--secondary-text);
     cursor: pointer;
 }
-
-/* ======================================================= */
-/* MEDIA QUERIES */
-/* ======================================================= */
 
 @media (max-width: 768px) {
     .main-header {

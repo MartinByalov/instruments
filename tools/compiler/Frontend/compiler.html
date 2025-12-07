@@ -9,7 +9,6 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs/loader.min.js"></script>
     <style>
-        /* Добавете височина за Monaco контейнера */
         #code-editor-container {
             height: 400px; 
             width: 100%;
@@ -18,24 +17,21 @@
             overflow: hidden;
             margin-bottom: 1rem;
         }
-        /* Допълнителни стилове за статуса */
+        
         #exercise-status {
             padding: 0.5rem 0;
             min-height: 24px; 
             font-weight: bold;
         }
         
-        /* 🟢 СТИЛ ЗА АДМИН ЛИСТА (замества SELECT) */
         #exercise-list-admin {
             border: 1px solid var(--border-color);
             border-radius: 6px;
             overflow: hidden;
             background-color: var(--input-bg);
-            /* Скриваме го по подразбиране, JS ще го покаже, ако е нужно */
             display: none; 
         }
 
-        /* Стил за всеки ред в админ листа */
         .admin-exercise-row {
             display: flex;
             align-items: center;
@@ -63,7 +59,6 @@
             font-weight: 600;
         }
         
-        /* 🟢 СТИЛ ЗА ЧЕРВЕНИЯ X БУТОН */
         .remove-exercise-btn {
             background: none;
             border: none;
@@ -75,7 +70,6 @@
             color: #ff5555; 
         }
         
-        /* Допълнителен стил, ако ползвате класове като pin-button */
         .pin-button {
              font-size: 1.2rem;
              padding: 0.5rem;

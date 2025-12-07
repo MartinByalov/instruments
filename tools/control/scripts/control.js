@@ -1,10 +1,10 @@
 let timerId = null;
 let mode = 'initial';
 const angryDuration = 120;
-// !!! Променливите, които зависят от DOM, са декларирани без стойност
+
 let statusDisplay = null;
 let body = null;
-let alarmSound = null; // Ако използвате аудио елемент в HTML
+let alarmSound = null;
 
 const happyQuotes = [
     "„Мечтите нарочно са с по-голям размер, за да можем да пораснем в тях.“ – Джоузи Бисет",
@@ -45,7 +45,7 @@ function getRandomQuote() {
 }
 
 function setMode(newMode) {
-    // 🛡️ Защита: Проверява дали DOM елементите са инициализирани
+   
     if (!statusDisplay || !body) { 
         console.error('Error: statusDisplay or body element not initialized yet. Check your HTML for id="status-display".');
         return; 
@@ -103,13 +103,9 @@ function startAngryTimer() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    // 🚀 Инициализация: Изпълнява се едва след като всички HTML елементи са заредени
+  
     statusDisplay = document.getElementById('status-display');
     body = document.body;
     alarmSound = document.getElementById('alarm-sound'); 
     
-    // Може да извикате setMode('initial') тук, ако искате начално състояние.
-    
-    // Ако искате да започнете в Happy mode по подразбиране, махнете коментара от долния ред:
-    // setMode('happy'); 
 });
