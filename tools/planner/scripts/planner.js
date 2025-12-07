@@ -147,7 +147,6 @@ function startTimer() {
 
     isRunning = true;
     playNotificationSound(startSound);
-    startBtn.textContent = 'ПАУЗА';
     startBtn.style.backgroundColor = '#f59e0b';
     startBtn.style.transform = 'translateY(-50%)';
     resetBtnCorner.style.display = 'block';
@@ -503,7 +502,6 @@ function renderSchedule() {
             startBtn.style.backgroundColor = '#10b981';
             resetBtnCorner.style.display = 'block';
         } else if (isRunning) {
-            startBtn.textContent = 'ПАУЗА';
             startBtn.style.backgroundColor = '#f59e0b';
             resetBtnCorner.style.display = 'block';
         } else if (elapsedTimeSeconds > 0) {
