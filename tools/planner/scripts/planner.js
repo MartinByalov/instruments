@@ -31,8 +31,7 @@ let activityCompleteSound;
 let lessonCompleteSound;
 
 let scheduleData = [
-    { title: 'Въведение', duration: 5, linkUrl: 'https://developer.mozilla.org/en-US/docs/Web/JavaScript', imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/6/6a/JavaScript-logo.png', status: 'pending', side: 'left' },
-    { title: 'Демо на функционалност', duration: 10, linkUrl: '', imageUrl: '', status: 'pending', side: 'right' },
+    { title: '', duration: 5, linkUrl: '', imageUrl: '', status: 'pending', side: 'left' },
 ];
 let totalDurationSeconds = 0;
 let mainTimerInterval;
@@ -47,17 +46,17 @@ const ACTIVITY_TEMPLATES = {
     'exercise': {
         title: 'Упражнение',
         duration: 5,
-        imageUrl: 'https://raw.githubusercontent.com/MartinByalov/instruments/refs/heads/main/tools/planner/images/task.png?token=GHSAT0AAAAAADQYMVVHJQCCEZE76EFEP6IU2JVKRYQ',
+        imageUrl: 'https://github.com/MartinByalov/instruments/blob/7901f335b08eb2c33512d5f14a257998b39e9472/tools/planner/images/task.png',
     },
     'practical_task': {
         title: 'Практическа задача',
         duration: 10,
-        imageUrl: 'https://raw.githubusercontent.com/MartinByalov/instruments/refs/heads/main/tools/planner/images/practical-task.jpg?token=GHSAT0AAAAAADQYMVVHWCLF6B3ZDCXB2L4U2JVKQJA',
+        imageUrl: 'https://github.com/MartinByalov/instruments/blob/7901f335b08eb2c33512d5f14a257998b39e9472/tools/planner/images/practical-task.jpg',
     },
     'group_task': {
         title: 'Групова задача',
         duration: 15,
-        imageUrl: 'https://raw.githubusercontent.com/MartinByalov/instruments/refs/heads/main/tools/planner/images/team-task.jpg?token=GHSAT0AAAAAADQYMVVGSR5X5OUUPWLFPDJM2JVKQ2A',
+        imageUrl: 'https://github.com/MartinByalov/instruments/blob/7901f335b08eb2c33512d5f14a257998b39e9472/tools/planner/images/team-task.jpg',
     },
     'custom': {
         title: '',
@@ -68,7 +67,7 @@ const ACTIVITY_TEMPLATES = {
 
 function playNotificationSound(sound) {
     if (sound) {
-        sound.currentTime = 0; 
+        sound.currentTime = 0;
         sound.play().catch(e => console.error("Could not play sound:", e));
     }
 }
@@ -537,7 +536,7 @@ function autoFillActivity() {
     activityImageInput.readOnly = isDisabled;
     activityLinkInput.readOnly = isDisabled;
 
-    if (imageUploadInput) imageUploadInput.value = ''; 
+    if (imageUploadInput) imageUploadInput.value = '';
 }
 
 function handleImageUpload(event) {
@@ -545,14 +544,14 @@ function handleImageUpload(event) {
     if (file) {
         if (!file.type.startsWith('image/')) {
             alert('Моля, изберете валиден графичен файл.');
-            event.target.value = ''; 
+            event.target.value = '';
             return;
         }
 
         const reader = new FileReader();
-        reader.onload = function(e) {
+        reader.onload = function (e) {
             activityImageInput.value = e.target.result;
-            activityImageInput.readOnly = true; 
+            activityImageInput.readOnly = true;
         };
         reader.readAsDataURL(file);
     } else {
@@ -586,10 +585,10 @@ function openModal(index = null) {
         activityTitleInput.value = activity.title;
         activityDurationInput.value = activity.duration;
         activityLinkInput.value = activity.linkUrl || '';
-          
+
         if (activity.imageUrl && activity.imageUrl.startsWith('data:image/')) {
             activityImageInput.value = "Качен файл (редактирането е забранено)";
-            activityImageInput.readOnly = true; 
+            activityImageInput.readOnly = true;
             if (imageUploadInput) imageUploadInput.disabled = true;
         } else {
             activityImageInput.value = activity.imageUrl || '';
@@ -597,14 +596,14 @@ function openModal(index = null) {
 
         activityTemplateSelect.disabled = true;
         if (imageUploadInput) imageUploadInput.disabled = false;
-        
+
     } else {
         modalTitle.textContent = 'Добавяне на Дейност';
 
         activityTemplateSelect.value = 'custom';
         activityTemplateSelect.disabled = false;
         autoFillActivity();
-        if (imageUploadInput) imageUploadInput.disabled = false; 
+        if (imageUploadInput) imageUploadInput.disabled = false;
     }
 
     activityModal.classList.add('is-active');
@@ -622,14 +621,14 @@ function saveActivity() {
     const title = activityTitleInput.value.trim();
     const duration = parseFloat(activityDurationInput.value.replace(',', '.'));
     const linkUrl = activityLinkInput.value.trim();
-    
+
     let imageUrl = activityImageInput.value.trim();
 
     if (imageUrl === "Качен файл (редактирането е забранено)") {
         if (editActivityIndex !== null) {
-             imageUrl = scheduleData[editActivityIndex].imageUrl;
+            imageUrl = scheduleData[editActivityIndex].imageUrl;
         } else {
-             imageUrl = '';
+            imageUrl = '';
         }
     } else if (imageUrl.includes("Качен файл")) {
         imageUrl = '';
@@ -751,11 +750,11 @@ function setupEventListeners() {
     if (imageUploadInput) {
         imageUploadInput.addEventListener('change', handleImageUpload);
     }
-    
+
     if (imageUploadContainer) {
         imageUploadContainer.addEventListener('click', () => {
             if (imageUploadInput && !imageUploadInput.disabled) {
-                 imageUploadInput.click();
+                imageUploadInput.click();
             }
         });
     }
