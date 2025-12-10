@@ -1,4 +1,4 @@
-const CORRECT_PIN = window.TEACHER_PIN_GLOBAL; 
+const TEACHER_PIN = import.meta.env.VITE_TEACHER_PIN;
 
 document.addEventListener('DOMContentLoaded', () => {
     const compilerCard = document.getElementById('compiler-card');
