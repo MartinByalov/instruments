@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const enteredPin = pinInput.value;
 
         if (enteredPin.length === 4) {
-            if (enteredPin === CORRECT_PIN) {
+            if (enteredPin === TEACHER_PIN) {
                 unlockCompiler();
             } else {
                 lockMessage.textContent = 'Грешен PIN!';
