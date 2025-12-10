@@ -1,9 +1,10 @@
+
 const API_BASE_URL = '/api/run-code';
 
 let codeEditorInstance;
 const EXERCISES_STORAGE_KEY = 'csharp_exercises';
 const COMPLETED_STORAGE_KEY = 'csharp_completed';
-const TEACHER_PIN = import.meta.env.VITE_TEACHER_PIN;
+const TEACHER_PIN = window.TEACHER_PIN_GLOBAL;
 let isAdminMode = false;
 let currentSelectedExerciseId = null;
 

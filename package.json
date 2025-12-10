@@ -24,6 +24,7 @@
     "axios": "^1.13.2",
     "braces": "^3.0.3",
     "child_process": "^1.0.2",
+    "cookie-parser": "^1.4.7",
     "detect-libc": "^1.0.3",
     "dotenv": "^17.2.3",
     "enhanced-resolve": "^5.18.3",
