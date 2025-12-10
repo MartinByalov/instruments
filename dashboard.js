@@ -1,4 +1,4 @@
-const CORRECT_PIN = window.TEACHER_PIN_GLOBAL || "3214"; 
+const CORRECT_PIN = window.TEACHER_PIN_GLOBAL; 
 
 document.addEventListener('DOMContentLoaded', () => {
     const compilerCard = document.getElementById('compiler-card');
