@@ -9,27 +9,69 @@ let isAdminMode = false;
 let currentSelectedExerciseId = null;
 
 const INITIAL_EXERCISES = {
+    // =================================================================
+    // 1. ТЕМА 20: Намиране на Минимум и Максимум
+    // =================================================================
     "1": {
-        condition: "Напишете програма, която извежда 'Здравей, свят!' на конзолата. Използвайте Console.WriteLine().",
-        starter_code: "Console.WriteLine(\"Здравей, свят!\");",
-        expected_output: "Здравей, свят!",
-        hint: "Неактивно.",
-        solution_code: "Console.WriteLine(\"Здравей, свят!\");"
+        condition: "Намерете по-голямото число между 15 и 7, съхранете резултата в променливата maxNum и го изведете. Трябва да използвате променливите a и b, както и Math.Max().",
+        starter_code: "int a = 15;\nint b = 7;\nint maxNum = Math.Max( /* ТУК ДОПИШИ ИЗРАЗА */ );\nConsole.WriteLine(maxNum);",
+        expected_output: "15",
+        hint: "Използвайте a и b като аргументи на Math.Max().",
+        solution_code: "int a = 15;\nint b = 7;\nint maxNum = Math.Max(a, b);\nConsole.WriteLine(maxNum);"
     },
+    // =================================================================
+    // 2. ТЕМА 21: Търсене и Преброяване (Масиви)
+    // =================================================================
     "2": {
-        condition: "Напишете програма, която създава две променливи (цели числа), ги събира и извежда резултата. Резултатът (сумата 30) трябва да присъства в изхода.",
-        starter_code: "int a = 7;\nint b = 23;\n",
-        expected_value_regex: ".*30.*",
-        hint: "Неактивно.",
-        solution_code: "int a = 7;\nint b = 23;\n\nConsole.WriteLine($\"Сбора на {a} и {b} е: {a + b}\");"
+        condition: "Използвайте for цикъл, за да преброите колко пъти числото '5' се среща в масива 'numbers'. Допишете целият for цикъл. Изведете брояча (count).",
+        starter_code: "int[] numbers = { 2, 5, 8, 5, 1, 5 };\nint count = 0;\n\n/* ТУК ДОПИШИ ЦЕЛИЯ FOR ЦИКЪЛ */\n{\n    if (numbers[i] == 5)\n    {\n        count++;\n    }\n}\nConsole.WriteLine(count);",
+        expected_output: "3",
+        hint: "Цикълът трябва да обхожда от i=0 до numbers.Length - 1.",
+        solution_code: "int[] numbers = { 2, 5, 8, 5, 1, 5 };\nint count = 0;\n\nfor (int i = 0; i < numbers.Length; i++)\n{\n    if (numbers[i] == 5)\n    {\n        count++;\n    }\n}\nConsole.WriteLine(count);"
     },
+    // =================================================================
+    // 3. ТЕМА 22: Двумерни Масиви – Дефиниране и Достъп
+    // =================================================================
+    // =================================================================
+    // 4. ТЕМА 23: Методи – Дефиниране и Извикване
+    // =================================================================
     "3": {
-        condition: "Напишете програма, която изчислява лице на правоъгълник със страни 12.5 и 8.4 и извежда резултата. Използвайте тип 'double'. Очакваният резултат е 105.",
-        starter_code: "double width = 12.5;\ndouble height = 8.4;\n",
-        expected_value_regex: ".*105.*",
-        hint: "Неактивно.",
-        solution_code: "double width = 12.5;\ndouble height = 8.4;\ndouble area = width * height;\n\nConsole.WriteLine($\"Лицето е: {area}\");"
-    }
+        condition: "Допишете пълната дефиниция на метод на име 'PrintInfo', който не връща стойност и извежда 'Аз съм метод.'. След това го извикайте.",
+        starter_code: "/* ТУК ДОПИШИ ЦЯЛАТА ДЕФИНИЦИЯ НА МЕТОДА */\n{\n    Console.WriteLine(\"Аз съм метод.\");\n}\nPrintInfo();",
+        expected_output: "Аз съм метод.",
+        hint: "Дефиницията трябва да започва с 'public static void...'",
+        solution_code: "public static void PrintInfo()\n{\n    Console.WriteLine(\"Аз съм метод.\");\n}\nPrintInfo();"
+    },
+    // =================================================================
+    // 5. ТЕМА 24: Методи – Упражнение (Тяло)
+    // =================================================================
+    "4": {
+        condition: "Допишете тялото на метода 'CalculateSum', за да изчислите и изведете сбора на числата 5 и 8.",
+        starter_code: "public static void CalculateSum()\n{\n    /* ТУК ДОПИШИ ЛОГИКАТА ЗА СБОРА И ИЗВЕЖДАНЕТО */\n}\nCalculateSum();",
+        expected_output: "13",
+        hint: "Изчислете int sum = 5 + 8; и го изведете.",
+        solution_code: "public static void CalculateSum()\n{\n    int sum = 5 + 8;\n    Console.WriteLine(sum);\n}\nCalculateSum();"
+    },
+    // =================================================================
+    // 6. ТЕМА 25: Използване на Параметри и Аргументи
+    // =================================================================
+    "5": {
+        condition: "Променете дефиницията на метода 'Greeting', за да приеме параметър 'string name'. След това изведете персонализирано съобщение: 'Здравей, [подаденото име]!'",
+        starter_code: "public static void Greeting( /* ТУК ДОПИШИ ПАРАМЕТЪРА */ )\n{\n    Console.WriteLine(\"Здравей, \" + /* ТУК ДОПИШИ ПРОМЕНЛИВАТА */ + \"!\");\n}\n\nGreeting(\"Иван\");",
+        expected_output: "Здравей, Иван!",
+        hint: "Използвайте 'string name' в дефиницията и 'name' в тялото.",
+        solution_code: "public static void Greeting(string name)\n{\n    Console.WriteLine(\"Здравей, \" + name + \"!\");\n}\n\nGreeting(\"Иван\");"
+    },
+    // =================================================================
+    // 7. ТЕМА 26: Връщане на Стойности от Функции
+    // =================================================================
+    "6": {
+        condition: "Допишете метода 'Multiply', за да приема два 'int' параметъра ('a' и 'b'), и да връща като резултат тяхното произведение. Използвайте return.",
+        starter_code: "public static int Multiply( /* ТУК ДОПИШИ ПАРАМЕТРИТЕ */ )\n{\n    /* ТУК ДОПИШИ RETURN ИЗРАЗА */\n}\nConsole.WriteLine(Multiply(6, 7));",
+        expected_output: "42",
+        hint: "Параметрите са int a, int b. Решението е return a * b;",
+        solution_code: "public static int Multiply(int a, int b)\n{\n    return a * b;\n}\nConsole.WriteLine(Multiply(6, 7));"
+    },
 };
 
 let outputWindow, conditionDiv, exerciseSelect, exerciseListAdmin, runButton, statusDiv;
