@@ -1,4 +1,3 @@
-/* planner.css */
 body {
     background: linear-gradient(135deg, #f0f4f8, #e2e8f0);
     display: flex;
@@ -706,7 +705,8 @@ body {
 
 #activity-modal,
 #lightbox,
-#victory-screen {
+#victory-screen,
+#info-modal {
     position: fixed;
     top: 0;
     left: 0;
@@ -726,12 +726,14 @@ body {
 
 #activity-modal.is-active,
 #lightbox.is-active,
-#victory-screen.is-active {
+#victory-screen.is-active,
+#info-modal.is-active {
     display: flex;
     opacity: 1;
 }
 
-#activity-modal>div {
+#activity-modal>div,
+#info-modal>div {
     background-color: white;
     border-radius: 12px;
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
@@ -832,16 +834,11 @@ body {
     position: absolute;
     top: 20px;
     right: 20px;
-    /* Промени за червен квадрат с хикс */
     background-color: #dc2626;
-    /* Червен фон */
     color: white;
-    /* Бял хикс */
     border: none;
     border-radius: 8px;
-    /* Квадратен, с лек радиус */
     width: 40px;
-    /* По-малък размер */
     height: 40px;
     display: flex;
     align-items: center;
@@ -850,17 +847,14 @@ body {
     z-index: 1001;
     transition: background-color 0.3s ease, transform 0.3s ease;
     font-size: 24px;
-    /* Размер на хикса */
     font-weight: bold;
     line-height: 1;
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-    /* Добавяне на хикс (x) или символ за close */
     content: '✖';
 }
 
 .lightbox-close-btn:hover {
     background: #b91c1c;
-    /* По-тъмно червено при hover */
     transform: scale(1.1);
 }
 
@@ -899,7 +893,6 @@ body {
     margin: 0 auto 30px auto;
     text-align: center;
     animation: bounce 1.5s infinite alternate ease-in-out;
-    /* Осигурява центриране */
     line-height: 1;
     width: 100%;
 }
@@ -1180,4 +1173,182 @@ body {
 
 .left-side .activity-bottom-controls .side-switch-button-control {
     order: 1;
+}
+
+/* Help Button Styles */
+#help-btn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    border-radius: 10%;
+    cursor: pointer;
+    z-index: 1000;
+    transition: all 0.3s ease;
+    font-size: 24px;
+    line-height: 1;
+    font-weight: bold;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border: 2px solid white;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#help-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Help Panel Styles */
+#help-panel {
+    position: fixed;
+    top: 0;
+    right: -400px;
+    width: 380px;
+    height: 100%;
+    background: white;
+    box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+    z-index: 1001;
+    transition: right 0.3s ease;
+    overflow-y: auto;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+#help-panel.active {
+    right: 0;
+}
+
+#help-panel h2 {
+    margin-top: 0;
+    color: #1e40af;
+    border-bottom: 2px solid #e5e7eb;
+    padding-bottom: 10px;
+}
+
+.help-section {
+    margin-bottom: 20px;
+}
+
+.help-section h3 {
+    color: #374151;
+    margin-bottom: 8px;
+}
+
+.help-section ul {
+    padding-left: 20px;
+    margin: 0;
+}
+
+.help-section li {
+    margin-bottom: 6px;
+    line-height: 1.4;
+}
+
+#help-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    display: none;
+}
+
+#help-overlay.active {
+    display: block;
+}
+
+#close-help-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background-color: #dc2626;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 1002;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    font-size: 24px;
+    font-weight: bold;
+    line-height: 1;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+#close-help-btn:hover {
+    background-color: #b91c1c;
+    transform: scale(1.1);
+}
+
+#close-help-btn:active {
+    transform: scale(0.95);
+}
+
+/* Hide side switch button when running */
+.is-running .side-switch-button-control {
+    display: none !important;
+}
+
+/* Help Panel Close Button - same style as lightbox close button */
+#close-help-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: rgba(255, 255, 255, 0.2);
+    color: red;
+    border: none;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 1002;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    font-size: 24px;
+    font-weight: bold;
+    padding: 0;
+}
+
+#close-help-btn:hover {
+    background: rgba(255, 255, 255, 0.4);
+    transform: scale(1.1);
+}
+
+/* Adjust help panel padding for close button */
+#help-panel {
+    position: fixed;
+    top: 0;
+    right: -400px;
+    width: 380px;
+    height: 100%;
+    background: white;
+    box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+    z-index: 1001;
+    transition: right 0.3s ease;
+    overflow-y: auto;
+    padding: 20px;
+    box-sizing: border-box;
+    padding-top: 80px;
+    /* Added padding to make space for close button */
+}
+
+#help-panel h2 {
+    margin-top: 0;
+    color: #1e40af;
+    border-bottom: 2px solid #e5e7eb;
+    padding-bottom: 10px;
+    margin-top: -40px;
+    /* Adjust to compensate for padding-top */
 }
