@@ -1,4 +1,4 @@
-// server.js
+
 require('dotenv').config();
 const express = require('express');
 const http = require('http');
@@ -13,7 +13,6 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
 app.use(express.json({ limit: '100mb' }));
-/* ------------------------------ UTF-8 FIX ------------------------------ */
 app.use((req, res, next) => {
     const ext = path.extname(req.path).toLowerCase();
     if (ext === '.html') {
@@ -79,10 +78,8 @@ app.get('/socket.io.js', (_, res) => {
 app.get('/favicon.ico', (_, res) => {
     res.status(204).end();
 });
-
 app.post('/api/upload-image', async (req, res) => {
     const { base64Image, fileName } = req.body;
-
     if (!base64Image) {
         return res.status(400).json({ isSuccess: false, message: 'Missing base64Image in request body.' });
     }
@@ -90,9 +87,7 @@ app.post('/api/upload-image', async (req, res) => {
         console.error('IMGBB_API_KEY is not set in environment variables!');
         return res.status(500).json({ isSuccess: false, message: 'Server configuration error: IMGBB API Key missing.' });
     }
-
     const uploadUrl = `https://api.imgbb.com/1/upload`;
-
     try {
         const formData = new URLSearchParams();
         formData.append('key', IMGBB_API_KEY);
@@ -101,21 +96,16 @@ app.post('/api/upload-image', async (req, res) => {
         if (fileName) {
             formData.append('name', fileName);
         }
-
         const imgbbResponse = await axios.post(uploadUrl, formData.toString(), {
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded'
             }
         });
-
         const imgUrl = imgbbResponse.data.data.url;
-        
         if (!imgUrl) {
             throw new Error("Imgbb did not return a valid URL.");
         }
-
         res.status(200).json({ url: imgUrl, isSuccess: true });
-
     } catch (error) {
         console.error('--- Imgbb Upload Error ---');
         let errorMessage = 'Неизвестна грешка при качване.';
@@ -123,9 +113,9 @@ app.post('/api/upload-image', async (req, res) => {
             console.error(`Imgbb API Status: ${error.response.status}`);
             console.error(`Imgbb API Data:`, error.response.data);
             if (error.response.data && error.response.data.error) {
-                 errorMessage = `Imgbb API Error: ${error.response.data.error.message}`;
+                errorMessage = `Imgbb API Error: ${error.response.data.error.message}`;
             } else {
-                 errorMessage = `Imgbb API Status ${error.response.status}: ${error.response.statusText}`;
+                errorMessage = `Imgbb API Status ${error.response.status}: ${error.response.statusText}`;
             }
             return res.status(error.response.status).json({
                 isSuccess: false,
@@ -139,8 +129,6 @@ app.post('/api/upload-image', async (req, res) => {
         });
     }
 });
-
-
 app.post('/api/run-code', async (req, res) => {
     const targetUrl = `${CSHARP_API_URL}/run-code`;
     const requestData = req.body;
