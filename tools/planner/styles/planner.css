@@ -1,3 +1,4 @@
+/* planner.css */
 body {
     background: linear-gradient(135deg, #f0f4f8, #e2e8f0);
     display: flex;
@@ -22,8 +23,9 @@ body {
     background-color: white;
     border-radius: 12px;
     box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-    padding: 24px;
-    margin-bottom: 32px;
+    padding: 12px 24px 24px 24px;
+    margin: 0 auto 32px auto;
+    max-width: 900px;
     position: relative;
     border: 1px solid #e5e7eb;
     display: flex;
@@ -39,7 +41,7 @@ body {
     font-size: 24px;
     font-weight: bold;
     color: #333;
-    padding: 4px 0 4px;
+    padding: 10px 0 10px;
     text-align: center;
     transition: border-bottom-color 0.3s ease-in-out;
 }
@@ -49,48 +51,54 @@ body {
     border-bottom-color: #3b82f6;
 }
 
+#lesson-select-dropdown {
+    width: 100%;
+    padding: 10px 15px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 16px;
+    color: #333;
+    background-color: #f9fafb;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none'%3E%3Cpath d='M7 7l3-3 3 3m0 6l-3 3-3-3' stroke='%234B5563' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 1.5em;
+    cursor: pointer;
+}
+
+#lesson-select-dropdown:hover {
+    border-color: #9ca3af;
+}
+
+#lesson-select-dropdown.is-hidden {
+    display: none !important;
+}
+
 .timer-section {
-    display: flex;
+    display: block;
     justify-content: space-between;
     align-items: center;
     width: 100%;
-    margin-top: 10px;
-    position: relative;
-    min-height: 60px;
+    margin-top: 60px;
+    position: static;
+    min-height: 0;
 }
 
 #main-timer-display {
+    position: absolute;
+    bottom: 24px;
+    left: 24px;
     font-size: 64px;
     font-weight: 900;
     color: #1e40af;
     line-height: 1;
     font-variant-numeric: tabular-nums;
-}
-
-#start-btn {
-    padding: 12px 24px;
-    background-color: #10b981;
-    color: white;
-    font-weight: bold;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background-color 0.2s, transform 0.1s;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    position: absolute;
-    right: 0;
-    top: 65%;
-    transform: translateY(-50%);
+    z-index: 10;
 }
 
 #start-btn:hover:not(:disabled) {
     background-color: #10b981;
-    transform: translateY(-52%);
-}
-
-#start-btn:active:not(:disabled) {
-    transform: translateY(-48%);
 }
 
 #start-btn:disabled {
@@ -110,20 +118,24 @@ body {
     transition: background-color 0.2s, transform 0.1s;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    position: absolute;
-    right: 0;
-    top: 65%;
-    transform: translateY(-50%);
     display: none;
 }
 
 #reset-btn-corner:hover {
     background-color: #dc2626;
-    transform: translateY(-52%);
 }
 
-#reset-btn-corner:active {
-    transform: translateY(-48%);
+#reset-btn-corner:active {}
+
+#plan-controls-container {
+    position: absolute;
+    right: 24px;
+    bottom: 24px;
+    top: auto;
+    transform: none;
+    display: flex;
+    align-items: center;
+    z-index: 10;
 }
 
 .timeline-container-centered {
@@ -134,6 +146,18 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
+}
+
+#start-reset-container {
+    position: absolute;
+    top: -15px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 15;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    justify-content: center;
 }
 
 .timeline-line {
@@ -201,22 +225,117 @@ body {
     min-width: 100px;
 }
 
-.label-start {
-    top: -15px;
-    background: #10b981;
-    color: white;
-    border: 2px solid white;
-}
+.label-start {}
 
 .label-end {
-    background-color: #1f2937;
-    color: #fff;
-    border: 2px dashed #fff;
     position: absolute;
     bottom: -5px;
     left: 50%;
     transform: translateX(-50%);
     margin: 0;
+    display: none !important;
+}
+
+#start-btn {
+    position: absolute !important;
+    top: 0px !important;
+    bottom: auto !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    z-index: 15;
+    padding: 6px 20px !important;
+    font-size: 14px !important;
+    border-radius: 8px !important;
+    letter-spacing: 1px !important;
+    text-transform: uppercase !important;
+    font-weight: bold;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2) !important;
+    margin: 0;
+    min-width: 100px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #1f2937 !important;
+    color: #fff !important;
+    border: 2px solid #fff !important;
+    cursor: pointer;
+}
+
+#start-btn:not(:disabled) {
+    background-color: #10b981 !important;
+    color: white !important;
+}
+
+#start-btn:hover:not(:disabled) {
+    background-color: #059669 !important;
+    transform: translateX(-50%) scale(1.05) !important;
+}
+
+#start-btn:active:not(:disabled) {
+
+    transform: translateX(-50%) scale(0.95) !important;
+}
+
+#reset-btn-corner {
+    display: none !important;
+}
+
+#end-lesson-btn {
+    position: absolute !important;
+    bottom: -5px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    z-index: 15;
+    padding: 6px 20px !important;
+    font-size: 14px !important;
+    border-radius: 8px !important;
+    letter-spacing: 1px !important;
+    text-transform: uppercase !important;
+    font-weight: 800 !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2) !important;
+    margin: 0;
+    min-width: 100px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #1f2937 !important;
+    color: #fff !important;
+    border: 2px dashed #fff !important;
+    opacity: 1 !important;
+}
+
+/* Стилове за различните състояния на бутона КРАЙ */
+#end-lesson-btn[data-state="final"] {
+    background-color: #1f2937 !important;
+    border: 2px dashed #fff !important;
+}
+
+#end-lesson-btn[data-state="reset"] {
+    background-color: #1f2937 !important;
+    border: 2px dashed #fff !important;
+}
+
+#end-lesson-btn[data-state="end"] {
+    background-color: #1f2937 !important;
+    border: 2px dashed #fff !important;
+}
+
+#end-lesson-btn:hover:not(:disabled) {
+    background-color: #0f172a !important;
+    transform: translateX(-50%) scale(1.05) !important;
+}
+
+#end-lesson-btn:disabled {
+    background-color: #1f2937 !important;
+    border: 2px dashed #fff !important;
+    cursor: not-allowed;
+
+}
+
+#end-lesson-btn:active:not(:disabled) {
+    transform: translateX(-50%) scale(0.95) !important;
 }
 
 .timeline-item-wrapper {
@@ -241,12 +360,12 @@ body {
 
 .timeline-content {
     width: 100%;
-    max-width: 450px;
+    max-width: 452px;
     cursor: grab;
     position: relative;
     z-index: 20;
     min-height: 120px;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
     display: flex;
     flex-direction: column;
     background: white;
@@ -255,7 +374,7 @@ body {
     border: 1px solid #e5e7eb;
     transition: all 0.3s ease-in-out;
     overflow: hidden;
-    margin-top: 20px;
+    margin-top: 35px;
 }
 
 .timeline-content.no-image {
@@ -295,6 +414,7 @@ body {
     100% {
         box-shadow: 0 0 0 0 rgba(245, 158, 11, 0), 0 10px 15px -3px rgba(0, 0, 0, 0.1);
     }
+
 }
 
 .dot-done {
@@ -305,42 +425,32 @@ body {
     background: #f59e0b !important;
 }
 
-.side-switch-button {
+.pending-activity {
+    background: white;
+}
+
+.activity-bottom-controls {
     position: absolute;
     bottom: 10px;
+    left: 10px;
     right: 10px;
-    left: auto;
-    top: auto;
-    width: 35px;
-    height: 35px;
-    border-radius: 8px;
-    border: none;
-    background-color: #ffffff;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-    cursor: pointer;
-    z-index: 50;
-    transform: none;
     display: flex;
     align-items: center;
-    justify-content: center;
-    font-size: 16px;
-    transition: all 0.2s;
+    justify-content: space-between;
+    z-index: 40;
+}
+
+.side-switch-button-control {
+    font-size: 18px;
     line-height: 0;
 }
 
-.timeline-item-wrapper.left-side .side-switch-button,
-.timeline-item-wrapper.right-side .side-switch-button {
-    left: auto;
-    right: 10px;
-    bottom: 10px;
-}
-
-.side-switch-button:hover:not(:disabled) {
+.side-switch-button-control:hover:not(:disabled) {
     transform: scale(1.1);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
-.side-switch-button:disabled {
+.side-switch-button-control:disabled {
     opacity: 0.5;
     cursor: default;
     transform: none;
@@ -358,8 +468,8 @@ body {
     margin-top: 4px;
     margin-bottom: 4px;
     min-height: 20px;
-    border-bottom: 3px dashed #d1d5db; /* Светло сиво, тънка, пунктирана линия */
-    
+    border-bottom: 3px dashed #d1d5db;
+
 }
 
 .title-area {
@@ -390,24 +500,11 @@ body {
     padding: 0;
     font-family: inherit;
     text-align: left;
-    margin-top: 1.7em;
+    margin-top: 1.6em;
 }
 
 .activity-plan-text {
-    font-size: 12px;
-    color: #6b7280;
-}
-
-.timer-controls-area {
-    position: absolute;
-    bottom: 10px;
-    left: 10px;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    flex-shrink: 0;
-    min-width: 100px;
-    z-index: 10;
+    display: none !important;
 }
 
 .activity-timer-display {
@@ -448,22 +545,25 @@ body {
     border: none;
     cursor: pointer;
     transition: background 0.15s ease-in-out, color 0.15s ease-in-out, transform 0.1s;
-    padding: 6px 10px;
-    border-radius: 6px;
-    font-size: 14px;
-    line-height: 1.2;
-    color: #6b7280;
+    width: 36px;
+    height: 36px;
     min-width: 36px;
+    max-width: 36px;
+    padding: 0;
+    border-radius: 8px;
+    font-size: 16px;
+    line-height: 1;
+    color: #6b7280;
     text-align: center;
     white-space: nowrap;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 4px;
+    gap: 0;
     background-color: white;
     border: 1px solid #e5e7eb;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-    
+
 }
 
 .controls-btn:hover {
@@ -473,11 +573,13 @@ body {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
+.controls-btn .btn-text {
+    display: none;
+}
+
 .finish-btn {
     color: #047857;
     font-weight: 700;
-    font-size: 14px;
-    padding: 6px 10px;
     background-color: rgba(5, 150, 105, 0.05);
     border-color: #a7f3d0;
 }
@@ -512,8 +614,6 @@ body {
 
 .link-btn {
     color: #7c3aed;
-    font-size: 14px;
-    padding: 6px 10px;
     background-color: rgba(124, 58, 237, 0.05);
     border-color: #c4b5fd;
 }
@@ -561,31 +661,32 @@ body {
 }
 
 #add-activity-btn-single {
+    position: sticky;
+    bottom: 20px;
     margin: 20px auto 0 auto;
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 40px;
-    height: 40px;
+    width: 60px;
+    height: 60px;
     background: #10b981;
     color: white;
     border-radius: 50%;
     cursor: pointer;
-    z-index: 40;
+    z-index: 50;
     transition: all 0.3s ease;
     font-size: 24px;
     line-height: 1;
     font-weight: bold;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    border: 3px dashed #10b981;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border: 3px solid white;
     padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 #add-activity-btn-single:hover {
     transform: scale(1.1);
     background: #059669;
-    border-color: #059669;
+    border-color: white;
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
 }
 
@@ -609,30 +710,38 @@ body {
     margin-bottom: 10px;
 }
 
-#activity-modal {
+#activity-modal,
+#lightbox,
+#victory-screen {
     position: fixed;
     top: 0;
-    right: 0;
-    bottom: 0;
     left: 0;
-    background-color: rgba(0, 0, 0, 0.5);
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
     display: none;
-    align-items: center;
     justify-content: center;
-    z-index: 50;
-    overflow-y: auto;
+    align-items: center;
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 0.3s ease;
     padding: 20px;
+    box-sizing: border-box;
+    overflow-y: auto;
 }
 
-#activity-modal.is-active {
+#activity-modal.is-active,
+#lightbox.is-active,
+#victory-screen.is-active {
     display: flex;
+    opacity: 1;
 }
 
 #activity-modal>div {
     background-color: white;
     border-radius: 12px;
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-    padding: 24px;
+    padding: 30px;
     width: 100%;
     max-width: 448px;
     margin: 40px 0;
@@ -650,7 +759,7 @@ body {
 .modal-form label {
     display: block;
     font-weight: bold;
-    color: #4b5563;
+    color: #1f2937;
     margin-top: 12px;
     margin-bottom: 4px;
     font-size: 14px;
@@ -673,14 +782,11 @@ body {
     cursor: not-allowed;
 }
 
-/* 🚀 КОРЕКЦИЯ: Добавяне на width: 100% за гарантиране на пълна ширина */
 .modal-actions {
     display: flex;
-    /* ✅ ПРОМЯНА: Подрежда първия елемент вляво, а последния вдясно */
-    justify-content: space-between; 
-    gap: 300px;
+    justify-content: space-between;
+    gap: 10px;
     margin-top: 20px;
-    /* ДОБАВЯМЕ ТОВА: За да може space-between да работи на пълна ширина */
     width: 100%;
 }
 
@@ -693,25 +799,27 @@ body {
     transition: background-color 0.2s ease-in-out;
     font-size: 16px;
 }
+
 #modal-cancel-btn {
-    background-color: #f59e0b;
-    color: white;
-    order: 2; /* втори бутон вдясно */
+    background-color: #d1d5db;
+    color: #1f2937;
+    order: 2;
     padding: 10px 20px;
     border-radius: 6px;
     font-weight: 600;
     cursor: pointer;
-    margin-left: 144px;
+    margin-left: 190px;
 }
 
 #modal-cancel-btn:hover {
-    background-color: #e5e7eb;
+    background-color: #9ca3af;
+    color: white;
 }
 
 #modal-save-btn {
     background-color: #2563eb;
     color: white;
-    order: 1; /* първи бутон в реда */
+    order: 1;
     padding: 10px 20px;
     border-radius: 6px;
     font-weight: 600;
@@ -722,28 +830,9 @@ body {
     background-color: #1d4ed8;
 }
 
-#lightbox {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.9);
-    display: none;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
-    padding: 20px;
-    box-sizing: border-box;
-}
-
-#lightbox.is-active {
-    display: flex;
-}
-
 #lightbox-img {
     max-width: 90%;
-    max-height: 80vh;
+    max-height: 90vh;
     object-fit: contain;
     border-radius: 8px;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
@@ -753,7 +842,7 @@ body {
     position: absolute;
     top: 20px;
     right: 20px;
-    background: rgba(255, 255, 255, 0.2);
+
     color: white;
     border: none;
     border-radius: 50%;
@@ -770,48 +859,42 @@ body {
 }
 
 .lightbox-close-btn:hover {
-    background: rgba(255, 255, 255, 0.4);
+    background: #1f2937(255, 255, 255, 0.4);
     transform: scale(1.1);
 }
 
 #victory-screen {
-    position: fixed;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    background: rgba(255, 255, 255, 0.98);
-    display: none;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    z-index: 90;
+    background-color: rgba(16, 185, 129, 0.95);
+    color: white;
+    text-align: center;
     cursor: pointer;
-    animation: fadeIn 0.5s ease-out;
-    padding: 20px;
 }
 
-#victory-screen.is-active {
-    display: flex;
+#victory-screen div {
+    padding: 40px;
+    max-width: 400px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    cursor: pointer;
+    animation: fadeIn 0.5s ease-out;
 }
 
 #victory-screen h2 {
-    font-size: 48px;
-    color: #10b981;
-    margin-bottom: 20px;
-    text-align: center;
+    font-size: 36px;
+    margin-bottom: 10px;
 }
 
 #victory-screen p {
     font-size: 20px;
-    color: #4b5563;
+    color: #f3f4f6;
     text-align: center;
     margin-top: 0;
     max-width: 600px;
 }
 
 .trophy {
-    font-size: 160px;
+    font-size: 300px;
+    display: block;
     animation: bounce 1.5s infinite alternate ease-in-out;
     margin-bottom: 30px;
 }
@@ -824,6 +907,7 @@ body {
     100% {
         transform: translateY(-20px) scale(1.05);
     }
+
 }
 
 @keyframes fadeIn {
@@ -834,12 +918,14 @@ body {
     to {
         opacity: 1;
     }
+
 }
 
 @media (max-width: 768px) {
     #control-panel {
         padding: 16px;
         margin-bottom: 20px;
+        max-width: 100%;
     }
 
     #lesson-topic {
@@ -848,12 +934,20 @@ body {
 
     #main-timer-display {
         font-size: 48px;
+        left: 16px;
+        bottom: 16px;
     }
 
     #start-btn,
-    #reset-btn-corner {
+    #end-lesson-btn {
         padding: 10px 18px;
         font-size: 14px;
+    }
+
+    #plan-controls-container {
+        right: 16px;
+        bottom: 16px;
+        top: auto;
     }
 
     .timeline-item-wrapper.left-side,
@@ -880,19 +974,23 @@ body {
         transform: translateX(-50%);
     }
 
-    .timeline-item-wrapper.left-side .side-switch-button,
-    .timeline-item-wrapper.right-side .side-switch-button {
-        left: auto;
-        right: 10px;
-        bottom: 10px;
-        top: auto;
-        z-index: 50;
-        transform: none;
+    .activity-bottom-controls {
+        bottom: 8px;
+        left: 8px;
+        right: 8px;
     }
 
-    .timeline-item-wrapper.left-side .side-switch-button:hover,
-    .timeline-item-wrapper.right-side .side-switch-button:hover {
-        transform: scale(1.1);
+    .controls-btn,
+    .side-switch-button-control {
+        width: 30px;
+        height: 30px;
+        min-width: 30px;
+        max-width: 30px;
+        font-size: 14px;
+    }
+
+    .side-switch-button-control {
+        font-size: 16px;
     }
 
     .timeline-label {
@@ -923,33 +1021,8 @@ body {
         justify-content: flex-end;
     }
 
-    .timer-controls-area {
-        bottom: 8px;
-        left: 8px;
-        min-width: 80px;
-    }
-
     .activity-timer-display {
         font-size: 20px;
-    }
-
-    .controls-btn {
-        min-width: 36px;
-        max-width: 36px;
-        width: 36px;
-        height: 36px;
-        padding: 8px;
-        justify-content: center;
-        border-radius: 50%;
-    }
-
-    .controls-btn .btn-text {
-        display: none;
-    }
-
-    .controls-btn .btn-icon {
-        width: 16px;
-        height: 16px;
     }
 
     .content-area {
@@ -960,12 +1033,16 @@ body {
         height: 100px;
     }
 
-    .side-switch-button {
-        width: 30px;
-        height: 30px;
+
+    .modal-btn {
         font-size: 14px;
-        padding: 5px;
+        padding: 8px 15px;
     }
+
+    #activity-modal>div {
+        padding: 18px;
+    }
+
 }
 
 @media (max-width: 480px) {
@@ -982,37 +1059,27 @@ body {
     }
 
     #start-btn,
-    #reset-btn-corner {
+    #end-lesson-btn {
         padding: 8px 15px;
         font-size: 12px;
+
     }
 
     .activity-timer-display {
         font-size: 18px;
     }
 
-    .finish-btn,
-    .edit-btn,
-    .delete-btn,
-    .link-btn {
-        min-width: 32px;
-        max-width: 32px;
-        width: 32px;
-        height: 32px;
-        border-radius: 50%;
+    .controls-btn,
+    .side-switch-button-control {
+        min-width: 30px;
+        max-width: 30px;
+        width: 30px;
+        height: 30px;
+        font-size: 14px;
     }
 
-    .controls-btn {
-        min-width: 32px;
-        max-width: 32px;
-        width: 32px;
-        height: 32px;
-        padding: 6px;
-    }
-
-    .controls-btn .btn-icon {
-        width: 18px;
-        height: 18px;
+    .side-switch-button-control {
+        font-size: 16px;
     }
 
     .content-area {
@@ -1029,163 +1096,9 @@ body {
     }
 
     #activity-modal>div {
-        margin: 20px 0;
         padding: 18px;
     }
-}
 
-#activity-modal,
-#lightbox,
-#victory-screen {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.8);
-    display: none;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
-
-#activity-modal.is-active,
-#lightbox.is-active,
-#victory-screen.is-active {
-    display: flex;
-    opacity: 1;
-}
-
-#victory-screen {
-    background-color: rgba(16, 185, 129, 0.95);
-    color: white;
-    text-align: center;
-}
-
-#victory-screen div {
-    padding: 40px;
-    max-width: 400px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 10px;
-    cursor: pointer;
-}
-
-#victory-screen h2 {
-    font-size: 36px;
-    margin-bottom: 10px;
-}
-
-#victory-screen .trophy {
-    font-size: 150px;
-    display: block;
-    animation: pulse 1s infinite alternate;
-}
-
-@keyframes pulse {
-    from {
-        transform: scale(1);
-    }
-
-    to {
-        transform: scale(1.2);
-    }
-}
-
-#lightbox-img {
-    max-width: 90%;
-    max-height: 90%;
-    object-fit: contain;
-}
-
-.lightbox-close-btn {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    background: none;
-    border: none;
-    color: white;
-    cursor: pointer;
-    padding: 10px;
-    z-index: 1001;
-}
-
-#activity-modal>div {
-    background-color: white;
-    padding: 30px;
-    border-radius: 8px;
-    width: 90%;
-    max-width: 400px;
-}
-
-.modal-form label {
-    display: block;
-    margin-top: 10px;
-    font-weight: bold;
-}
-
-.modal-form input {
-    width: 100%;
-    padding: 8px;
-    margin-top: 5px;
-    box-sizing: border-box;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-}
-
-.modal-btn {
-    padding: 10px 15px;
-    cursor: pointer;
-    border: none;
-    border-radius: 4px;
-}
-
-#modal-save-btn {
-    background-color: #10b981;
-    color: white;
-}
-
-#modal-cancel-btn {
-    background-color: #f59e0b;
-    color: white;
-}
-
-.timeline-container-centered {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.timeline-item-wrapper {
-    width: 100%;
-    padding: 10px 0;
-    position: relative;
-}
-
-#add-activity-btn-single {
-    position: sticky;
-    bottom: 20px;
-    margin-top: 20px;
-    width: 60px;
-    height: 60px;
-    padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 24px;
-    border-radius: 50%;
-    border: 3px solid white;
-    background-color: #10b981;
-    color: white;
-    cursor: pointer;
-    z-index: 50;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-#add-activity-btn-single.is-hidden {
-    display: none;
 }
 
 .modal-footer {
@@ -1196,26 +1109,69 @@ body {
 }
 
 .upload-btn-container {
-    margin-left: 2px;
+    
     cursor: pointer;
     display: inline-block;
     vertical-align: middle;
+    margin-bottom: 6px;
 }
 
 .upload-btn {
-    background-color: #3b82f6;
+    background-color: #ffffff;
     color: white;
-    padding: 5px 5px;
-    border-radius: 4px;
-    font-size: 0.8rem;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    border-radius: 1px;
+    font-size: 1rem;
     transition: background-color 0.2s;
+    text-align: center;
+    padding: 1px 0px 3px 1px;
 }
 
 .upload-btn:hover {
-    background-color: #2563eb;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    background-color: #d3d9f7;
 }
 
 #activity-image-input[readonly] {
     background-color: #f3f4f6;
     cursor: not-allowed;
+}
+
+#xlsx-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+#xlsx-buttons button {
+    width: 50px;
+    height: 50px;
+    font-size: 18px;
+    border-radius: 8px;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+    background-color: white;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+#xlsx-buttons button:hover {
+    background-color: #f9fafb;
+    border-color: #d1d5db;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.left-side .activity-bottom-controls .activity-timer-display {
+    order: -1;
+}
+
+.left-side .activity-bottom-controls .side-switch-button-control {
+    order: 1;
 }

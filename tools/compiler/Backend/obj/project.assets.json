@@ -1267,11 +1267,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Martin Byalov\\Documents\\GitHub\\instruments\\tools\\compiler\\Backend\\Backend.csproj",
+      "projectUniqueName": "D:\\Programming\\instruments\\tools\\compiler\\Backend\\Backend.csproj",
       "projectName": "Backend",
-      "projectPath": "C:\\Users\\Martin Byalov\\Documents\\GitHub\\instruments\\tools\\compiler\\Backend\\Backend.csproj",
+      "projectPath": "D:\\Programming\\instruments\\tools\\compiler\\Backend\\Backend.csproj",
       "packagesPath": "C:\\Users\\Martin Byalov\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Martin Byalov\\Documents\\GitHub\\instruments\\tools\\compiler\\Backend\\obj\\",
+      "outputPath": "D:\\Programming\\instruments\\tools\\compiler\\Backend\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\Martin Byalov\\AppData\\Roaming\\NuGet\\NuGet.Config"

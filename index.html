@@ -1,56 +1,45 @@
 <!DOCTYPE html>
 <html lang="bg">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Инструментариум за Часа</title>
     <link rel="stylesheet" href="/dashboard.css">
 </head>
-
 <body>
-
     <div class="header">
         <h1>Инструментариум</h1>
     </div>
     <div class="tools-grid">
-
         <a href="/control" class="tool-card">
             <span class="tool-icon">📢</span>
             <h2>Регулировчик</h2>
             <p>Стартиране на таймер за изпитване.</p>
         </a>
-
         <a href="/planner" class="tool-card">
             <span class="tool-icon">⏱️</span>
             <h2>Планировчик</h2>
             <p>Управление на времето за групова работа.</p>
         </a>
-
         <a href="/padlet" class="tool-card">
             <span class="tool-icon">❓</span>
             <span class="development-badge">🛠️</span>
             <h2>Въпросник</h2>
             <p>Изходен билет, индивидуални въпроси, др.</p>
         </a>
-
         <a href="/compiler" class="tool-card" id="compiler-card">
             <span class="tool-icon">💻</span>
             <span class="development-badge">🛠️</span>
             <h2>Компилатор</h2>
             <p>Онлайн среда за писане и изпълнение на код.</p>
-
             <div class="lock-overlay">
                 <span class="lock-icon">🔒</span>
                 <h3>Въведи PIN</h3>
                 <input type="password" id="compiler-pin" placeholder="****" maxlength="4">
                 <p id="lock-message"></p>
             </div>
-
         </a>
     </div>
-
     <script src="/dashboard.js"></script>
 </body>
-
 </html>

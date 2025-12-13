@@ -28,7 +28,6 @@ const happyQuotes = [
     "„Да владееш себе си е по-добре, отколкото да владееш всички останали.“ – Буда",
     "Истинският ви живот започва тогава, когато вашето щастие е по-важно от хорското мнение."
 ];
-
 function getRandomStudents() {
     const studentCount = 25;
     const numbers = [];
@@ -38,12 +37,10 @@ function getRandomStudents() {
     }
     return numbers.join(', ');
 }
-
 function getRandomQuote() {
     const index = Math.floor(Math.random() * happyQuotes.length);
     return happyQuotes[index];
 }
-
 function setMode(newMode) {
    
     if (!statusDisplay || !body) { 
@@ -58,7 +55,6 @@ function setMode(newMode) {
     mode = newMode;
     statusDisplay.className = `status ${mode}`;
     body.classList.remove('bg-happy', 'bg-angry');
-
     if (mode === 'happy') {
         body.classList.add('bg-happy');
         const quote = getRandomQuote();
@@ -68,20 +64,16 @@ function setMode(newMode) {
         startAngryTimer();
     }
 }
-
 function startAngryTimer() {
     let timeLeft = angryDuration;
     const studentNumbers = getRandomStudents();
-
     function updateDisplay() {
         const minutes = Math.floor(timeLeft / 60);
         const seconds = timeLeft % 60;
         const timeString = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-
         statusDisplay.innerHTML =
             `<p>🚨 Изпитване на трима ученици с номера: ${studentNumbers}</p>
              <p>след **${timeString}**</p>`;
-
         if (timeLeft <= 0) {
             clearInterval(timerId);
             timerId = null;
@@ -97,11 +89,9 @@ function startAngryTimer() {
             timeLeft--;
         }
     }
-
     timerId = setInterval(updateDisplay, 1000);
     updateDisplay();
 }
-
 document.addEventListener('DOMContentLoaded', () => {
   
     statusDisplay = document.getElementById('status-display');
