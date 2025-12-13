@@ -53,6 +53,9 @@ app.get('/control', (_, res) => {
 app.get('/planner', (_, res) => {
     res.sendFile(path.join(__dirname, 'tools', 'planner', 'planner.html'));
 });
+app.get('/wpm', (_, res) => {
+    res.sendFile(path.join(__dirname, 'tools', 'wpm', 'wpm.html'));
+});
 app.get('/compiler', async (_, res) => {
     const htmlPath = path.join(__dirname, 'tools', 'compiler', 'Frontend', 'compiler.html');
     try {
@@ -160,6 +163,7 @@ server.listen(PORT, () => {
     console.log(`├─ Padlet Ученик: http://localhost:${PORT}/student`);
     console.log(`├─ Контролен панел: http://localhost:${PORT}/control`);
     console.log(`├─ Таймер: http://localhost:${PORT}/planner`);
+    console.log(`├─ WPM: http://localhost:${PORT}/wpm`);
     console.log(`└─ Компилатор: http://localhost:${PORT}/compiler`);
     console.log(`└─ C# API Target: ${CSHARP_API_URL}`);
 });
