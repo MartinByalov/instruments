@@ -41,7 +41,7 @@ body {
     font-size: 24px;
     font-weight: bold;
     color: #333;
-    padding: 10px 0 10px;
+    padding: 10px 0 16px;
     text-align: center;
     transition: border-bottom-color 0.3s ease-in-out;
 }
@@ -238,7 +238,7 @@ body {
 
 #start-btn {
     position: absolute !important;
-    top: 0px !important;
+    top: 5px !important;
     bottom: auto !important;
     left: 50% !important;
     transform: translateX(-50%) !important;
@@ -275,6 +275,7 @@ body {
 #start-btn:active:not(:disabled) {
 
     transform: translateX(-50%) scale(0.95) !important;
+
 }
 
 #reset-btn-corner {
@@ -306,7 +307,6 @@ body {
     opacity: 1 !important;
 }
 
-/* Стилове за различните състояния на бутона КРАЙ */
 #end-lesson-btn[data-state="final"] {
     background-color: #1f2937 !important;
     border: 2px dashed #fff !important;
@@ -624,12 +624,6 @@ body {
     border-color: #a78bfa;
 }
 
-.content-area {
-    margin-top: 8px;
-    margin-bottom: 40px;
-    width: 100%;
-}
-
 .image-container {
     margin-top: 4px;
     width: 100%;
@@ -752,7 +746,7 @@ body {
     font-size: 24px;
     font-weight: bold;
     color: #1f2937;
-    margin-bottom: 20px;
+    margin-bottom: 40px;
     text-align: center;
 }
 
@@ -785,35 +779,10 @@ body {
 .modal-actions {
     display: flex;
     justify-content: space-between;
-    gap: 10px;
-    margin-top: 20px;
+    align-items: center;
     width: 100%;
-}
-
-.modal-btn {
-    padding: 10px 20px;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    font-weight: 600;
-    transition: background-color 0.2s ease-in-out;
-    font-size: 16px;
-}
-
-#modal-cancel-btn {
-    background-color: #d1d5db;
-    color: #1f2937;
-    order: 2;
-    padding: 10px 20px;
-    border-radius: 6px;
-    font-weight: 600;
-    cursor: pointer;
-    margin-left: 190px;
-}
-
-#modal-cancel-btn:hover {
-    background-color: #9ca3af;
-    color: white;
+    margin-top: 20px;
+    gap: 10px;
 }
 
 #modal-save-btn {
@@ -824,10 +793,31 @@ body {
     border-radius: 6px;
     font-weight: 600;
     cursor: pointer;
+    border: none;
+    transition: background-color 0.2s ease-in-out;
+    margin-right: auto;
 }
 
 #modal-save-btn:hover {
     background-color: #1d4ed8;
+}
+
+#modal-cancel-btn {
+    background-color: #d1d5db;
+    color: #1f2937;
+    order: 2;
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: background-color 0.2s ease-in-out;
+    margin-left: auto;
+}
+
+#modal-cancel-btn:hover {
+    background-color: #9ca3af;
+    color: white;
 }
 
 #lightbox-img {
@@ -856,6 +846,7 @@ body {
     transition: background-color 0.3s ease, transform 0.3s ease;
     font-size: 24px;
     font-weight: bold;
+
 }
 
 .lightbox-close-btn:hover {
@@ -893,10 +884,14 @@ body {
 }
 
 .trophy {
-    font-size: 300px;
+    font-size: 300px !important;
     display: block;
+    margin: 0 auto 30px auto;
+    text-align: center;
     animation: bounce 1.5s infinite alternate ease-in-out;
-    margin-bottom: 30px;
+    /* Осигурява центриране */
+    line-height: 1;
+    width: 100%;
 }
 
 @keyframes bounce {
@@ -1109,11 +1104,12 @@ body {
 }
 
 .upload-btn-container {
-    
+
     cursor: pointer;
     display: inline-block;
     vertical-align: middle;
     margin-bottom: 6px;
+
 }
 
 .upload-btn {
