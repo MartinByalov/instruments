@@ -443,9 +443,9 @@ function renderSchedule() {
             const timeInCurrentActivity = elapsedTimeSeconds - activitiesBeforeCurrentTime;
             const remainingTime = (activity.duration * 60) - timeInCurrentActivity;
             timerDisplay.textContent = formatTime(remainingTime < 0 ? 0 : remainingTime);
-        } else if (activity.status === 'done') {
-            timerDisplay.textContent = 'ГОТОВО';
         } else {
+            // Промяна: За 'done' (завършена) и 'pending' (предстояща) активност показваме планираната продължителност.
+            // При 'done' статус, класът 'done-timer' ще оцвети текста в зелено, както е по заявка, без да се изписва 'ГОТОВО'.
             timerDisplay.textContent = formatTime(activity.duration * 60);
         }
         bottomControls.appendChild(timerDisplay);
@@ -762,46 +762,24 @@ function handleFileImport(event) {
                 const worksheet = workbook.Sheets[sheetName];
                 const json = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
                 if (json.length < 2) return;
-                
-                // Извличане на темата на урока от клетка A2 (индекс [1][0])
-                // Използваме името на листа като резервен вариант, ако A2 е празна.
-                let lessonTopic = (json[1] && json[1][0] !== undefined) ? String(json[1][0]).trim() : '';
-                
-                // Ако A2 е празна или "Програмиране" (като в примера, което е генерично),
-                // използваме името на листа
-                if (!lessonTopic || lessonTopic === 'Програмиране') {
-                    lessonTopic = sheetName.trim() || `Импортиран урок ${index + 1}`;
-                }
-                
+                let lessonTopic = sheetName.trim() || `Импортиран урок от XLSX ${index + 1}`;
                 const activities = [];
-                // Колони (базирани на примерната снимка):
-                // Тема на урока (A) - index 0 (използваме името на листа/A2)
-                const activityTitleCol = 1; // Дейност (B)
-                const durationCol = 2;      // Продължителност (мин.) (C)
-                const resourceCol = 3;      // Връзка (URL) (D)
-                const imageCol = 4;         // Изображение (URL) (E)
-                
-                for (let i = 1; i < json.length; i++) { // Започваме от втория ред (i=1), тъй като ред 1 е хедър
+                const activityTitleCol = 1;
+                const durationCol = 2;
+                const resourceCol = 3;
+                const imageCol = 4;
+                for (let i = 1; i < json.length; i++) {
                     const row = json[i];
                     const activityTitle = (row[activityTitleCol] || '').toString().trim();
-                    // Използваме parseFloat, за да обработим както целочислени, така и дробни числа, 
-                    // и заместваме запетаята с точка за правилно парсване.
                     const duration = parseFloat((row[durationCol] || '0').toString().replace(',', '.'));
                     const resourceField = (row[resourceCol] || '').toString().trim();
                     const imageField = (row[imageCol] || '').toString().trim();
                     let linkUrl = resourceField;
                     let imageUrl = imageField;
-                    
-                    // Ако колоната за изображение е празна, но има линк в колоната за ресурси, 
-                    // проверяваме дали линкът е към изображение.
                     if (!imageUrl && linkUrl) {
                         if (linkUrl.match(/\.(jpeg|jpg|gif|png|webp|svg)$/i)) {
                             imageUrl = linkUrl;
-                            // Оставяме линкUrl, ако е същият (за да може да се кликне върху изображението, 
-                            // ако това е замисълът), но тъй като структурата на таблицата предполага 
-                            // че връзката и изображението са отделни, 
-                            // може да го изчистим, ако е само изображение. 
-                            // В текущата логика: ако е снимка, я преместваме в imageUrl, linkUrl остава същата.
+                            linkUrl = '';
                         }
                     }
                     if (activityTitle && !isNaN(duration) && duration > 0) {
@@ -811,7 +789,7 @@ function handleFileImport(event) {
                             linkUrl: linkUrl,
                             imageUrl: imageUrl,
                             status: 'pending',
-                            side: activities.length % 2 === 0 ? 'right' : 'left' // Редуване на страните
+                            side: 'left'
                         });
                     }
                 }

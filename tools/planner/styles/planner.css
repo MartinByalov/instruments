@@ -832,12 +832,17 @@ body {
     position: absolute;
     top: 20px;
     right: 20px;
-
+    /* Промени за червен квадрат с хикс */
+    background-color: #dc2626;
+    /* Червен фон */
     color: white;
+    /* Бял хикс */
     border: none;
-    border-radius: 50%;
-    width: 50px;
-    height: 50px;
+    border-radius: 8px;
+    /* Квадратен, с лек радиус */
+    width: 40px;
+    /* По-малък размер */
+    height: 40px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -845,12 +850,17 @@ body {
     z-index: 1001;
     transition: background-color 0.3s ease, transform 0.3s ease;
     font-size: 24px;
+    /* Размер на хикса */
     font-weight: bold;
-
+    line-height: 1;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    /* Добавяне на хикс (x) или символ за close */
+    content: '✖';
 }
 
 .lightbox-close-btn:hover {
-    background: #1f2937(255, 255, 255, 0.4);
+    background: #b91c1c;
+    /* По-тъмно червено при hover */
     transform: scale(1.1);
 }
 
