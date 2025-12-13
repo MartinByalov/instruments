@@ -240,7 +240,7 @@ function initReferenceText() {
     if (!REFERENCE_TEXT) {
         referenceTextDisplay.innerHTML = '<p>Качете текстов файл, за да започнете.</p>';
         textInput.contentEditable = 'false';
-        testStatusDisplay.textContent = 'Очаква зареждане на текст...';
+        testStatusDisplay.textContent = 'Зареждане на текст...';
         testStatusDisplay.className = 'status-running';
         textInput.setAttribute('data-placeholder', 'Качете текстов файл, за да започнете.');
         wordCountDisplay.textContent = '0';
@@ -293,21 +293,23 @@ function highlightReferenceChar(index, className, remove = false) {
 }
 function autoScrollReferenceText(nextIndex) {
     const refContainer = referenceTextDisplay.parentElement;
-    const nextCharSpan = document.getElementById(`ref-char-${nextIndex}`);
-    const selection = window.getSelection();
-    if (selection.rangeCount === 0) return;
-    const range = selection.getRangeAt(0);
-    const cursorRect = range.getClientRects()[0];
-    if (!cursorRect || !nextCharSpan) return;
-    const inputRect = textInput.getBoundingClientRect();
-    const lineHeight = 26;
-    const cursorYOffset = cursorRect.top - inputRect.top;
-    const scrollTriggerHeight = 3 * lineHeight; 
-    if (cursorYOffset > scrollTriggerHeight) {
-        const linesPassed = Math.floor(cursorYOffset / lineHeight);
-        refContainer.scrollTop = linesPassed * lineHeight;
-    } else if (cursorYOffset < lineHeight) {
-        refContainer.scrollTop = 0;
+    // Приемаме височина на реда от CSS (26px).
+    const lineHeight = 26; 
+
+    // Вземаме скрол позицията на текстовото поле за въвеждане.
+    // Това е колко пиксела е скролнато съдържанието на полето нагоре.
+    const inputScrollTop = textInput.scrollTop;
+
+    // Изчисляваме колко пълни реда са скролнати във входното поле.
+    // Това е най-надеждният начин да синхронизираме двете полета, когато wrap-ват.
+    const linesScrolledInInput = Math.floor(inputScrollTop / lineHeight);
+    
+    // Желаната скрол позиция за референтното поле е същият брой скролнати редове.
+    const desiredScrollTop = linesScrolledInInput * lineHeight;
+
+    // Прилагаме желаната скрол позиция, ако е различна от текущата.
+    if (refContainer.scrollTop !== desiredScrollTop) {
+        refContainer.scrollTop = desiredScrollTop;
     }
 }
 function updateStatsAndHighlight() {
@@ -418,6 +420,8 @@ function updateStatsAndHighlight() {
     }
     newSelection.addRange(newRange);
     textInput.scrollTop = textInput.scrollHeight;
+
+    // Проверка за приключване на теста (независимо от режима)
     if (nextIndex >= REFERENCE_CHARS.length && isTimerRunning) {
         endTest(true);
     }
@@ -470,7 +474,7 @@ function startTimer() {
     timerInterval = setInterval(updateTimer, 1000);
     textInput.classList.remove('test-finished');
     textInput.contentEditable = 'true';
-    testStatusDisplay.textContent = 'Тестът тече...';
+    testStatusDisplay.textContent = 'В процес...';
     testStatusDisplay.className = 'status-running';
     timerInput.disabled = true;
     setDownloadButtonState(false);
@@ -493,8 +497,8 @@ function resetTest() {
         testStatusDisplay.textContent = 'Очаква старт...';
         textInput.setAttribute('data-placeholder', 'Започнете да пишете тук, за да стартирате таймера...');
     } else {
-        testStatusDisplay.textContent = 'Очаква зареждане на текст...';
-        textInput.setAttribute('data-placeholder', 'Моля, качете текстов файл, за да започнете теста.');
+        testStatusDisplay.textContent = 'Зареждане на текст...';
+        textInput.setAttribute('data-placeholder', 'Качете текстов файл, за да започнете.');
         wordCountDisplay.textContent = '0';
     }
     testStatusDisplay.className = 'status-running';
