@@ -1,3 +1,4 @@
+console.log("~ Clean code, clear mind. - ø");
 let appContainer;
 let controlPanel;
 let lessonTopicInput;

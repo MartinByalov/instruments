@@ -1,11 +1,10 @@
+console.log("~ Clean code, clear mind. - ø");
 let timerId = null;
 let mode = 'initial';
 const angryDuration = 120;
-
 let statusDisplay = null;
 let body = null;
 let alarmSound = null;
-
 const happyQuotes = [
     "„Мечтите нарочно са с по-голям размер, за да можем да пораснем в тях.“ – Джоузи Бисет",
     "„В живота няма смисъл, има само възможности.“ – Марк Твен",
