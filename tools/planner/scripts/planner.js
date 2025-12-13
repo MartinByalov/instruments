@@ -702,24 +702,19 @@ function closeLightbox() {
     lightbox.classList.remove('is-active');
 }
 function downloadTemplate() {
-    const header = ["Урок", "Дейност", "Продължителност (мин)", "Ресурс (Линк)", "Изображение (URL)"];
-    const ws_data = [
-        header,
-        ["Въведение в HTML", "Презентация", 5, "https://example.com/slide.pdf", "https://i.ibb.co/49X7VMs/task.png"],
-        ["Въведение в HTML", "Практическа задача", 10, "", "https://i.ibb.co/2153GK5s/practical-task.jpg"],
-        ["Въведение в HTML", "Групова работа", 15, "https://example.com/quiz.html", ""],
-    ];
-    const wb = XLSX.utils.book_new();
-    const ws = XLSX.utils.aoa_to_sheet(ws_data);
-    ws['!cols'] = [
-        { wch: 20 },
-        { wch: 30 },
-        { wch: 10 },
-        { wch: 40 },
-        { wch: 40 },
-    ];
-    XLSX.utils.book_append_sheet(wb, ws, "Урок 1");
-    XLSX.writeFile(wb, "lesson_plan_template.xlsx");
+    // Промяна: Изтегляне на съществуващ файл от templates папката
+    const templateUrl = '/tools/planner/templates/lesson_plan_template.xlsx';
+    
+    // Създаване на временна връзка за изтегляне
+    const link = document.createElement('a');
+    link.href = templateUrl;
+    link.download = 'lesson_plan_template.xlsx';
+    link.style.display = 'none';
+    
+    // Добавяне към DOM, кликване и премахване
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
 }
 function handleFileImport(event) {
     if (isRunning) return;
@@ -767,24 +762,46 @@ function handleFileImport(event) {
                 const worksheet = workbook.Sheets[sheetName];
                 const json = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
                 if (json.length < 2) return;
-                let lessonTopic = sheetName.trim() || `Импортиран урок от XLSX ${index + 1}`;
+                
+                // Извличане на темата на урока от клетка A2 (индекс [1][0])
+                // Използваме името на листа като резервен вариант, ако A2 е празна.
+                let lessonTopic = (json[1] && json[1][0] !== undefined) ? String(json[1][0]).trim() : '';
+                
+                // Ако A2 е празна или "Програмиране" (като в примера, което е генерично),
+                // използваме името на листа
+                if (!lessonTopic || lessonTopic === 'Програмиране') {
+                    lessonTopic = sheetName.trim() || `Импортиран урок ${index + 1}`;
+                }
+                
                 const activities = [];
-                const activityTitleCol = 1;
-                const durationCol = 2;
-                const resourceCol = 3;
-                const imageCol = 4;
-                for (let i = 1; i < json.length; i++) {
+                // Колони (базирани на примерната снимка):
+                // Тема на урока (A) - index 0 (използваме името на листа/A2)
+                const activityTitleCol = 1; // Дейност (B)
+                const durationCol = 2;      // Продължителност (мин.) (C)
+                const resourceCol = 3;      // Връзка (URL) (D)
+                const imageCol = 4;         // Изображение (URL) (E)
+                
+                for (let i = 1; i < json.length; i++) { // Започваме от втория ред (i=1), тъй като ред 1 е хедър
                     const row = json[i];
                     const activityTitle = (row[activityTitleCol] || '').toString().trim();
+                    // Използваме parseFloat, за да обработим както целочислени, така и дробни числа, 
+                    // и заместваме запетаята с точка за правилно парсване.
                     const duration = parseFloat((row[durationCol] || '0').toString().replace(',', '.'));
                     const resourceField = (row[resourceCol] || '').toString().trim();
                     const imageField = (row[imageCol] || '').toString().trim();
                     let linkUrl = resourceField;
                     let imageUrl = imageField;
+                    
+                    // Ако колоната за изображение е празна, но има линк в колоната за ресурси, 
+                    // проверяваме дали линкът е към изображение.
                     if (!imageUrl && linkUrl) {
                         if (linkUrl.match(/\.(jpeg|jpg|gif|png|webp|svg)$/i)) {
                             imageUrl = linkUrl;
-                            linkUrl = '';
+                            // Оставяме линкUrl, ако е същият (за да може да се кликне върху изображението, 
+                            // ако това е замисълът), но тъй като структурата на таблицата предполага 
+                            // че връзката и изображението са отделни, 
+                            // може да го изчистим, ако е само изображение. 
+                            // В текущата логика: ако е снимка, я преместваме в imageUrl, linkUrl остава същата.
                         }
                     }
                     if (activityTitle && !isNaN(duration) && duration > 0) {
@@ -794,7 +811,7 @@ function handleFileImport(event) {
                             linkUrl: linkUrl,
                             imageUrl: imageUrl,
                             status: 'pending',
-                            side: 'left'
+                            side: activities.length % 2 === 0 ? 'right' : 'left' // Редуване на страните
                         });
                     }
                 }
