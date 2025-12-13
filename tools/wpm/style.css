@@ -1,0 +1,403 @@
+/* style.css */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Arial', sans-serif;
+}
+
+/* СВЕТЛИ ОГЛЕДАЛНИ СТИЛОВЕ */
+:root {
+    --primary-color: #00796b;
+    /* Тъмно зелено за акценти */
+    --second-color: #ffffff;
+    /* Бяло */
+    --black-color: #000000;
+    /* Черно */
+    --error-color: #d32f2f;
+    /* Червено за грешки */
+    --success-color: #4CAF50;
+    /* Зелено за коректни */
+    --light-bg: #f4f4f9;
+    /* Светъл фон на тялото */
+    --section-bg: #ffffff;
+    /* Бял фон на секциите */
+    --border-color: #e0e0e0;
+    /* Светла рамка */
+    --glass-effect: rgba(255, 255, 255, 0.5);
+    /* Светъл "glass" ефект */
+    --text-dark: #333;
+    /* Тъмен основен текст */
+    --link-color: #03a9f4;
+    /* Цвят за линкове/акценти */
+}
+
+body {
+    background-color: var(--light-bg);
+    color: var(--text-dark);
+    margin: 0;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+main {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+    max-width: 800px;
+    margin-top: 20px;
+
+    /* СВЕТЪЛ ОГЛЕДАЛЕН СТИЛ */
+    background-color: var(--glass-effect);
+    backdrop-filter: blur(5px);
+    border: 1px solid var(--border-color);
+    border-radius: 15px;
+    padding: 25px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* ------------------ ЕДИНЕН КОНТРОЛЕН БАР ------------------ */
+
+.controls-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background-color: var(--section-bg);
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.file-reset-group {
+    display: flex;
+    gap: 10px;
+    /* Намалено разстояние между емотиконите, за да са един до друг */
+    align-items: center;
+}
+
+/* ОБЕДИНЕНИ СТИЛОВЕ ЗА ДИСПЛЕИТЕ (Брой думи и Таймер) - БЕЗ BACKGROUND/BORDER */
+.word-count-display,
+.timer-input-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0;
+    /* Премахва вътрешния padding */
+    background-color: transparent;
+    /* Премахва фона */
+    border: none;
+    /* Премахва рамката */
+    border-radius: 0;
+    font-size: 1.1em;
+    /* Увеличава размера на шрифта */
+}
+
+.word-count-display label,
+.timer-input-container label {
+    font-weight: normal;
+    color: var(--text-dark);
+    font-size: 1em;
+}
+
+.word-count-display span {
+    font-weight: bold;
+    color: var(--success-color);
+}
+
+
+/* Стил за бутона за Нулиране - БЕЗ BACKGROUND/BORDER, само емотикон */
+.reset-top {
+    padding: 0;
+    font-size: 2em;
+    /* Увеличен размер на емотикона */
+    background: none;
+    border: none;
+    color: inherit;
+    /* Взима цвета от родителя */
+    cursor: pointer;
+    line-height: 1;
+    transition: transform 0.2s;
+    
+}
+
+.reset-top:hover {
+    transform: scale(1.1);
+}
+
+/* ------------------ КОНТРОЛА ЗА КАЧВАНЕ НА ФАЙЛ - БЕЗ BACKGROUND/BORDER, само емотикон ------------------ */
+
+.file-input-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+.file-input-wrapper label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 0;
+    /* Премахва padding */
+    font-size: 2em;
+    /* Увеличен размер на емотикона */
+    background: none;
+    /* Премахва фона */
+    border: none;
+    /* Премахва рамката */
+    color: inherit;
+    /* Взима цвета от родителя */
+    transition: transform 0.2s;
+    line-height: 1;
+    margin-bottom: 0;
+}
+
+.file-input-wrapper label:hover {
+    background-color: transparent;
+    /* Запазва фона прозрачен */
+    transform: scale(1.1);
+}
+
+.file-input-wrapper input[type="file"] {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+}
+
+
+/* ------------------ ТАЙМЕР - КАТО INPUT (Дясно) ------------------ */
+
+#timerInput {
+    font-size: 1.1em;
+    /* Уеднаквява размера с .word-count-display */
+    font-weight: bold;
+    width: 85px;
+    /* Лек баланс на ширината */
+    padding: 5px;
+    border: 1px solid var(--primary-color);
+    /* Запазва рамка за яснота на полето */
+    border-radius: 4px;
+    text-align: center;
+    color: var(--error-color);
+    background-color: var(--section-bg);
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+#timerInput:focus {
+    border-color: var(--link-color);
+}
+
+#timerInput.no-limit {
+    color: var(--primary-color);
+    width: 130px;
+}
+
+#timerInput:disabled {
+    background-color: var(--border-color);
+    cursor: not-allowed;
+}
+
+/* ------------------ РЕФЕРЕНТЕН ТЕКСТ (Останалите секции остават непроменени) ------------------ */
+
+.reference-container {
+    padding: 15px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background-color: var(--section-bg);
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.reference-text {
+    font-size: 1.1em;
+    line-height: 1.6;
+    color: var(--text-dark);
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+.reference-text span {
+    transition: background-color 0.1s;
+}
+
+.reference-text .next-char-ref {
+    background-color: #ffeb3b;
+    color: var(--black-color);
+    border-radius: 2px;
+    text-decoration: underline;
+}
+
+.reference-text .correct-char-ref {
+    color: var(--success-color);
+}
+
+.reference-text .incorrect-char-ref {
+    color: var(--error-color);
+}
+
+
+/* ------------------ ПОЛЕ ЗА ПИСАНЕ И ГРЕШКИ ------------------ */
+
+.typing-input {
+    border: 2px solid var(--primary-color);
+    border-radius: 8px;
+    padding: 15px;
+    min-height: 100px;
+    max-height: 300px;
+    overflow-y: auto;
+    background-color: var(--section-bg);
+    font-size: 1.2em;
+    line-height: 1.6;
+    outline: none;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    position: relative;
+    cursor: text;
+    color: var(--text-dark);
+}
+
+.typing-input:empty:before {
+    content: attr(data-placeholder);
+    color: #aaa;
+    pointer-events: none;
+}
+
+/* Стил за грешен символ в INPUT полето */
+.typing-input span.error-char-input {
+    color: var(--error-color);
+    font-weight: bold;
+    background-color: #ffcdd2;
+    text-decoration: underline;
+}
+
+/* Стил за въведен символ извън референтния текст (допълнителен) */
+.typing-input span.extra-char-input {
+    color: #a01010;
+    font-weight: bold;
+    background-color: #ef9a9a;
+}
+
+/* ------------------ СТАТИСТИКА ------------------ */
+
+.stats-container {
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 15px;
+    background-color: var(--section-bg);
+}
+
+.stats-container h2 {
+    color: var(--primary-color);
+    margin-bottom: 10px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.stats-container p {
+    margin-bottom: 8px;
+    font-size: 1.1em;
+    color: var(--text-dark);
+}
+
+.stats-container span {
+    font-weight: bold;
+    color: var(--primary-color);
+}
+
+.stats-container #errorCount {
+    color: var(--error-color);
+}
+
+.stats-container #wpmCount {
+    font-size: 1.2em;
+    color: var(--success-color);
+}
+
+.status-running {
+    color: #ff9800;
+    /* Оранжево за старт */
+}
+
+.status-finished {
+    color: var(--error-color);
+    font-weight: bold;
+}
+
+.download-btn {
+    width: 100%;
+    margin-top: 20px;
+    padding: 15px 25px;
+    font-size: 1em;
+    font-weight: 600;
+    background-color: var(--primary-color);
+    color: var(--second-color);
+    border: 2px solid var(--primary-color);
+    border-radius: 15px;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease-in-out;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.download-btn-active {
+    background-color: #388E3C;
+    border-color: #388E3C;
+}
+
+.download-btn:hover:not(:disabled) {
+    opacity: 0.9;
+}
+
+.download-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background-color: #ccc;
+    border-color: #ccc;
+    color: var(--text-dark);
+}
+
+/* Медия заявка за мобилни устройства */
+@media only screen and (max-width: 600px) {
+    main {
+        padding: 15px;
+    }
+
+    .controls-bar {
+        flex-direction: column;
+        gap: 10px;
+        align-items: flex-start;
+    }
+
+    .file-reset-group {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .word-count-display,
+    .timer-input-container {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .word-count-display {
+        order: 2;
+    }
+
+    .timer-input-container {
+        order: 3;
+    }
+}

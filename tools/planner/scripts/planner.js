@@ -425,10 +425,34 @@ function renderSchedule() {
         item.appendChild(contentArea);
         const bottomControls = document.createElement('div');
         bottomControls.className = 'activity-bottom-controls';
+        
         const durationText = document.createElement('span');
         durationText.className = 'activity-plan-text';
         durationText.textContent = `Продължителност: ${activity.duration} мин.`;
         bottomControls.appendChild(durationText);
+        
+        // Таймерът е тук, НЕ в activity-controls (промяна)
+        const timerDisplay = document.createElement('span');
+        timerDisplay.id = `timer-display-${index}`;
+        timerDisplay.className = `activity-timer-display ${activity.status}-timer`;
+        
+        if (activity.status === 'current') {
+            let activitiesBeforeCurrentTime = 0;
+            for (let i = 0; i < index; i++) {
+                activitiesBeforeCurrentTime += scheduleData[i].duration * 60;
+            }
+            const timeInCurrentActivity = elapsedTimeSeconds - activitiesBeforeCurrentTime;
+            const remainingTime = (activity.duration * 60) - timeInCurrentActivity;
+            timerDisplay.textContent = formatTime(remainingTime < 0 ? 0 : remainingTime);
+        } else if (activity.status === 'done') {
+            // Вместо "ГОТОВО", показваме времето оцветено в зелено (промяна)
+            timerDisplay.textContent = formatTime(activity.duration * 60);
+        } else {
+            timerDisplay.textContent = formatTime(activity.duration * 60);
+        }
+        
+        bottomControls.appendChild(timerDisplay);
+        
         const sideSwitchBtn = document.createElement('button');
         sideSwitchBtn.className = 'controls-btn side-switch-button-control';
         sideSwitchBtn.title = activity.side === 'left' ? 'Премести надясно' : 'Премести наляво';
@@ -440,23 +464,7 @@ function renderSchedule() {
             sideSwitchBtn.style.display = 'none';
         }
         bottomControls.appendChild(sideSwitchBtn);
-        const timerDisplay = document.createElement('span');
-        timerDisplay.id = `timer-display-${index}`;
-        timerDisplay.className = `activity-timer-display ${activity.status}-timer`;
-        if (activity.status === 'current') {
-            let activitiesBeforeCurrentTime = 0;
-            for (let i = 0; i < index; i++) {
-                activitiesBeforeCurrentTime += scheduleData[i].duration * 60;
-            }
-            const timeInCurrentActivity = elapsedTimeSeconds - activitiesBeforeCurrentTime;
-            const remainingTime = (activity.duration * 60) - timeInCurrentActivity;
-            timerDisplay.textContent = formatTime(remainingTime < 0 ? 0 : remainingTime);
-        } else if (activity.status === 'done') {
-            timerDisplay.textContent = 'ГОТОВО';
-        } else {
-            timerDisplay.textContent = formatTime(activity.duration * 60);
-        }
-        bottomControls.appendChild(timerDisplay);
+        
         item.appendChild(bottomControls);
         wrapper.appendChild(item);
         const insertBeforeTarget = labelEndEl || endLessonEl || addActivityBtnSingle;
@@ -555,7 +563,6 @@ function autoFillActivity() {
     activityDurationInput.readOnly = isDisabled;
     activityImageInput.readOnly = isDisabled;
     activityLinkInput.readOnly = isDisabled;
-    if (imageUploadInput) imageUploadInput.value = '';
 }
 async function handleImageUpload(event) {
     const file = event.target.files[0];

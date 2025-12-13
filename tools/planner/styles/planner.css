@@ -384,6 +384,15 @@ body {
     align-items: center;
     justify-content: space-between;
     z-index: 40;
+    gap: 8px;
+}
+/* За лявата страна - таймера да е отляво (промяна) */
+.left-side .activity-bottom-controls {
+    flex-direction: row;
+}
+/* За дясната страна - таймера да е отдясно (промяна) */
+.right-side .activity-bottom-controls {
+    flex-direction: row-reverse;
 }
 .side-switch-button-control {
     font-size: 18px;
@@ -442,16 +451,21 @@ body {
 .activity-plan-text {
     display: none !important;
 }
+/* Стилове за таймера - вече не се движи (промяна) */
 .activity-timer-display {
     font-size: 24px;
     font-weight: 900;
     font-variant-numeric: tabular-nums;
+    min-width: 70px;
+    text-align: center;
+    flex-shrink: 0;
 }
+/* Оцветяване според статуса (промяна) */
 .current-timer {
     color: #f59e0b;
 }
 .done-timer {
-    color: #10b981;
+    color: #10b981 !important; /* Зелен за завършени дейности */
 }
 .pending-timer {
     color: #9ca3af;
@@ -469,6 +483,8 @@ body {
     width: auto;
     padding: 0;
     box-sizing: border-box;
+    /* Премахваме flex-wrap, така че бутоните да не се прехвърлят (промяна) */
+    flex-wrap: nowrap;
 }
 .controls-btn {
     background: none;
@@ -888,6 +904,7 @@ body {
     }
     .activity-timer-display {
         font-size: 20px;
+        min-width: 60px; /* Адаптация за мобилни (промяна) */
     }
     .content-area {
         margin-bottom: 35px;
@@ -920,6 +937,7 @@ body {
     }
     .activity-timer-display {
         font-size: 18px;
+        min-width: 55px; /* Адаптация за малки екрани (промяна) */
     }
     .controls-btn,
     .side-switch-button-control {
@@ -1003,12 +1021,6 @@ body {
     border-color: #d1d5db;
     transform: translateY(-1px);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-.left-side .activity-bottom-controls .activity-timer-display {
-    order: -1;
-}
-.left-side .activity-bottom-controls .side-switch-button-control {
-    order: 1;
 }
 #help-btn {
     position: fixed;
