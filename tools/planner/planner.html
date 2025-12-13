@@ -1,13 +1,11 @@
 <!DOCTYPE html>
 <html lang="bg">
-
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Планировчик на Урока</title>
     <link rel="stylesheet" href="/tools/planner/styles/planner.css">
 </head>
-
 <body>
     <div id="app">
         <div id="control-panel">
@@ -99,10 +97,8 @@
             <img id="lightbox-img" src="" alt="Full size image">
         </div>
     </div>
-
     <!-- Help Button and Panel -->
     <button id="help-btn" title="Помощ за използване">❓</button>
-
     <div id="help-overlay"></div>
     <div id="help-panel">
         <!-- Променете този ред в помощния панел: -->
@@ -113,7 +109,6 @@
             </svg>
         </button>
         <h2>Как да използвате Планировчика</h2>
-
         <div class="help-section">
             <h3>Създаване на план на урока</h3>
             <ul>
@@ -123,7 +118,6 @@
                 <li>Попълнете заглавие, продължителност и ресурси</li>
             </ul>
         </div>
-
         <div class="help-section">
             <h3>Импорт/Експорт</h3>
             <ul>
@@ -132,7 +126,6 @@
                 <li>Можете да импортирате няколко урока наведнъж</li>
             </ul>
         </div>
-
         <div class="help-section">
             <h3>Провеждане на урока</h3>
             <ul>
@@ -143,7 +136,6 @@
                 <li>Бутонът КРАЙ нулира урока</li>
             </ul>
         </div>
-
         <div class="help-section">
             <h3>Други функции</h3>
             <ul>
@@ -154,14 +146,15 @@
                 <li>↕️ Вертикално плъзгане за промяна на реда на карта</li>
             </ul>
         </div>
-    </div>
-
-    <audio id="sound-start" src="/tools/planner/sounds/start-sound.mp3" preload="auto"></audio>
-    <audio id="sound-activity-complete" src="/tools/planner/sounds/activity-complete.mp3" preload="auto"></audio>
-    <audio id="sound-lesson-complete" src="/tools/planner/sounds/lesson-complete.mp3" preload="auto"></audio>
-    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-    <script src="https://unpkg.com/tone@14.7.77/build/Tone.js"></script>
-    <script src="/tools/planner/scripts/planner.js"></script>
+        <!-- Copyright надпис -->
+        <div id="copyright-footer">
+            © Всички права запазени. [2025] [Мартин Бялов]
+        </div>
+        <audio id="sound-start" src="/tools/planner/sounds/start-sound.mp3" preload="auto"></audio>
+        <audio id="sound-activity-complete" src="/tools/planner/sounds/activity-complete.mp3" preload="auto"></audio>
+        <audio id="sound-lesson-complete" src="/tools/planner/sounds/lesson-complete.mp3" preload="auto"></audio>
+        <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+        <script src="https://unpkg.com/tone@14.7.77/build/Tone.js"></script>
+        <script src="/tools/planner/scripts/planner.js"></script>
 </body>
-
 </html>

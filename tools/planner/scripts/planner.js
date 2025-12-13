@@ -1,4 +1,3 @@
-// planner.js
 let appContainer;
 let controlPanel;
 let lessonTopicInput;
@@ -65,30 +64,25 @@ const ACTIVITY_TEMPLATES = {
         imageUrl: '',
     }
 };
-
 function playNotificationSound(sound) {
     if (sound) {
         sound.currentTime = 0;
         sound.play().catch(e => console.error("Could not play sound:", e));
     }
 }
-
 function formatTime(totalSeconds) {
     const minutes = Math.floor(totalSeconds / 60);
     const seconds = Math.floor(totalSeconds % 60);
     return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
 }
-
 function calculateTotalDuration() {
     totalDurationSeconds = Math.round(scheduleData.reduce((total, activity) => total + (activity.duration * 60), 0));
     updateMainTimerDisplay();
 }
-
 function updateMainTimerDisplay() {
     const remaining = totalDurationSeconds - elapsedTimeSeconds;
     mainTimerDisplay.textContent = formatTime(remaining < 0 ? 0 : remaining);
 }
-
 function updateProgressDisplay() {
     const timelineProgressEl = document.getElementById('timeline-progress');
     const timelineContainerEl = document.getElementById('timeline-container-centered');
@@ -128,7 +122,6 @@ function updateProgressDisplay() {
     }
     timelineProgressEl.style.height = `${progressHeight}px`;
 }
-
 function startTimer() {
     if (isRunning) return;
     if (scheduleData.length === 0) {
@@ -136,15 +129,13 @@ function startTimer() {
         return;
     }
     isRunning = true;
-    updateTimelineRunningClass(); // НОВО: Обновяване на класа за стартиране
+    updateTimelineRunningClass();
     playNotificationSound(startSound);
-    // Update startBtn state for running timer
     startBtn.textContent = 'ПАУЗА';
-    startBtn.style.backgroundColor = '#f59e0b'; // Pause color
-    // Важно: При СТАРТИРАНЕ на урока бутонът "КРАЙ" се показва като "ФИНАЛ" (само етикет)
+    startBtn.style.backgroundColor = '#f59e0b';
     if (endLessonBtn) {
         endLessonBtn.textContent = 'ФИНАЛ';
-        endLessonBtn.disabled = true; // НЕАКТИВЕН - само етикет
+        endLessonBtn.disabled = true;
         endLessonBtn.setAttribute('data-state', 'final');
         endLessonBtn.style.cursor = 'default';
         endLessonBtn.style.opacity = '0.7';
@@ -169,7 +160,7 @@ function startTimer() {
         elapsedTimeSeconds++;
         updateMainTimerDisplay();
         updateProgressDisplay();
-        updateTimelineInfo(); // Added missing call from user's code
+        updateTimelineInfo();
         checkActivityCompletion();
         if (elapsedTimeSeconds >= totalDurationSeconds) {
             clearInterval(mainTimerInterval);
@@ -177,16 +168,13 @@ function startTimer() {
         }
     }, 1000);
 }
-
 function pauseTimer() {
     if (!isRunning) return;
     clearInterval(mainTimerInterval);
     isRunning = false;
-    updateTimelineRunningClass(); // НОВО: Обновяване на класа за стартиране
-    // Update startBtn state for paused timer
+    updateTimelineRunningClass();
     startBtn.textContent = 'СТАРТ';
     startBtn.style.backgroundColor = '#10b981';
-    // При пауза бутонът показва "КРАЙ" и е активен
     if (endLessonBtn) {
         endLessonBtn.textContent = 'КРАЙ';
         endLessonBtn.disabled = false;
@@ -196,7 +184,6 @@ function pauseTimer() {
     }
     renderSchedule();
 }
-
 function toggleTimer() {
     if (isRunning) {
         pauseTimer();
@@ -204,23 +191,20 @@ function toggleTimer() {
         startTimer();
     }
 }
-
 function resetLesson() {
     clearInterval(mainTimerInterval);
     elapsedTimeSeconds = 0;
     currentActivityIndex = -1;
     isRunning = false;
-    updateTimelineRunningClass(); // НОВО: Обновяване на класа за стартиране
+    updateTimelineRunningClass();
     scheduleData.forEach(a => a.status = 'pending');
     calculateTotalDuration();
-    // Update startBtn state for reset
     startBtn.textContent = 'СТАРТ';
     startBtn.style.backgroundColor = '#10b981';
     startBtn.disabled = scheduleData.length === 0;
-    // Важно: При НУЛИРАНЕ на урока бутонът "КРАЙ" се показва като "КРАЙ" и е активен
     if (endLessonBtn) {
         endLessonBtn.textContent = 'КРАЙ';
-        endLessonBtn.disabled = false; // АКТИВЕН за нулиране
+        endLessonBtn.disabled = false;
         endLessonBtn.setAttribute('data-state', 'end');
         endLessonBtn.style.cursor = 'pointer';
         endLessonBtn.style.opacity = '1';
@@ -235,13 +219,12 @@ function resetLesson() {
         lessonSelectDropdown.classList.remove('is-hidden');
         lessonSelectDropdown.style.display = 'inline-block';
     }
-    const timelineInfo = document.getElementById('timeline-progress-info'); // Added missing element retrieval
-    if (timelineInfo) timelineInfo.classList.add('is-hidden'); // Added missing logic for hiding info
-    updateTimelineInfo(); // Added missing call
+    const timelineInfo = document.getElementById('timeline-progress-info');
+    if (timelineInfo) timelineInfo.classList.add('is-hidden');
+    updateTimelineInfo();
     renderSchedule();
     updateProgressDisplay();
 }
-
 function checkActivityCompletion() {
     if (currentActivityIndex < 0 || currentActivityIndex >= scheduleData.length) return;
     const activity = scheduleData[currentActivityIndex];
@@ -260,7 +243,6 @@ function checkActivityCompletion() {
         completeActivity(currentActivityIndex);
     }
 }
-
 function updateTimelineInfo() {
     const elapsedTimeInfo = document.getElementById('elapsed-time-info');
     const remainingTimeInfo = document.getElementById('remaining-time-info');
@@ -270,11 +252,9 @@ function updateTimelineInfo() {
     if (elapsedTimeInfo) elapsedTimeInfo.textContent = `${elapsedMinutes} мин.`;
     if (remainingTimeInfo) remainingTimeInfo.textContent = `${remainingMinutes} мин.`;
 }
-
 function completeActivity(index) {
     if (index < 0 || index >= scheduleData.length) return;
     playNotificationSound(activityCompleteSound);
-    // Ensure the time is exactly at the end of the completed activity
     let timeAtEndOfActivity = 0;
     for (let i = 0; i <= index; i++) {
         timeAtEndOfActivity += scheduleData[i].duration * 60;
@@ -283,13 +263,12 @@ function completeActivity(index) {
     elapsedTimeSeconds = timeAtEndOfActivity;
     scheduleData[index].status = 'done';
     if (timeSavedSec > 0) {
-        // Redistribute saved time to remaining activities
         const remainingActivities = scheduleData.slice(index + 1).filter(a => a.status !== 'done');
         if (remainingActivities.length > 0) {
             const timePerActivityMin = timeSavedSec / 60 / remainingActivities.length;
             remainingActivities.forEach(activity => {
                 activity.duration = activity.duration + timePerActivityMin;
-                if (activity.duration < 0.1) activity.duration = 0.1; // Ensure min duration
+                if (activity.duration < 0.1) activity.duration = 0.1;
             });
             calculateTotalDuration();
         }
@@ -301,7 +280,7 @@ function completeActivity(index) {
     currentActivityIndex = nextIndex;
     if (currentActivityIndex < scheduleData.length) {
         scheduleData[currentActivityIndex].status = 'current';
-        if (isRunning) playNotificationSound(startSound); // Play start sound for next activity
+        if (isRunning) playNotificationSound(startSound);
     } else {
         clearInterval(mainTimerInterval);
         finishLesson();
@@ -311,22 +290,19 @@ function completeActivity(index) {
     updateMainTimerDisplay();
     updateProgressDisplay();
 }
-
 function finishLesson() {
     clearInterval(mainTimerInterval);
     isRunning = false;
-    updateTimelineRunningClass(); // НОВО: Обновяване на класа за стартиране
+    updateTimelineRunningClass();
     currentActivityIndex = -1;
     elapsedTimeSeconds = totalDurationSeconds;
     scheduleData.forEach(a => a.status = 'done');
-    // Update startBtn state for finished lesson
     startBtn.textContent = 'СТАРТ';
     startBtn.style.backgroundColor = '#10b981';
-    startBtn.disabled = true; // Cannot start a finished lesson
-    // Update endLessonBtn state for finished lesson
+    startBtn.disabled = true;
     if (endLessonBtn) {
-        endLessonBtn.textContent = 'КРАЙ'; // Вече служи за нулиране
-        endLessonBtn.disabled = false; // Активен за нулиране
+        endLessonBtn.textContent = 'КРАЙ';
+        endLessonBtn.disabled = false;
         endLessonBtn.setAttribute('data-state', 'end');
         endLessonBtn.style.cursor = 'pointer';
         endLessonBtn.style.opacity = '1';
@@ -346,30 +322,23 @@ function finishLesson() {
     updateMainTimerDisplay();
     updateProgressDisplay();
 }
-
 function toggleActivitySide(index) {
     if (index < 0 || index >= scheduleData.length) return;
     const currentSide = scheduleData[index].side;
     scheduleData[index].side = currentSide === 'left' ? 'right' : 'left';
     renderSchedule();
 }
-
 function renderSchedule() {
     if (!timelineContainer) return;
-    updateTimelineRunningClass(); // НОВО: Обновяване на класа за стартиране
-
+    updateTimelineRunningClass();
     const line = timelineContainer.querySelector('.timeline-line');
     const progress = timelineContainer.querySelector('#timeline-progress');
     const startResetContainer = timelineContainer.querySelector('#start-reset-container');
     const addActivityBtnSingle = timelineContainer.querySelector('#add-activity-btn-single');
-    const endLessonEl = timelineContainer.querySelector('#end-lesson-btn'); // Get the end button
-    const labelEndEl = timelineContainer.querySelector('#label-end'); // Get the end label
-
-    // Remove all existing activity wrappers
+    const endLessonEl = timelineContainer.querySelector('#end-lesson-btn');
+    const labelEndEl = timelineContainer.querySelector('#label-end');
     const wrappers = timelineContainer.querySelectorAll('.timeline-item-wrapper');
     wrappers.forEach(w => w.remove());
-
-    // Define elements to keep and re-insert in order, prioritizing structural elements
     const fixedElements = [
         startResetContainer,
         line,
@@ -379,14 +348,11 @@ function renderSchedule() {
         labelEndEl,
         addActivityBtnSingle
     ];
-
-    // Ensure all fixed elements are present in the DOM (this logic is simpler than the user's re-insertion block)
     fixedElements.forEach(el => {
         if (el && !timelineContainer.contains(el)) {
             timelineContainer.appendChild(el);
         }
     });
-
     scheduleData.forEach((activity, index) => {
         const wrapper = document.createElement('div');
         wrapper.className = `timeline-item-wrapper ${activity.side}-side`;
@@ -395,7 +361,6 @@ function renderSchedule() {
         const item = document.createElement('div');
         item.className = `timeline-content ${activity.status}-activity ${activity.imageUrl ? '' : 'no-image'}`;
         item.setAttribute('data-index', index);
-        // Header (Title, Duration)
         const header = document.createElement('div');
         header.className = 'timeline-header';
         const titleArea = document.createElement('div');
@@ -407,10 +372,8 @@ function renderSchedule() {
         `;
         header.appendChild(titleArea);
         item.appendChild(header);
-        // Controls (Right side buttons - only Link, Complete, Edit, Delete remain here)
         const controls = document.createElement('div');
         controls.className = 'activity-controls';
-        // Link Button
         if (activity.linkUrl) {
             const linkBtn = document.createElement('button');
             linkBtn.className = 'controls-btn link-btn';
@@ -419,7 +382,6 @@ function renderSchedule() {
             controls.appendChild(linkBtn);
             linkBtn.onclick = () => window.open(activity.linkUrl, '_blank');
         }
-        // Complete Button (visible only for current activity when running)
         if (index === currentActivityIndex && isRunning) {
             const finishBtn = document.createElement('button');
             finishBtn.className = 'controls-btn finish-btn';
@@ -428,7 +390,6 @@ function renderSchedule() {
             finishBtn.onclick = () => completeActivity(index);
             controls.appendChild(finishBtn);
         }
-        // Edit Button (hidden when running)
         const editBtn = document.createElement('button');
         editBtn.className = 'controls-btn edit-btn';
         editBtn.innerHTML = '✏️';
@@ -437,7 +398,6 @@ function renderSchedule() {
         if (!isRunning) {
             controls.appendChild(editBtn);
         }
-        // Delete Button (hidden when running)
         const deleteBtn = document.createElement('button');
         deleteBtn.className = 'controls-btn delete-btn';
         deleteBtn.innerHTML = '❌';
@@ -447,13 +407,9 @@ function renderSchedule() {
             controls.appendChild(deleteBtn);
         }
         item.appendChild(controls);
-        // Content Area (Image)
         const contentArea = document.createElement('div');
         contentArea.className = 'content-area';
-
-        // ЛОГИКА ЗА ФОРМИРАНЕ НА ПЪТЯ: Използваме imageUrl директно, тъй като вече е пълен URL
         let displayImageUrl = activity.imageUrl;
-
         if (displayImageUrl) {
             const imageContainer = document.createElement('div');
             imageContainer.className = 'image-container';
@@ -466,31 +422,27 @@ function renderSchedule() {
             contentArea.appendChild(imageContainer);
         }
         item.appendChild(contentArea);
-        // Bottom Controls (Timer/Status)
         const bottomControls = document.createElement('div');
         bottomControls.className = 'activity-bottom-controls';
-        // Timer/Duration Display
         const durationText = document.createElement('span');
         durationText.className = 'activity-plan-text';
         durationText.textContent = `Продължителност: ${activity.duration} мин.`;
         bottomControls.appendChild(durationText);
-        // Side Switch Button (ПРЕМЕСТЕН тук по изискване на потребителя)
         const sideSwitchBtn = document.createElement('button');
         sideSwitchBtn.className = 'controls-btn side-switch-button-control';
         sideSwitchBtn.title = activity.side === 'left' ? 'Премести надясно' : 'Премести наляво';
         sideSwitchBtn.innerHTML = '↔️';
         if (!isRunning) {
             sideSwitchBtn.onclick = () => toggleActivitySide(index);
-            sideSwitchBtn.style.display = 'flex'; // Показване на бутона когато не е стартиран
+            sideSwitchBtn.style.display = 'flex';
         } else {
-            sideSwitchBtn.style.display = 'none'; // Скриване на бутона когато е стартиран
+            sideSwitchBtn.style.display = 'none';
         }
         bottomControls.appendChild(sideSwitchBtn);
         const timerDisplay = document.createElement('span');
         timerDisplay.id = `timer-display-${index}`;
         timerDisplay.className = `activity-timer-display ${activity.status}-timer`;
         if (activity.status === 'current') {
-            // Initial display for current
             let activitiesBeforeCurrentTime = 0;
             for (let i = 0; i < index; i++) {
                 activitiesBeforeCurrentTime += scheduleData[i].duration * 60;
@@ -506,7 +458,6 @@ function renderSchedule() {
         bottomControls.appendChild(timerDisplay);
         item.appendChild(bottomControls);
         wrapper.appendChild(item);
-        // Find the element to insert the new activity before
         const insertBeforeTarget = labelEndEl || endLessonEl || addActivityBtnSingle;
         if (insertBeforeTarget) {
             timelineContainer.insertBefore(wrapper, insertBeforeTarget);
@@ -514,7 +465,6 @@ function renderSchedule() {
             timelineContainer.appendChild(wrapper);
         }
     });
-    // Update button states after rendering
     if (startBtn) {
         const isFinished = scheduleData.every(a => a.status === 'done') && scheduleData.length > 0;
         if (isRunning) {
@@ -531,28 +481,23 @@ function renderSchedule() {
             startBtn.disabled = scheduleData.length === 0;
         }
     }
-    // Update end Button state based on current situation
     if (endLessonBtn) {
         endLessonBtn.style.display = 'block';
-        // Логика за текста на бутона
         if (isRunning) {
-            // Урокът е активен - бутонът е "ФИНАЛ" (само етикет)
             endLessonBtn.textContent = 'ФИНАЛ';
-            endLessonBtn.disabled = true; // НЕАКТИВЕН
+            endLessonBtn.disabled = true;
             endLessonBtn.setAttribute('data-state', 'final');
             endLessonBtn.style.cursor = 'default';
             endLessonBtn.style.opacity = '0.7';
         } else if (elapsedTimeSeconds === 0 && !isRunning) {
-            // Урокът не е стартиран - бутонът е "КРАЙ" и е активен
             endLessonBtn.textContent = 'КРАЙ';
-            endLessonBtn.disabled = false; // АКТИВЕН за нулиране
+            endLessonBtn.disabled = false;
             endLessonBtn.setAttribute('data-state', 'end');
             endLessonBtn.style.cursor = 'pointer';
             endLessonBtn.style.opacity = '1';
         } else if (elapsedTimeSeconds > 0 && !isRunning) {
-            // Урокът е на пауза или завършен - бутонът е "КРАЙ" и е активен
             endLessonBtn.textContent = 'КРАЙ';
-            endLessonBtn.disabled = false; // АКТИВЕН за нулиране
+            endLessonBtn.disabled = false;
             endLessonBtn.setAttribute('data-state', 'end');
             endLessonBtn.style.cursor = 'pointer';
             endLessonBtn.style.opacity = '1';
@@ -560,7 +505,6 @@ function renderSchedule() {
     }
     updateProgressDisplay();
 }
-
 function openModal(index) {
     if (isRunning) return;
     editActivityIndex = index;
@@ -571,10 +515,7 @@ function openModal(index) {
         activityTitleInput.value = activity.title;
         activityDurationInput.value = activity.duration;
         activityLinkInput.value = activity.linkUrl;
-
-        // При редактиране показваме пълния URL
         activityImageInput.value = activity.imageUrl;
-
         activityTitleInput.readOnly = false;
         activityDurationInput.readOnly = false;
         activityImageInput.readOnly = false;
@@ -594,16 +535,13 @@ function openModal(index) {
     activityModal.classList.add('is-active');
     activityTitleInput.focus();
 }
-
 function closeModal() {
     activityModal.classList.remove('is-active');
     editActivityIndex = null;
-    if (imageUploadInput) imageUploadInput.value = ''; // Clear file input
-    // Remove temporary file name display on close
+    if (imageUploadInput) imageUploadInput.value = '';
     const fileNameDisplay = document.querySelector('.file-name-display');
     if (fileNameDisplay) fileNameDisplay.remove();
 }
-
 function autoFillActivity() {
     const selectedKey = activityTemplateSelect.value;
     const template = ACTIVITY_TEMPLATES[selectedKey];
@@ -618,140 +556,102 @@ function autoFillActivity() {
     activityLinkInput.readOnly = isDisabled;
     if (imageUploadInput) imageUploadInput.value = '';
 }
-
-// НОВА АСИНХРОННА ФУНКЦИЯ ЗА КАЧВАНЕ НА ФАЙЛ (Изпраща Base64 към сървъра)
 async function handleImageUpload(event) {
     const file = event.target.files[0];
     if (!file) return;
-
     if (!file.type.startsWith('image/')) {
         alert('Моля, изберете валиден файл с изображение.');
         event.target.value = '';
         return;
     }
-
-    // Fixed: Use correct variable name (imageUploadButtonContainer) and element querying
     const uploadButtonEl = imageUploadButtonContainer.querySelector('.upload-btn');
     const originalButtonText = uploadButtonEl.textContent;
     let fileNameDisplay = imageUploadButtonContainer.parentElement.querySelector('.file-name-display');
-
     if (!fileNameDisplay) {
         fileNameDisplay = document.createElement('span');
         fileNameDisplay.className = 'file-name-display';
-        // Insert after the imageUploadButtonContainer
         imageUploadButtonContainer.parentElement.insertBefore(fileNameDisplay, imageUploadButtonContainer.nextSibling);
     }
-
     try {
-        // 1. Четене на файла като Base64
         uploadButtonEl.textContent = '...';
         imageUploadButtonContainer.disabled = true;
         fileNameDisplay.textContent = `Четене на: ${file.name}...`;
-
         const base64Image = await new Promise((resolve, reject) => {
             const reader = new FileReader();
             reader.onload = () => {
-                // Извличаме само Base64 частта (без "data:image/jpeg;base64,")
                 const base64Data = reader.result.split(',')[1];
                 resolve(base64Data);
             };
             reader.onerror = error => reject(error);
             reader.readAsDataURL(file);
         });
-
-        // 2. Индикация за зареждане
         uploadButtonEl.textContent = '...';
         fileNameDisplay.textContent = `Качвам: ${file.name}...`;
-
-        // 3. Изпращане към бекенд (JSON с Base64). Ендпойнтът се проксира от server.js към C# API
         const response = await fetch('/api/upload-image', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json' // Важно за JSON payload
+                'Content-Type': 'application/json'
             },
             body: JSON.stringify({
                 base64Image: base64Image,
                 fileName: file.name
             })
         });
-
         if (!response.ok) {
             const errorBody = await response.json().catch(() => ({}));
             const errorText = errorBody.message || response.statusText;
             throw new Error(`Upload failed: ${response.status} ${errorText}`);
         }
-
         const result = await response.json();
-
-        // 4. Успешно качване: Запазваме върнатия URL
         const imageUrl = result.url;
         if (!imageUrl) {
             throw new Error('Upload successful, but no URL returned from server.');
         }
-
         activityImageInput.value = imageUrl;
         fileNameDisplay.textContent = `Успешно качен: ${file.name}`;
-
-        // Remove file name display after a few seconds
         setTimeout(() => {
             if (fileNameDisplay.parentElement) {
                 fileNameDisplay.remove();
             }
         }, 3000);
-
     } catch (error) {
         console.error('Image upload error:', error);
-        activityImageInput.value = ''; // Clear URL input on error
-
-        // Display a more concise error message on the UI
+        activityImageInput.value = '';
         const displayErrorMessage = `Грешка при качване. ${error.message.substring(0, 50)}...`;
         fileNameDisplay.textContent = displayErrorMessage;
-
-        // Optionally, alert the user with full details
         alert(`Грешка при качване на изображението: ${error.message}. Моля, въведете URL ръчно.`);
-
     } finally {
-        // 5. Връщане на оригиналното състояние
         uploadButtonEl.textContent = originalButtonText;
         imageUploadButtonContainer.disabled = false;
-        event.target.value = ''; // Clear file input
+        event.target.value = '';
     }
 }
-
-// Функцията saveActivity вече просто запазва това, което е в activityImageInput (URL)
 function saveActivity() {
     const title = activityTitleInput.value.trim();
     const duration = parseFloat(activityDurationInput.value);
     const linkUrl = activityLinkInput.value.trim();
     let imageUrl = activityImageInput.value.trim();
-
-    // Предотвратяваме запазване на временни/грешни съобщения, ако са останали
     if (imageUrl.includes("Качен файл") || imageUrl.includes("Грешка при качване")) {
         imageUrl = '';
     }
-
     if (!title || isNaN(duration) || duration <= 0) {
         alert('Моля, въведете валидно име и продължителност (по-голяма от 0).');
         return;
     }
-
-    // Check if it's an image input from a previous step
     if (activityTemplateSelect.value === 'custom' && activityTitleInput.readOnly) {
         activityTitleInput.readOnly = false;
         activityDurationInput.readOnly = false;
         activityImageInput.readOnly = false;
         activityLinkInput.readOnly = false;
     }
-
     const newActivity = {
         title,
         duration,
         linkUrl,
         imageUrl,
         status: 'pending',
-        side: editActivityIndex !== null ? scheduleData[editActivityIndex].side : (scheduleData.length % 2 === 0 ? 'right' : 'left') // Preserve side on edit, use alternating on new
+        side: editActivityIndex !== null ? scheduleData[editActivityIndex].side : (scheduleData.length % 2 === 0 ? 'right' : 'left')
     };
-
     if (editActivityIndex !== null) {
         newActivity.status = scheduleData[editActivityIndex].status;
         scheduleData[editActivityIndex] = newActivity;
@@ -762,22 +662,14 @@ function saveActivity() {
     calculateTotalDuration();
     renderSchedule();
 }
-
 function deleteActivity(index) {
     if (isRunning) return;
     if (confirm(`Сигурни ли сте, че искате да изтриете дейността: "${scheduleData[index].title}"?`)) {
-
-        // Find if this activity was the current one
-        let activityStatus = scheduleData[index].status;
-
         scheduleData.splice(index, 1);
-
-        // Logic to correct currentActivityIndex after deletion
         if (isRunning) {
             if (index < currentActivityIndex) {
                 currentActivityIndex--;
             } else if (index === currentActivityIndex) {
-                // If the current activity was deleted, try to move to the next 'pending' one
                 let nextIndex = index;
                 while (nextIndex < scheduleData.length && scheduleData[nextIndex].status !== 'pending') {
                     nextIndex++;
@@ -791,61 +683,45 @@ function deleteActivity(index) {
                 }
             }
         }
-
-        // If no activities left, reset state
         if (scheduleData.length === 0) {
             elapsedTimeSeconds = 0;
             currentActivityIndex = -1;
-            isRunning = false; // Ensure isRunning is false
+            isRunning = false;
         }
-
         calculateTotalDuration();
         renderSchedule();
-
-        // Update start button state after deletion
         if (startBtn) {
             startBtn.textContent = 'СТАРТ';
             startBtn.style.backgroundColor = '#10b981';
             startBtn.disabled = scheduleData.length === 0;
         }
-        // Update end button state
         if (endLessonBtn) {
             endLessonBtn.disabled = elapsedTimeSeconds === 0;
         }
     }
 }
-
 function openLightbox(imageUrl) {
     lightboxImg.src = imageUrl;
     lightbox.classList.add('is-active');
 }
-
 function closeLightbox() {
     lightbox.classList.remove('is-active');
 }
-
 function downloadTemplate() {
-    const header = ["Урок", "Дейност", "Продължителност (мин)", "Ресурс (Линк)", "Изображение (URL)"];
-    const ws_data = [
-        header,
-        ["Въведение в HTML", "Презентация", 5, "https://example.com/slide.pdf", "https://i.ibb.co/49X7VMs/task.png"], // Вече използваме пълен URL
-        ["Въведение в HTML", "Практическа задача", 10, "", "https://i.ibb.co/2153GK5s/practical-task.jpg"],
-        ["Въведение в HTML", "Групова работа", 15, "https://example.com/quiz.html", ""],
-    ];
-    const wb = XLSX.utils.book_new();
-    const ws = XLSX.utils.aoa_to_sheet(ws_data);
-    // Set column widths
-    ws['!cols'] = [
-        { wch: 20 }, // A: Lesson Topic
-        { wch: 30 }, // B: Activity Title
-        { wch: 10 }, // C: Duration
-        { wch: 40 }, // D: Resource Link
-        { wch: 40 }, // E: Image URL
-    ];
-    XLSX.utils.book_append_sheet(wb, ws, "Урок 1");
-    XLSX.writeFile(wb, "шаблон_план_на_урока.xlsx");
+    const templateUrl = '/tools/planner/templates/lesson_plan_template.xlsx';
+    try {
+        const link = document.createElement('a');
+        link.href = templateUrl;
+        link.download = 'lesson_plan_template.xlsx';
+        link.style.display = 'none';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    } catch (error) {
+        console.error('Download using link method failed:', error);
+        window.open(templateUrl, '_blank');
+    }
 }
-
 function handleFileImport(event) {
     if (isRunning) return;
     const file = event.target.files[0];
@@ -872,8 +748,7 @@ function handleFileImport(event) {
             if (isCSV) {
                 let csvContent;
                 let encoding;
-                // Try to infer encoding (simplified)
-                if (data[0] === 0xFF && data[1] === 0xFE) { // UTF-16LE BOM
+                if (data[0] === 0xFF && data[1] === 0xFE) {
                     encoding = 'utf-16le';
                 } else {
                     encoding = 'windows-1251';
@@ -895,7 +770,6 @@ function handleFileImport(event) {
                 if (json.length < 2) return;
                 let lessonTopic = sheetName.trim() || `Импортиран урок от XLSX ${index + 1}`;
                 const activities = [];
-                // Assuming structure: Col B (1) for Title, Col C (2) for Duration, Col D (3) for Resource, Col E (4) for Image
                 const activityTitleCol = 1;
                 const durationCol = 2;
                 const resourceCol = 3;
@@ -908,7 +782,6 @@ function handleFileImport(event) {
                     const imageField = (row[imageCol] || '').toString().trim();
                     let linkUrl = resourceField;
                     let imageUrl = imageField;
-                    // Basic check to see if resource is an image link
                     if (!imageUrl && linkUrl) {
                         if (linkUrl.match(/\.(jpeg|jpg|gif|png|webp|svg)$/i)) {
                             imageUrl = linkUrl;
@@ -920,9 +793,9 @@ function handleFileImport(event) {
                             title: activityTitle,
                             duration: duration,
                             linkUrl: linkUrl,
-                            imageUrl: imageUrl, // Запазваме директно URL-а
+                            imageUrl: imageUrl,
                             status: 'pending',
-                            side: 'left' // Default side
+                            side: 'left'
                         });
                     }
                 }
@@ -950,7 +823,6 @@ function handleFileImport(event) {
     };
     reader.readAsArrayBuffer(file);
 }
-
 function updateLessonDropdown(lessons) {
     if (!lessonSelectDropdown) return;
     lessonSelectDropdown.innerHTML = '';
@@ -967,7 +839,6 @@ function updateLessonDropdown(lessons) {
     lessonSelectDropdown.classList.remove('is-hidden');
     lessonSelectDropdown.style.display = 'inline-block';
 }
-
 function loadLesson(lesson) {
     if (isRunning) return;
     resetLesson();
@@ -980,7 +851,6 @@ function loadLesson(lesson) {
     calculateTotalDuration();
     renderSchedule();
 }
-
 function initializeDOM() {
     appContainer = document.getElementById('app');
     controlPanel = document.getElementById('control-panel');
@@ -992,17 +862,15 @@ function initializeDOM() {
     addActivityBtn = document.getElementById('add-activity-btn-single');
     timelineProgress = document.getElementById('timeline-progress');
     victoryTrophyDisplay = document.getElementById('victory-screen');
-    // Бутон Край/Нулиране (End/Reset button)
     endLessonBtn = document.getElementById('end-lesson-btn');
     if (!endLessonBtn) {
         endLessonBtn = document.createElement('button');
         endLessonBtn.id = 'end-lesson-btn';
-        endLessonBtn.textContent = 'КРАЙ'; // Начален текст
-        endLessonBtn.disabled = false; // Начално състояние: активен
+        endLessonBtn.textContent = 'КРАЙ';
+        endLessonBtn.disabled = false;
         endLessonBtn.setAttribute('data-state', 'end');
         timelineContainer.appendChild(endLessonBtn);
     }
-    // Modal elements
     activityModal = document.getElementById('activity-modal');
     modalTitle = document.getElementById('modal-title');
     activityTemplateSelect = document.getElementById('activity-template-select');
@@ -1013,43 +881,33 @@ function initializeDOM() {
     imageUploadInput = document.getElementById('image-upload-input');
     modalSaveBtn = document.getElementById('modal-save-btn');
     modalCancelBtn = document.getElementById('modal-cancel-btn');
-    imageUploadButtonContainer = document.getElementById('image-upload-btn-container'); // Fixed initialization to use the correct ID from HTML structure
-    // Lightbox elements
+    imageUploadButtonContainer = document.getElementById('image-upload-btn-container');
     lightbox = document.getElementById('lightbox');
     lightboxImg = document.getElementById('lightbox-img');
     lightboxCloseBtn = document.getElementById('lightbox-close-btn');
-    // File/Export elements
     importPlanBtn = document.getElementById('import-plan-btn');
     fileInput = document.getElementById('file-input');
     downloadTemplateBtn = document.getElementById('download-template-btn');
-    // Audio elements
     startSound = document.getElementById('sound-start');
     activityCompleteSound = document.getElementById('sound-activity-complete');
     lessonCompleteSound = document.getElementById('sound-lesson-complete');
-    // Help system elements - НОВО
     window.helpBtn = document.getElementById('help-btn');
     window.helpPanel = document.getElementById('help-panel');
     window.helpOverlay = document.getElementById('help-overlay');
     window.closeHelpBtn = document.getElementById('close-help-btn');
 }
-
 function setupEventListeners() {
     if (startBtn) startBtn.addEventListener('click', toggleTimer);
-    // НОВА ЛОГИКА ЗА БУТОН КРАЙ съгласно изискванията
     if (endLessonBtn) {
         endLessonBtn.addEventListener('click', () => {
             if (isRunning) {
-                // Урокът е активен, 'ФИНАЛ' е само етикет - нищо не правим
                 return;
             } else {
-                // Урокът не е активен, 'КРАЙ' означава нулиране
                 resetLesson();
             }
         });
     }
-    // НОВА ЛОГИКА ЗА ЗАТВАРЯНЕ НА ЕКРАНА ЗА ПОБЕДА (Изискване 4)
     if (victoryTrophyDisplay) {
-        // Затваряне на екрана и нулиране на урока при клик
         victoryTrophyDisplay.addEventListener('click', () => {
             resetLesson();
         });
@@ -1058,21 +916,17 @@ function setupEventListeners() {
     if (modalCancelBtn) modalCancelBtn.addEventListener('click', closeModal);
     if (modalSaveBtn) modalSaveBtn.addEventListener('click', saveActivity);
     if (lightboxCloseBtn) lightboxCloseBtn.addEventListener('click', closeLightbox);
-
     appContainer.addEventListener('click', (e) => {
         if (e.target.id === 'activity-modal') closeModal();
     });
     if (activityTemplateSelect) activityTemplateSelect.addEventListener('change', autoFillActivity);
     if (imageUploadInput) imageUploadInput.addEventListener('change', handleImageUpload);
-
-    // Fixed logic to use the correct variable name and trigger file input click
     if (imageUploadButtonContainer && imageUploadInput) {
         imageUploadButtonContainer.addEventListener('click', (e) => {
-            e.stopPropagation(); // Stop event propagation to prevent modal closing
+            e.stopPropagation();
             imageUploadInput.click();
         });
     }
-
     if (downloadTemplateBtn) downloadTemplateBtn.addEventListener('click', downloadTemplate);
     if (importPlanBtn) {
         importPlanBtn.addEventListener('click', () => fileInput.click());
@@ -1088,8 +942,6 @@ function setupEventListeners() {
             }
         });
     }
-
-    // Help system event listeners - НОВО
     if (window.helpBtn) {
         window.helpBtn.addEventListener('click', toggleHelpPanel);
     }
@@ -1099,17 +951,13 @@ function setupEventListeners() {
     if (window.helpOverlay) {
         window.helpOverlay.addEventListener('click', toggleHelpPanel);
     }
-
-    // Close help panel with Escape key - НОВО
     document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape' && window.helpPanel && window.helpPanel.classList.contains('active')) {
             toggleHelpPanel();
         }
     });
-
     setupDragAndDrop();
 }
-
 function setupDragAndDrop() {
     if (!timelineContainer) return;
     timelineContainer.addEventListener('dragstart', (e) => {
@@ -1145,34 +993,26 @@ function setupDragAndDrop() {
             dragOverTargetIndex = null;
         }
     });
-
     timelineContainer.addEventListener('dragleave', (_e) => {
         if (isRunning) return;
-        // Clean up classes on drag leave
         timelineContainer.querySelectorAll('.drop-target-above, .drop-target-below').forEach(el => {
             el.classList.remove('drop-target-above', 'drop-target-below');
         });
     });
-
     timelineContainer.addEventListener('drop', (e) => {
         if (isRunning) return;
         e.preventDefault();
-
         if (draggedItem && dragOverTargetIndex !== null) {
             const fromIndex = parseInt(draggedItem.dataset.index);
             let toIndex = dragOverTargetIndex;
-
             if (fromIndex < toIndex) {
-                toIndex--; // Adjust index if dropping after an item with a higher index
+                toIndex--;
             }
-
             if (fromIndex !== toIndex) {
                 const [movedActivity] = scheduleData.splice(fromIndex, 1);
                 scheduleData.splice(toIndex, 0, movedActivity);
-
-                // Update currentActivityIndex if necessary
                 let finalIndex = toIndex;
-                if (fromIndex < toIndex) finalIndex = toIndex - 1; // Correct final index if shifted
+                if (fromIndex < toIndex) finalIndex = toIndex - 1;
                 if (currentActivityIndex !== -1) {
                     if (currentActivityIndex === fromIndex) {
                         currentActivityIndex = finalIndex;
@@ -1182,11 +1022,9 @@ function setupDragAndDrop() {
                         currentActivityIndex++;
                     }
                 }
-
                 calculateTotalDuration();
                 renderSchedule();
             }
-
             timelineContainer.querySelectorAll('.drop-target-above, .drop-target-below').forEach(el => {
                 el.classList.remove('drop-target-above', 'drop-target-below');
             });
@@ -1208,8 +1046,6 @@ function setupDragAndDrop() {
         dragOverTargetIndex = null;
     });
 }
-
-// НОВА ФУНКЦИЯ: Превключване на помощния панел
 function toggleHelpPanel() {
     if (window.helpPanel && window.helpOverlay) {
         const isActive = window.helpPanel.classList.contains('active');
@@ -1222,8 +1058,6 @@ function toggleHelpPanel() {
         }
     }
 }
-
-// НОВА ФУНКЦИЯ: Добавяне/премахване на клас 'is-running' за timeline контейнера
 function updateTimelineRunningClass() {
     if (timelineContainer) {
         if (isRunning) {
@@ -1233,7 +1067,6 @@ function updateTimelineRunningClass() {
         }
     }
 }
-
 document.addEventListener('DOMContentLoaded', () => {
     initializeDOM();
     setupEventListeners();

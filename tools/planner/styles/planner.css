@@ -10,14 +10,12 @@ body {
     margin: 0;
     box-sizing: border-box;
 }
-
 #app {
     width: 100%;
     max-width: 1024px;
     position: relative;
     padding-bottom: 50px;
 }
-
 #control-panel {
     background-color: white;
     border-radius: 12px;
@@ -32,7 +30,6 @@ body {
     gap: 16px;
     align-items: center;
 }
-
 #lesson-topic {
     border: none;
     border-bottom: 2px solid #ccc;
@@ -44,12 +41,10 @@ body {
     text-align: center;
     transition: border-bottom-color 0.3s ease-in-out;
 }
-
 #lesson-topic:focus {
     outline: none;
     border-bottom-color: #3b82f6;
 }
-
 #lesson-select-dropdown {
     width: 100%;
     padding: 10px 15px;
@@ -65,15 +60,12 @@ body {
     background-size: 1.5em;
     cursor: pointer;
 }
-
 #lesson-select-dropdown:hover {
     border-color: #9ca3af;
 }
-
 #lesson-select-dropdown.is-hidden {
     display: none !important;
 }
-
 .timer-section {
     display: block;
     justify-content: space-between;
@@ -83,7 +75,6 @@ body {
     position: static;
     min-height: 0;
 }
-
 #main-timer-display {
     position: absolute;
     bottom: 24px;
@@ -95,17 +86,14 @@ body {
     font-variant-numeric: tabular-nums;
     z-index: 10;
 }
-
 #start-btn:hover:not(:disabled) {
     background-color: #10b981;
 }
-
 #start-btn:disabled {
     background-color: #9ca3af;
     cursor: not-allowed;
     opacity: 0.8;
 }
-
 #reset-btn-corner {
     padding: 12px 24px;
     background-color: #ef9144;
@@ -119,13 +107,12 @@ body {
     letter-spacing: 0.5px;
     display: none;
 }
-
 #reset-btn-corner:hover {
     background-color: #dc2626;
 }
-
-#reset-btn-corner:active {}
-
+#reset-btn-corner:active {
+    opacity: 1;
+}
 #plan-controls-container {
     position: absolute;
     right: 24px;
@@ -136,7 +123,6 @@ body {
     align-items: center;
     z-index: 10;
 }
-
 .timeline-container-centered {
     position: relative;
     padding: 0 0 40px 0;
@@ -146,7 +132,6 @@ body {
     flex-direction: column;
     align-items: center;
 }
-
 #start-reset-container {
     position: absolute;
     top: -15px;
@@ -158,7 +143,6 @@ body {
     align-items: center;
     justify-content: center;
 }
-
 .timeline-line {
     position: absolute;
     left: 50%;
@@ -169,7 +153,6 @@ body {
     top: 10px;
     height: calc(100% - 30px);
 }
-
 #timeline-progress {
     position: absolute;
     left: 50%;
@@ -181,7 +164,6 @@ body {
     height: 0px;
     transition: height 0.5s ease-out;
 }
-
 #timeline-progress-info {
     position: absolute;
     top: -5px;
@@ -196,17 +178,14 @@ body {
     color: #6b7280;
     margin-bottom: 20px;
 }
-
 #timeline-progress-info b {
     font-weight: bold;
     color: #dc2626;
 }
-
 #timeline-progress-info span {
     font-weight: bold;
     color: #f59e0b;
 }
-
 .timeline-label {
     position: absolute;
     left: 50%;
@@ -223,9 +202,9 @@ body {
     white-space: nowrap;
     min-width: 100px;
 }
-
-.label-start {}
-
+.label-start {
+    top: 0;
+}
 .label-end {
     position: absolute;
     bottom: -5px;
@@ -234,7 +213,6 @@ body {
     margin: 0;
     display: none !important;
 }
-
 #start-btn {
     position: absolute !important;
     top: 5px !important;
@@ -260,27 +238,20 @@ body {
     border: 2px solid #fff !important;
     cursor: pointer;
 }
-
 #start-btn:not(:disabled) {
     background-color: #10b981 !important;
     color: white !important;
 }
-
 #start-btn:hover:not(:disabled) {
     background-color: #059669 !important;
     transform: translateX(-50%) scale(1.05) !important;
 }
-
 #start-btn:active:not(:disabled) {
-
     transform: translateX(-50%) scale(0.95) !important;
-
 }
-
 #reset-btn-corner {
     display: none !important;
 }
-
 #end-lesson-btn {
     position: absolute !important;
     bottom: -5px !important;
@@ -305,38 +276,30 @@ body {
     border: 2px dashed #fff !important;
     opacity: 1 !important;
 }
-
 #end-lesson-btn[data-state="final"] {
     background-color: #1f2937 !important;
     border: 2px dashed #fff !important;
 }
-
 #end-lesson-btn[data-state="reset"] {
     background-color: #1f2937 !important;
     border: 2px dashed #fff !important;
 }
-
 #end-lesson-btn[data-state="end"] {
     background-color: #1f2937 !important;
     border: 2px dashed #fff !important;
 }
-
 #end-lesson-btn:hover:not(:disabled) {
     background-color: #0f172a !important;
     transform: translateX(-50%) scale(1.05) !important;
 }
-
 #end-lesson-btn:disabled {
     background-color: #1f2937 !important;
     border: 2px dashed #fff !important;
     cursor: not-allowed;
-
 }
-
 #end-lesson-btn:active:not(:disabled) {
     transform: translateX(-50%) scale(0.95) !important;
 }
-
 .timeline-item-wrapper {
     width: 100%;
     display: flex;
@@ -346,17 +309,14 @@ body {
     box-sizing: border-box;
     transition: background 0.2s;
 }
-
 .left-side {
     padding-right: 50%;
     justify-content: flex-end;
 }
-
 .right-side {
     padding-left: 50%;
     justify-content: flex-start;
 }
-
 .timeline-content {
     width: 100%;
     max-width: 452px;
@@ -375,59 +335,46 @@ body {
     overflow: hidden;
     margin-top: 35px;
 }
-
 .timeline-content.no-image {
     min-height: 80px;
     padding: 10px 10px 50px 10px;
 }
-
 .timeline-content:hover {
     box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
     cursor: grab;
 }
-
 .timeline-content:active {
     cursor: grabbing;
 }
-
 .pending-activity:hover {
     border-color: #bfdbfe;
     cursor: grab;
 }
-
 .current-activity {
     border-color: #f59e0b !important;
     box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.2), 0 10px 15px -3px rgba(0, 0, 0, 0.1);
     animation: pulse 3s infinite;
 }
-
 @keyframes pulse {
     0% {
         box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.7), 0 10px 15px -3px rgba(0, 0, 0, 0.1);
     }
-
     70% {
         box-shadow: 0 0 0 15px rgba(245, 158, 11, 0), 0 10px 15px -3px rgba(0, 0, 0, 0.1);
     }
-
     100% {
         box-shadow: 0 0 0 0 rgba(245, 158, 11, 0), 0 10px 15px -3px rgba(0, 0, 0, 0.1);
     }
-
 }
-
 .dot-done {
     background: #10b981 !important;
 }
-
 .dot-current {
     background: #f59e0b !important;
 }
-
 .pending-activity {
     background: white;
 }
-
 .activity-bottom-controls {
     position: absolute;
     bottom: 10px;
@@ -438,27 +385,22 @@ body {
     justify-content: space-between;
     z-index: 40;
 }
-
 .side-switch-button-control {
     font-size: 18px;
     line-height: 0;
 }
-
 .side-switch-button-control:hover:not(:disabled) {
     transform: scale(1.1);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
-
 .side-switch-button-control:disabled {
     opacity: 0.5;
     cursor: default;
     transform: none;
 }
-
 .absolute-dot {
     display: none;
 }
-
 .timeline-header {
     display: flex;
     justify-content: space-between;
@@ -468,9 +410,7 @@ body {
     margin-bottom: 4px;
     min-height: 20px;
     border-bottom: 3px dashed #d1d5db;
-
 }
-
 .title-area {
     display: flex;
     flex-direction: column;
@@ -480,12 +420,10 @@ body {
     width: 100%;
     height: 90px;
 }
-
 .title-row {
     align-items: center;
     width: 100%;
 }
-
 .activity-title {
     font-weight: bold;
     color: #1f2937;
@@ -501,29 +439,23 @@ body {
     text-align: left;
     margin-top: 1.6em;
 }
-
 .activity-plan-text {
     display: none !important;
 }
-
 .activity-timer-display {
     font-size: 24px;
     font-weight: 900;
     font-variant-numeric: tabular-nums;
 }
-
 .current-timer {
     color: #f59e0b;
 }
-
 .done-timer {
     color: #10b981;
 }
-
 .pending-timer {
     color: #9ca3af;
 }
-
 .activity-controls {
     position: absolute;
     top: 10px;
@@ -538,7 +470,6 @@ body {
     padding: 0;
     box-sizing: border-box;
 }
-
 .controls-btn {
     background: none;
     border: none;
@@ -562,67 +493,55 @@ body {
     background-color: white;
     border: 1px solid #e5e7eb;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-
 }
-
 .controls-btn:hover {
     background-color: #f9fafb;
     border-color: #d1d5db;
     transform: translateY(-1px);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
-
 .controls-btn .btn-text {
     display: none;
 }
-
 .finish-btn {
     color: #047857;
     font-weight: 700;
     background-color: rgba(5, 150, 105, 0.05);
     border-color: #a7f3d0;
 }
-
 .finish-btn:hover {
     color: #064e3b;
     background-color: rgba(5, 150, 105, 0.1);
     border-color: #34d399;
 }
-
 .edit-btn {
     color: #2563eb;
 }
-
 .edit-btn:hover {
     color: #1d4ed8;
     background-color: rgba(37, 99, 235, 0.05);
     border-color: #93c5fd;
 }
-
 .delete-btn {
     color: #dc2626;
     background-color: rgba(220, 38, 38, 0.05);
     border-color: #fca5a5;
 }
-
 .delete-btn:hover {
     color: #b91c1c;
     background-color: rgba(220, 38, 38, 0.1);
     border-color: #f87171;
 }
-
 .link-btn {
     color: #7c3aed;
     background-color: rgba(124, 58, 237, 0.05);
     border-color: #c4b5fd;
 }
-
 .link-btn:hover {
     color: #5b21b6;
     background-color: rgba(124, 58, 237, 0.1);
     border-color: #a78bfa;
 }
-
 .image-container {
     margin-top: 4px;
     width: 100%;
@@ -637,22 +556,18 @@ body {
     border: 1px solid #e5e7eb;
     transition: transform 0.2s ease;
 }
-
 .image-container:hover {
     transform: scale(1.02);
 }
-
 .activity-image {
     width: 100%;
     height: 100%;
     object-fit: cover;
     transition: transform 0.3s ease-in-out;
 }
-
 .activity-image:hover {
     transform: scale(1.05);
 }
-
 #add-activity-btn-single {
     position: sticky;
     bottom: 20px;
@@ -675,34 +590,28 @@ body {
     justify-content: center;
     align-items: center;
 }
-
 #add-activity-btn-single:hover {
     transform: scale(1.1);
     background: #059669;
     border-color: white;
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
 }
-
 .is-hidden {
     display: none !important;
 }
-
 .dragging {
     opacity: 0.5;
     transform: scale(0.95);
     cursor: grabbing !important;
 }
-
 .drop-target-above {
     border-top: 3px solid #3b82f6;
     margin-top: 10px;
 }
-
 .drop-target-below {
     border-bottom: 3px solid #3b82f6;
     margin-bottom: 10px;
 }
-
 #activity-modal,
 #lightbox,
 #victory-screen,
@@ -723,7 +632,6 @@ body {
     box-sizing: border-box;
     overflow-y: auto;
 }
-
 #activity-modal.is-active,
 #lightbox.is-active,
 #victory-screen.is-active,
@@ -731,7 +639,6 @@ body {
     display: flex;
     opacity: 1;
 }
-
 #activity-modal>div,
 #info-modal>div {
     background-color: white;
@@ -743,7 +650,6 @@ body {
     margin: 40px 0;
     box-sizing: border-box;
 }
-
 #modal-title {
     font-size: 24px;
     font-weight: bold;
@@ -751,7 +657,6 @@ body {
     margin-bottom: 40px;
     text-align: center;
 }
-
 .modal-form label {
     display: block;
     font-weight: bold;
@@ -760,7 +665,6 @@ body {
     margin-bottom: 4px;
     font-size: 14px;
 }
-
 .modal-form input[type="text"],
 .modal-form input[type="number"],
 .modal-form select {
@@ -772,12 +676,10 @@ body {
     box-sizing: border-box;
     transition: background-color 0.2s;
 }
-
 .modal-form select:disabled {
     background-color: #f3f4f6;
     cursor: not-allowed;
 }
-
 .modal-actions {
     display: flex;
     justify-content: space-between;
@@ -786,7 +688,6 @@ body {
     margin-top: 20px;
     gap: 10px;
 }
-
 #modal-save-btn {
     background-color: #2563eb;
     color: white;
@@ -799,11 +700,9 @@ body {
     transition: background-color 0.2s ease-in-out;
     margin-right: auto;
 }
-
 #modal-save-btn:hover {
     background-color: #1d4ed8;
 }
-
 #modal-cancel-btn {
     background-color: #d1d5db;
     color: #1f2937;
@@ -816,12 +715,10 @@ body {
     transition: background-color 0.2s ease-in-out;
     margin-left: auto;
 }
-
 #modal-cancel-btn:hover {
     background-color: #9ca3af;
     color: white;
 }
-
 #lightbox-img {
     max-width: 90%;
     max-height: 90vh;
@@ -829,7 +726,6 @@ body {
     border-radius: 8px;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
 }
-
 .lightbox-close-btn {
     position: absolute;
     top: 20px;
@@ -852,19 +748,16 @@ body {
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
     content: '✖';
 }
-
 .lightbox-close-btn:hover {
     background: #b91c1c;
     transform: scale(1.1);
 }
-
 #victory-screen {
     background-color: rgba(16, 185, 129, 0.95);
     color: white;
     text-align: center;
     cursor: pointer;
 }
-
 #victory-screen div {
     padding: 40px;
     max-width: 400px;
@@ -873,12 +766,10 @@ body {
     cursor: pointer;
     animation: fadeIn 0.5s ease-out;
 }
-
 #victory-screen h2 {
     font-size: 36px;
     margin-bottom: 10px;
 }
-
 #victory-screen p {
     font-size: 20px;
     color: #f3f4f6;
@@ -886,7 +777,6 @@ body {
     margin-top: 0;
     max-width: 600px;
 }
-
 .trophy {
     font-size: 300px !important;
     display: block;
@@ -896,88 +786,71 @@ body {
     line-height: 1;
     width: 100%;
 }
-
 @keyframes bounce {
     0% {
         transform: translateY(0) scale(1);
     }
-
     100% {
         transform: translateY(-20px) scale(1.05);
     }
-
 }
-
 @keyframes fadeIn {
     from {
         opacity: 0;
     }
-
     to {
         opacity: 1;
     }
-
 }
-
 @media (max-width: 768px) {
     #control-panel {
         padding: 16px;
         margin-bottom: 20px;
         max-width: 100%;
     }
-
     #lesson-topic {
         font-size: 20px;
     }
-
     #main-timer-display {
         font-size: 48px;
         left: 16px;
         bottom: 16px;
     }
-
     #start-btn,
     #end-lesson-btn {
         padding: 10px 18px;
         font-size: 14px;
     }
-
     #plan-controls-container {
         right: 16px;
         bottom: 16px;
         top: auto;
     }
-
     .timeline-item-wrapper.left-side,
     .timeline-item-wrapper.right-side {
         padding-left: 0;
         padding-right: 0;
         justify-content: center;
     }
-
     .timeline-content {
         width: 100%;
         max-width: 300px;
         min-height: 140px;
         padding: 10px 10px 50px 10px !important;
     }
-
     .timeline-content.no-image {
         min-height: 80px;
     }
-
     .timeline-line,
     .timeline-progress {
         left: 50%;
         transform: translateX(-50%);
     }
-
     .activity-bottom-controls {
         bottom: 8px;
         left: 8px;
         right: 8px;
     }
-
     .controls-btn,
     .side-switch-button-control {
         width: 30px;
@@ -986,17 +859,14 @@ body {
         max-width: 30px;
         font-size: 14px;
     }
-
     .side-switch-button-control {
         font-size: 16px;
     }
-
     .timeline-label {
         font-size: 10px;
         padding: 6px 15px;
         min-width: 80px;
     }
-
     .label-end {
         position: absolute;
         bottom: -5px;
@@ -1004,11 +874,9 @@ body {
         transform: translateX(-50%);
         margin: 0;
     }
-
     .activity-title {
         font-size: 16px;
     }
-
     .activity-controls {
         left: auto;
         right: 8px;
@@ -1018,55 +886,41 @@ body {
         align-items: center;
         justify-content: flex-end;
     }
-
     .activity-timer-display {
         font-size: 20px;
     }
-
     .content-area {
         margin-bottom: 35px;
     }
-
     .image-container {
         height: 100px;
     }
-
-
     .modal-btn {
         font-size: 14px;
         padding: 8px 15px;
     }
-
     #activity-modal>div {
         padding: 18px;
     }
-
 }
-
 @media (max-width: 480px) {
     #control-panel {
         gap: 12px;
     }
-
     #lesson-topic {
         font-size: 18px;
     }
-
     #main-timer-display {
         font-size: 40px;
     }
-
     #start-btn,
     #end-lesson-btn {
         padding: 8px 15px;
         font-size: 12px;
-
     }
-
     .activity-timer-display {
         font-size: 18px;
     }
-
     .controls-btn,
     .side-switch-button-control {
         min-width: 30px;
@@ -1075,46 +929,35 @@ body {
         height: 30px;
         font-size: 14px;
     }
-
     .side-switch-button-control {
         font-size: 16px;
     }
-
     .content-area {
         margin-bottom: 30px;
     }
-
     .image-container {
         height: 80px;
     }
-
     .modal-btn {
         font-size: 14px;
         padding: 8px 15px;
     }
-
     #activity-modal>div {
         padding: 18px;
     }
-
 }
-
 .modal-footer {
     display: flex;
     justify-content: flex-start;
     gap: 10px;
     padding-top: 20px;
 }
-
 .upload-btn-container {
-
     cursor: pointer;
     display: inline-block;
     vertical-align: middle;
     margin-bottom: 6px;
-
 }
-
 .upload-btn {
     background-color: #ffffff;
     color: white;
@@ -1126,23 +969,19 @@ body {
     text-align: center;
     padding: 1px 0px 3px 1px;
 }
-
 .upload-btn:hover {
     border: 1px solid #e5e7eb;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
     background-color: #d3d9f7;
 }
-
 #activity-image-input[readonly] {
     background-color: #f3f4f6;
     cursor: not-allowed;
 }
-
 #xlsx-buttons {
     display: flex;
     gap: 8px;
 }
-
 #xlsx-buttons button {
     width: 50px;
     height: 50px;
@@ -1159,23 +998,18 @@ body {
     cursor: pointer;
     transition: all 0.2s ease;
 }
-
 #xlsx-buttons button:hover {
     background-color: #f9fafb;
     border-color: #d1d5db;
     transform: translateY(-1px);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
-
 .left-side .activity-bottom-controls .activity-timer-display {
     order: -1;
 }
-
 .left-side .activity-bottom-controls .side-switch-button-control {
     order: 1;
 }
-
-/* Help Button Styles */
 #help-btn {
     position: fixed;
     bottom: 20px;
@@ -1196,13 +1030,10 @@ body {
     justify-content: center;
     align-items: center;
 }
-
 #help-btn:hover {
     transform: scale(1.1);
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
 }
-
-/* Help Panel Styles */
 #help-panel {
     position: fixed;
     top: 0;
@@ -1216,38 +1047,33 @@ body {
     overflow-y: auto;
     padding: 20px;
     box-sizing: border-box;
+    padding-top: 80px;
 }
-
 #help-panel.active {
     right: 0;
 }
-
 #help-panel h2 {
     margin-top: 0;
     color: #1e40af;
     border-bottom: 2px solid #e5e7eb;
     padding-bottom: 10px;
+    margin-top: -40px;
 }
-
 .help-section {
     margin-bottom: 20px;
 }
-
 .help-section h3 {
     color: #374151;
     margin-bottom: 8px;
 }
-
 .help-section ul {
     padding-left: 20px;
     margin: 0;
 }
-
 .help-section li {
     margin-bottom: 6px;
     line-height: 1.4;
 }
-
 #help-overlay {
     position: fixed;
     top: 0;
@@ -1258,48 +1084,9 @@ body {
     z-index: 1000;
     display: none;
 }
-
 #help-overlay.active {
     display: block;
 }
-
-#close-help-btn {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    background-color: #dc2626;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    width: 40px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    z-index: 1002;
-    transition: background-color 0.3s ease, transform 0.3s ease;
-    font-size: 24px;
-    font-weight: bold;
-    line-height: 1;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-}
-
-#close-help-btn:hover {
-    background-color: #b91c1c;
-    transform: scale(1.1);
-}
-
-#close-help-btn:active {
-    transform: scale(0.95);
-}
-
-/* Hide side switch button when running */
-.is-running .side-switch-button-control {
-    display: none !important;
-}
-
-/* Help Panel Close Button - same style as lightbox close button */
 #close-help-btn {
     position: absolute;
     top: 20px;
@@ -1320,35 +1107,43 @@ body {
     font-weight: bold;
     padding: 0;
 }
-
 #close-help-btn:hover {
     background: rgba(255, 255, 255, 0.4);
     transform: scale(1.1);
 }
-
-/* Adjust help panel padding for close button */
-#help-panel {
-    position: fixed;
-    top: 0;
-    right: -400px;
-    width: 380px;
-    height: 100%;
-    background: white;
-    box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
-    z-index: 1001;
-    transition: right 0.3s ease;
-    overflow-y: auto;
-    padding: 20px;
-    box-sizing: border-box;
-    padding-top: 80px;
-    /* Added padding to make space for close button */
+.is-running .side-switch-button-control {
+    display: none !important;
 }
-
-#help-panel h2 {
-    margin-top: 0;
-    color: #1e40af;
-    border-bottom: 2px solid #e5e7eb;
-    padding-bottom: 10px;
-    margin-top: -40px;
-    /* Adjust to compensate for padding-top */
+#copyright-footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    text-align: center;
+    padding: 6px 0;
+    color: #e7ecf3;
+    font-size: 11px;
+    z-index: 500;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-weight: 300;
+    letter-spacing: 0.5px;
+    pointer-events: none;
+    user-select: none;
+    transition: color 0.3s ease;
+}
+#copyright-footer:hover {
+    color: #e7ecf3;
+}
+@media (max-width: 768px) {
+    #copyright-footer {
+        font-size: 10px;
+        padding: 5px 0;
+    }
+}
+@media (max-width: 480px) {
+    #copyright-footer {
+        font-size: 9px;
+        padding: 4px 0;
+        letter-spacing: 0.3px;
+    }
 }
