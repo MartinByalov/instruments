@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\Programming\\instruments\\tools\\compiler\\Backend\\Backend.csproj": {}
+    "C:\\Users\\Martin Byalov\\Documents\\GitHub\\instruments\\tools\\compiler\\Backend\\Backend.csproj": {}
   },
   "projects": {
-    "D:\\Programming\\instruments\\tools\\compiler\\Backend\\Backend.csproj": {
+    "C:\\Users\\Martin Byalov\\Documents\\GitHub\\instruments\\tools\\compiler\\Backend\\Backend.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Programming\\instruments\\tools\\compiler\\Backend\\Backend.csproj",
+        "projectUniqueName": "C:\\Users\\Martin Byalov\\Documents\\GitHub\\instruments\\tools\\compiler\\Backend\\Backend.csproj",
         "projectName": "Backend",
-        "projectPath": "D:\\Programming\\instruments\\tools\\compiler\\Backend\\Backend.csproj",
+        "projectPath": "C:\\Users\\Martin Byalov\\Documents\\GitHub\\instruments\\tools\\compiler\\Backend\\Backend.csproj",
         "packagesPath": "C:\\Users\\Martin Byalov\\.nuget\\packages\\",
-        "outputPath": "D:\\Programming\\instruments\\tools\\compiler\\Backend\\obj\\",
+        "outputPath": "C:\\Users\\Martin Byalov\\Documents\\GitHub\\instruments\\tools\\compiler\\Backend\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Martin Byalov\\AppData\\Roaming\\NuGet\\NuGet.Config"

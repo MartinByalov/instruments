@@ -8,13 +8,12 @@ const axios = require('axios');
 const fs = require('fs');
 const PORT = process.env.PORT || 3000;
 const CSHARP_API_URL = process.env.CSHARP_API_URL || "http://localhost:5170";
-const IMGBB_API_KEY = process.env.IMGBB_API_KEY; 
+const IMGBB_API_KEY = process.env.IMGBB_API_KEY;
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
-app.use(express.json());
-
-
+app.use(express.json({ limit: '100mb' }));
+/* ------------------------------ UTF-8 FIX ------------------------------ */
 app.use((req, res, next) => {
     const ext = path.extname(req.path).toLowerCase();
     if (ext === '.html') {
@@ -80,6 +79,68 @@ app.get('/socket.io.js', (_, res) => {
 app.get('/favicon.ico', (_, res) => {
     res.status(204).end();
 });
+
+app.post('/api/upload-image', async (req, res) => {
+    const { base64Image, fileName } = req.body;
+
+    if (!base64Image) {
+        return res.status(400).json({ isSuccess: false, message: 'Missing base64Image in request body.' });
+    }
+    if (!IMGBB_API_KEY) {
+        console.error('IMGBB_API_KEY is not set in environment variables!');
+        return res.status(500).json({ isSuccess: false, message: 'Server configuration error: IMGBB API Key missing.' });
+    }
+
+    const uploadUrl = `https://api.imgbb.com/1/upload`;
+
+    try {
+        const formData = new URLSearchParams();
+        formData.append('key', IMGBB_API_KEY);
+        formData.append('image', base64Image);
+        formData.append('expiration', 600);
+        if (fileName) {
+            formData.append('name', fileName);
+        }
+
+        const imgbbResponse = await axios.post(uploadUrl, formData.toString(), {
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            }
+        });
+
+        const imgUrl = imgbbResponse.data.data.url;
+        
+        if (!imgUrl) {
+            throw new Error("Imgbb did not return a valid URL.");
+        }
+
+        res.status(200).json({ url: imgUrl, isSuccess: true });
+
+    } catch (error) {
+        console.error('--- Imgbb Upload Error ---');
+        let errorMessage = 'Неизвестна грешка при качване.';
+        if (error.response) {
+            console.error(`Imgbb API Status: ${error.response.status}`);
+            console.error(`Imgbb API Data:`, error.response.data);
+            if (error.response.data && error.response.data.error) {
+                 errorMessage = `Imgbb API Error: ${error.response.data.error.message}`;
+            } else {
+                 errorMessage = `Imgbb API Status ${error.response.status}: ${error.response.statusText}`;
+            }
+            return res.status(error.response.status).json({
+                isSuccess: false,
+                message: errorMessage
+            });
+        }
+        console.error('Network or Connection Error:', error.message);
+        res.status(503).json({
+            isSuccess: false,
+            message: `Грешка при свързване с Imgbb API: ${error.message}`
+        });
+    }
+});
+
+
 app.post('/api/run-code', async (req, res) => {
     const targetUrl = `${CSHARP_API_URL}/run-code`;
     const requestData = req.body;
@@ -99,60 +160,6 @@ app.post('/api/run-code', async (req, res) => {
         res.status(503).json({
             isSuccess: false,
             output: `Грешка при свързване с C# API (${CSHARP_API_URL}). Проверете дали C# сървърът работи.`
-        });
-    }
-});
-app.post('/api/upload-image', async (req, res) => {
-    const { base64Image, fileName } = req.body;
-
-    if (!base64Image) {
-        return res.status(400).json({ isSuccess: false, message: 'Missing base64Image in request body.' });
-    }
-    if (!IMGBB_API_KEY) {
-        console.error('IMGBB_API_KEY is not set in environment variables!');
-        return res.status(500).json({ isSuccess: false, message: 'Server configuration error: IMGBB API Key missing.' });
-    }
-
-    const uploadUrl = `https://api.imgbb.com/1/upload`;
-
-    try {
-        
-        const imgbbResponse = await axios.post(uploadUrl, null, {
-            params: {
-                key: IMGBB_API_KEY,
-                image: base64Image,
-                // Добавяме expiration за временни/тестови файлове (10 минути)
-                expiration: 600, 
-                // Може да добавим и име на файла, ако е налично
-                ...(fileName && { name: fileName })
-            }
-        });
-
-        const imgUrl = imgbbResponse.data.data.url;
-        
-        if (!imgUrl) {
-             throw new Error("Imgbb did not return a valid URL.");
-        }
-
-        // Връщаме публичния URL към клиента
-        res.status(200).json({ url: imgUrl, isSuccess: true });
-
-    } catch (error) {
-        console.error('--- Imgbb Proxy Error ---');
-        if (error.response) {
-            console.error(`Imgbb API Status: ${error.response.status}`);
-            console.error(`Imgbb API Data:`, error.response.data);
-            return res.status(error.response.status).json({
-                isSuccess: false,
-                message: `Imgbb API Error: ${error.response.data.error.message}`,
-                output: error.response.data
-            });
-        }
-        console.error('Network or Connection Error:', error.message);
-        res.status(503).json({
-            isSuccess: false,
-            message: `Грешка при свързване с Imgbb API. Проверете дали сървърът работи и дали имате интернет връзка.`,
-            output: error.message
         });
     }
 });
