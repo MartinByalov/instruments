@@ -1,31 +1,31 @@
 /* script.js */
 
-const WPM_WORD_LENGTH = 5; 
+const WPM_WORD_LENGTH = 5;
 const DEFAULT_TIME_SECONDS = 600; // 10 минути
 
 let REFERENCE_TEXT = null;
 let REFERENCE_CHARS = [];
 
-const textInput = document.getElementById('textInput'); 
+const textInput = document.getElementById('textInput');
 const timerInput = document.getElementById('timerInput'); // INPUT елемент
-const charCountDisplay = document.getElementById('charCount'); 
-const correctCharCountDisplay = document.getElementById('correctCharCount'); 
+const charCountDisplay = document.getElementById('charCount');
+const correctCharCountDisplay = document.getElementById('correctCharCount');
 const errorCountDisplay = document.getElementById('errorCount');
 const wpmCountDisplay = document.getElementById('wpmCount');
 const testStatusDisplay = document.getElementById('testStatus');
-const resetButton = document.getElementById('resetButton'); 
+const resetButton = document.getElementById('resetButton');
 const referenceTextDisplay = document.getElementById('referenceText');
 const downloadButton = document.getElementById('downloadButton');
 
 // Нови елементи
 const fileUpload = document.getElementById('fileUpload');
-const wordCountDisplay = document.getElementById('wordCountDisplay'); 
+const wordCountDisplay = document.getElementById('wordCountDisplay');
 
 let isTimerRunning = false;
 let startTime = 0;
 let timerInterval = null;
-let selectedTime = DEFAULT_TIME_SECONDS; 
-let remainingTime = selectedTime; 
+let selectedTime = DEFAULT_TIME_SECONDS;
+let remainingTime = selectedTime;
 let correctChars = 0;
 let errors = 0;
 
@@ -39,7 +39,7 @@ function parseTimeInput(inputString) {
     }
     const parts = cleanedInput.split(':');
     let totalSeconds = 0;
-    
+
     if (parts.length === 2) {
         const minutes = parseInt(parts[0]) || 0;
         const seconds = parseInt(parts[1]) || 0;
@@ -49,7 +49,7 @@ function parseTimeInput(inputString) {
         const minutes = parseInt(cleanedInput);
         totalSeconds = minutes * 60;
     }
-    
+
     return Math.min(3600, Math.max(0, totalSeconds)); // Максимум 60 минути
 }
 
@@ -70,9 +70,9 @@ function formatTime(totalSeconds) {
 
 function updateTimeFromInput() {
     selectedTime = parseTimeInput(timerInput.value);
-    
+
     if (selectedTime === 0) {
-        remainingTime = 0; 
+        remainingTime = 0;
         timerInput.value = "Без ограничение";
         timerInput.classList.add('no-limit');
     } else {
@@ -89,10 +89,10 @@ function setDownloadButtonState(isActive) {
     downloadButton.classList.remove('download-btn-active', 'download-btn-inactive');
     if (isActive) {
         downloadButton.classList.add('download-btn-active');
-        downloadButton.disabled = false; 
+        downloadButton.disabled = false;
     } else {
         downloadButton.classList.add('download-btn-inactive');
-        downloadButton.disabled = true; 
+        downloadButton.disabled = true;
     }
 }
 
@@ -104,38 +104,38 @@ function setDownloadButtonState(isActive) {
  */
 function normalizeText(text) {
     let cleanText = text;
-    cleanText = cleanText.replace(/\ufeff/g, '').replace(/\u00a0/g, ' '); 
-    cleanText = cleanText.replace(/\r/g, ''); 
-    cleanText = cleanText.replace(/[„“”’]/g, '"'); 
-    cleanText = cleanText.replace(/\n/g, ' '); 
+    cleanText = cleanText.replace(/\ufeff/g, '').replace(/\u00a0/g, ' ');
+    cleanText = cleanText.replace(/\r/g, '');
+    cleanText = cleanText.replace(/[„“”’]/g, '"');
+    cleanText = cleanText.replace(/\n/g, ' ');
     // НОВА ЛОГИКА: Заместване на дълги тирета (em-dash U+2014 и en-dash U+2013) с обикновено тире (hyphen-minus U+002D)
     cleanText = cleanText.replace(/[\u2014\u2013]/g, '-');
-    
+
     return cleanText;
 }
 
 function setReferenceText(text) {
-    REFERENCE_TEXT = normalizeText(text).replace(/[ \t]+/g, ' ').trim(); 
-    
+    REFERENCE_TEXT = normalizeText(text).replace(/[ \t]+/g, ' ').trim();
+
     if (REFERENCE_TEXT) {
         const wordCount = REFERENCE_TEXT.split(/\s+/).filter(word => word.length > 0).length;
         wordCountDisplay.textContent = wordCount;
     } else {
         wordCountDisplay.textContent = '0';
     }
-    
+
     resetTest();
 }
 
 function parseDocx(file) {
     testStatusDisplay.textContent = 'Обработка на DOCX...';
     testStatusDisplay.className = 'status-running';
-    
+
     const reader = new FileReader();
     reader.onload = (e) => {
-        mammoth.extractRawText({arrayBuffer: e.target.result})
+        mammoth.extractRawText({ arrayBuffer: e.target.result })
             .then(result => {
-                setReferenceText(result.value); 
+                setReferenceText(result.value);
             })
             .catch(error => {
                 console.error('Mammoth Error:', error);
@@ -150,14 +150,15 @@ function parseDocx(file) {
 function parsePdf(file) {
     testStatusDisplay.textContent = 'Обработка на PDF...';
     testStatusDisplay.className = 'status-running';
-    
+
     const reader = new FileReader();
-    reader.onload = function() {
+    reader.onload = function () {
         const pdfData = new Uint8Array(reader.result);
-        
+
+        // *** КОРЕКЦИЯТА: Използва се стабилна версия 4.0.379 на worker-а ***
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.0.379/pdf.worker.min.js';
-        
-        pdfjsLib.getDocument({data: pdfData}).promise.then(pdf => {
+
+        pdfjsLib.getDocument({ data: pdfData }).promise.then(pdf => {
             const numPages = pdf.numPages;
             const pagePromises = [];
             for (let i = 1; i <= numPages; i++) {
@@ -171,7 +172,7 @@ function parsePdf(file) {
             }
 
             Promise.all(pagePromises).then(texts => {
-                setReferenceText(texts.join('\n')); 
+                setReferenceText(texts.join('\n'));
             }).catch(error => {
                 console.error('PDF Text Extraction Error:', error);
                 alert('Грешка при извличане на текст от PDF файла.');
@@ -200,7 +201,7 @@ function handleFileUpload(event) {
     const fileExtension = fileName.substring(fileName.lastIndexOf('.'));
 
     REFERENCE_TEXT = null;
-    resetTest(); 
+    resetTest();
 
     switch (fileExtension) {
         case '.txt':
@@ -214,7 +215,7 @@ function handleFileUpload(event) {
             break;
         default:
             alert('Неподдържан файлов формат. Моля, използвайте .txt, .docx или .pdf.');
-            fileUpload.value = ''; 
+            fileUpload.value = '';
             REFERENCE_TEXT = null;
             resetTest();
             break;
@@ -229,24 +230,24 @@ function exportText() {
         return;
     }
 
-    const text = textInput.innerText; 
+    const text = textInput.innerText;
     const allCharsCount = charCountDisplay.textContent;
     const correctCount = correctCharCountDisplay.textContent;
     const errorCount = errorCountDisplay.textContent;
     const wpm = wpmCountDisplay.textContent;
-    const wordCount = wordCountDisplay.textContent; 
-    
+    const wordCount = wordCountDisplay.textContent;
+
     let totalTestTimeText;
     let elapsedTimeSeconds;
-    
+
     if (selectedTime > 0) {
         elapsedTimeSeconds = selectedTime - remainingTime;
         totalTestTimeText = formatTime(selectedTime);
     } else {
-        elapsedTimeSeconds = remainingTime; 
+        elapsedTimeSeconds = remainingTime;
         totalTestTimeText = "Без ограничение (започнат в " + new Date(startTime).toLocaleTimeString('bg-BG') + ")";
     }
-    
+
     const statsHTML = `
         <h2 style="color: #004d40;">Резултати от теста за скорост на писане</h2>
         <p><strong>Дата:</strong> ${new Date().toLocaleString('bg-BG')}</p>
@@ -279,7 +280,7 @@ function exportText() {
         </body>
         </html>
     `;
-    
+
     const mimeType = 'application/msword';
     const blob = new Blob([htmlContent], { type: mimeType });
     const fileName = `WPM_Test_Result_${new Date().toISOString().slice(0, 10)}.doc`;
@@ -290,7 +291,7 @@ function exportText() {
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
-    URL.revokeObjectURL(a.href); 
+    URL.revokeObjectURL(a.href);
 }
 
 // *** ФУНКЦИИ ЗА СТАТИСТИКА И ТАЙМЕР ***
@@ -302,30 +303,30 @@ function initReferenceText() {
         testStatusDisplay.textContent = 'Очаква зареждане на текст...';
         testStatusDisplay.className = 'status-running';
         textInput.setAttribute('data-placeholder', 'Качете текстов файл, за да започнете.');
-        wordCountDisplay.textContent = '0'; 
-        setDownloadButtonState(false); 
-        timerInput.disabled = false; 
+        wordCountDisplay.textContent = '0';
+        setDownloadButtonState(false);
+        timerInput.disabled = false;
         timerInput.value = formatTime(DEFAULT_TIME_SECONDS);
         timerInput.classList.remove('no-limit');
-        updateTimeFromInput(); 
+        updateTimeFromInput();
         return;
     }
-    
+
     REFERENCE_CHARS = REFERENCE_TEXT.split('');
 
     referenceTextDisplay.innerHTML = REFERENCE_CHARS.map((char, index) => {
-        const content = char === '\n' ? '↵\n' : char; 
+        const content = char === '\n' ? '↵\n' : char;
         return `<span id="ref-char-${index}">${content}</span>`;
     }).join('');
-    
+
     highlightReferenceChar(0, 'next-char-ref');
-    
+
     textInput.contentEditable = 'true';
     testStatusDisplay.textContent = 'Очаква старт...';
     textInput.setAttribute('data-placeholder', 'Започнете да пишете тук, за да стартирате таймера...');
-    setDownloadButtonState(false); 
-    timerInput.disabled = false; 
-    
+    setDownloadButtonState(false);
+    timerInput.disabled = false;
+
     if (selectedTime === 0) {
         timerInput.value = "Без ограничение";
     } else {
@@ -336,8 +337,8 @@ function initReferenceText() {
 function highlightReferenceChar(index, className, remove = false) {
     const charSpan = document.getElementById(`ref-char-${index}`);
     if (charSpan) {
-        charSpan.classList.remove('next-char-ref', 'correct-char-ref', 'incorrect-char-ref'); 
-        
+        charSpan.classList.remove('next-char-ref', 'correct-char-ref', 'incorrect-char-ref');
+
         if (!remove) {
             charSpan.classList.add(className);
         }
@@ -353,25 +354,25 @@ function autoScrollReferenceText(nextIndex) {
     const nextCharSpan = document.getElementById(`ref-char-${nextIndex}`);
 
     if (nextCharSpan && container) {
-        const lineHeight = 26; // Приблизителна височина на реда (от style.css line-height: 1.6 * font-size 1.1em ≈ 28px)
+        const lineHeight = 26; // Приблизителна височина на реда 
         const targetLineOffset = 3; // 4-ти ред (индекс 3)
 
         // Позиция на елемента спрямо началото на скрола
-        const spanTop = nextCharSpan.offsetTop; 
-        
+        const spanTop = nextCharSpan.offsetTop;
+
         // Позиция, която следващият символ не трябва да надхвърля (4-ти ред)
-        const scrollTriggerLine = container.scrollTop + (targetLineOffset * lineHeight); 
+        const scrollTriggerLine = container.scrollTop + (targetLineOffset * lineHeight);
 
         // Скролиране нагоре: ако следващият символ е под 4-тия ред 
         // ИЛИ сме скролнали твърде нагоре (за корекция)
         if (spanTop > scrollTriggerLine || spanTop < container.scrollTop) {
-             // Скролва контейнера, така че елементът да се позиционира точно на 4-ти ред отгоре
-             container.scrollTop = spanTop - (targetLineOffset * lineHeight);
-             
-             // Clamp за да не скролва под 0
-             if (container.scrollTop < 0) {
-                 container.scrollTop = 0;
-             }
+            // Скролва контейнера, така че елементът да се позиционира точно на 4-ти ред отгоре
+            container.scrollTop = spanTop - (targetLineOffset * lineHeight);
+
+            // Clamp за да не скролва под 0
+            if (container.scrollTop < 0) {
+                container.scrollTop = 0;
+            }
         }
     }
 }
@@ -398,7 +399,7 @@ function updateStatsAndHighlight() {
     for (let i = 0; i < inputChars.length; i++) {
         const inputChar = inputChars[i];
         const refChar = REFERENCE_CHARS[i];
-        
+
         let charClass = '';
 
         if (refChar !== undefined) {
@@ -415,9 +416,9 @@ function updateStatsAndHighlight() {
             errors++;
             charClass = 'extra-char-input'; // Клас за допълнителен символ
         }
-        
+
         const displayChar = inputChar === ' ' ? '&nbsp;' : inputChar;
-        
+
         if (charClass) {
             // Увиване на грешни/допълнителни символи в <span> за стилизиране
             htmlOutput += `<span class="${charClass}">${displayChar}</span>`;
@@ -436,40 +437,40 @@ function updateStatsAndHighlight() {
 
     // Актуализиране на статистиките
     const totalCorrectWords = correctChars / WPM_WORD_LENGTH;
-    
+
     let elapsedTimeMinutes = 0;
     if (isTimerRunning) {
         if (selectedTime > 0) {
-            elapsedTimeMinutes = (selectedTime - remainingTime) / 60; 
+            elapsedTimeMinutes = (selectedTime - remainingTime) / 60;
         } else {
-            elapsedTimeMinutes = remainingTime / 60; 
+            elapsedTimeMinutes = remainingTime / 60;
         }
     } else if (remainingTime === 0 && selectedTime > 0) {
         elapsedTimeMinutes = selectedTime / 60;
     } else if (nextIndex >= REFERENCE_CHARS.length && selectedTime === 0) {
-        elapsedTimeMinutes = remainingTime / 60; 
+        elapsedTimeMinutes = remainingTime / 60;
     }
-    
+
     let wpm = 0;
     if (elapsedTimeMinutes > 0) {
-        wpm = totalCorrectWords / elapsedTimeMinutes; 
+        wpm = totalCorrectWords / elapsedTimeMinutes;
     }
 
     wpmCountDisplay.textContent = wpm.toFixed(2);
-    
+
     charCountDisplay.textContent = charCount;
-    correctCharCountDisplay.textContent = correctChars; 
+    correctCharCountDisplay.textContent = correctChars;
     errorCountDisplay.textContent = errors;
-    
+
     // Връщане на новия HTML във въвежданото поле и възстановяване на курсора
     textInput.innerHTML = htmlOutput;
-    
+
     const newRange = document.createRange();
     newRange.selectNodeContents(textInput);
-    newRange.collapse(false); 
+    newRange.collapse(false);
     selection.removeAllRanges();
     selection.addRange(newRange);
-    
+
     if (nextIndex >= REFERENCE_CHARS.length && isTimerRunning) {
         endTest(true);
     }
@@ -479,26 +480,26 @@ function endTest(completed) {
     clearInterval(timerInterval);
     isTimerRunning = false;
     textInput.contentEditable = 'false';
-    textInput.classList.add('test-finished'); 
-    timerInput.disabled = false; 
+    textInput.classList.add('test-finished');
+    timerInput.disabled = false;
 
     let finalElapsedTimeMinutes = 0;
     if (selectedTime > 0) {
-        finalElapsedTimeMinutes = (selectedTime - remainingTime) / 60; 
+        finalElapsedTimeMinutes = (selectedTime - remainingTime) / 60;
     } else {
-        finalElapsedTimeMinutes = remainingTime / 60; 
+        finalElapsedTimeMinutes = remainingTime / 60;
     }
-    
+
     const totalCorrectWords = correctChars / WPM_WORD_LENGTH;
     const finalWPM = finalElapsedTimeMinutes > 0 ? totalCorrectWords / finalElapsedTimeMinutes : 0;
     wpmCountDisplay.textContent = finalWPM.toFixed(2);
 
-    testStatusDisplay.textContent = completed ? 
-        'Тестът завърши! Натиснете бутона за изтегляне.' : 
+    testStatusDisplay.textContent = completed ?
+        'Тестът завърши! Натиснете бутона за изтегляне.' :
         'Времето изтече! Натиснете бутона за изтегляне.';
-        
+
     testStatusDisplay.className = 'status-finished';
-    
+
     setDownloadButtonState(true);
 }
 
@@ -511,37 +512,37 @@ function updateTimer() {
             remainingTime--;
         }
     } else {
-        remainingTime++; 
+        remainingTime++;
     }
-    
+
     timerInput.value = formatTime(remainingTime);
     if (isTimerRunning) {
-        updateStatsAndHighlight(); 
+        updateStatsAndHighlight();
     }
 }
 
 function startTimer() {
-    if (isTimerRunning || !REFERENCE_TEXT) return; 
+    if (isTimerRunning || !REFERENCE_TEXT) return;
 
     isTimerRunning = true;
     startTime = Date.now();
-    
-    timerInterval = setInterval(updateTimer, 1000); 
+
+    timerInterval = setInterval(updateTimer, 1000);
 
     textInput.classList.remove('test-finished');
     textInput.contentEditable = 'true';
     testStatusDisplay.textContent = 'Тестът тече...';
     testStatusDisplay.className = 'status-running';
-    
-    timerInput.disabled = true; 
+
+    timerInput.disabled = true;
     setDownloadButtonState(false);
 }
 
 function resetTest() {
     clearInterval(timerInterval);
     isTimerRunning = false;
-    
-    updateTimeFromInput(); 
+
+    updateTimeFromInput();
 
     correctChars = 0;
     errors = 0;
@@ -551,25 +552,25 @@ function resetTest() {
     textInput.contentEditable = REFERENCE_TEXT ? 'true' : 'false';
     textInput.classList.remove('test-finished');
     charCountDisplay.textContent = '0';
-    correctCharCountDisplay.textContent = '0'; 
+    correctCharCountDisplay.textContent = '0';
     errorCountDisplay.textContent = '0';
     wpmCountDisplay.textContent = '0.00';
-    
+
     if (REFERENCE_TEXT) {
         testStatusDisplay.textContent = 'Очаква старт...';
         textInput.setAttribute('data-placeholder', 'Започнете да пишете тук, за да стартирате таймера...');
     } else {
         testStatusDisplay.textContent = 'Очаква зареждане на текст...';
         textInput.setAttribute('data-placeholder', 'Моля, качете текстов файл, за да започнете теста.');
-        wordCountDisplay.textContent = '0'; 
+        wordCountDisplay.textContent = '0';
     }
     testStatusDisplay.className = 'status-running';
 
-    timerInput.disabled = false; 
+    timerInput.disabled = false;
     setDownloadButtonState(false);
 
-    initReferenceText(); 
-    textInput.focus(); 
+    initReferenceText();
+    textInput.focus();
     referenceTextDisplay.parentElement.scrollTop = 0; // Нулиране на скрола на референтния контейнер
 }
 
@@ -581,16 +582,16 @@ timerInput.addEventListener('change', updateTimeFromInput);
 timerInput.addEventListener('blur', updateTimeFromInput);
 timerInput.addEventListener('keydown', (event) => {
     if (event.key === 'Enter') {
-        event.preventDefault(); 
+        event.preventDefault();
         updateTimeFromInput();
-        textInput.focus(); 
+        textInput.focus();
     }
 });
 
 
 textInput.addEventListener('input', (event) => {
     if (!REFERENCE_TEXT) return;
-    
+
     const rawText = normalizeText(textInput.innerText);
     if (!isTimerRunning && rawText.length > 0) {
         updateTimeFromInput();
@@ -602,16 +603,16 @@ textInput.addEventListener('input', (event) => {
 textInput.addEventListener('keydown', (event) => {
     // Предотвратява добавянето на нов ред при натискане на Enter
     if (event.key === 'Enter') {
-        event.preventDefault(); 
+        event.preventDefault();
     }
 });
 
 resetButton.addEventListener('click', resetTest);
-downloadButton.addEventListener('click', exportText); 
+downloadButton.addEventListener('click', exportText);
 
 // *** Инициализация при зареждане ***
 
-updateTimeFromInput(); 
+updateTimeFromInput();
 textInput.contentEditable = 'false';
 initReferenceText();
 

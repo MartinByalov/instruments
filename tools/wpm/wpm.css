@@ -122,7 +122,7 @@ main {
     cursor: pointer;
     line-height: 1;
     transition: transform 0.2s;
-    
+    left: 0;
 }
 
 .reset-top:hover {
