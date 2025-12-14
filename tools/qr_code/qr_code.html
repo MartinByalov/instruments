@@ -3,52 +3,138 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>пингвин</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Code Генератор</title>
     <style>
+        :root {
+            /* Дефиниране на основни цветове */
+            --primary-color: #007bff;
+            --secondary-color: #6c757d;
+            --background-color: #f8f9fa;
+            --card-background: #ffffff;
+            --text-color: #343a40;
+            --border-radius: 8px;
+            --box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
         body {
-            font-family: sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             text-align: center;
-            margin-top: 50px;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        #app-container {
+            max-width: 450px;
+            width: 90%;
+            background-color: var(--card-background);
+            padding: 30px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+        }
+
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 30px;
+            font-size: 2em;
         }
 
         #qrcode {
-            margin-bottom: 20px;
+            margin-bottom: 25px;
             display: inline-block;
+            padding: 15px;
+            background-color: #fff;
+            border: 1px solid #dee2e6;
+            border-radius: var(--border-radius);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
         }
 
         .controls {
-            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+            width: 100%;
+            margin-top: 15px;
         }
 
-        input,
-        button {
-            padding: 10px;
+        #text {
+            flex-grow: 1;
+            padding: 12px 15px;
             font-size: 16px;
+            border: 1px solid #ced4da;
+            border-radius: var(--border-radius);
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        #text:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+            outline: none;
+        }
+
+        button {
+            padding: 12px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: var(--border-radius);
+            background-color: var(--primary-color);
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.2s ease-in-out, transform 0.1s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        button:active {
+            transform: scale(0.98);
         }
     </style>
 </head>
 
 <body>
 
-    <h1>Генериране на QR код</h1>
-    <div id="qrcode"></div>
+    <div id="app-container">
+        <h1>QR код генератор</h1>
+        <div id="qrcode"></div>
 
-    <div class="controls">
-        <input type="text" id="text" placeholder="Въведи текст или линк">
-        <button onclick="generateQRCode()">Генерирай</button>
+        <div class="controls">
+            <input type="text" id="text" placeholder="Въведи текст или линк">
+            <button onclick="generateQRCode()">Генерирай</button>
+        </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/qrcodejs/qrcode.min.js"></script>
     <script>
+        // Инициализация при зареждане на страницата
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('text').value = '';
+            generateQRCode();
+        });
+
         function generateQRCode() {
             const container = document.getElementById("qrcode");
             container.innerHTML = ""; // Изчистване на стар QR код
-            const text = document.getElementById("text").value;
+
+            let text = document.getElementById("text").value;
+            // Добавяне на базова стойност, ако полето е празно
+            if (!text) {
+                text = 'Няма въведен текст';
+            }
 
             new QRCode(container, {
                 text: text,
-                width: 200,
-                height: 200
+                width: 250, // Увеличих размера малко
+                height: 250,
+                colorDark: "#000000",
+                colorLight: "#ffffff",
+                correctLevel: QRCode.CorrectLevel.H
             });
         }
     </script>

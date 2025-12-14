@@ -63,6 +63,14 @@ app.get('/qrcode', (_, res) => {
 app.get('/multiclass', (_, res) => {
     res.sendFile(path.join(__dirname, 'tools', 'multiclass', 'multiclass.html'));
 });
+// Маршрут за cipher.html
+app.get('/cipher', (_, res) => {
+    res.sendFile(path.join(__dirname, 'tools', 'cipher', 'cipher.html'));
+});
+// Маршрут за enigma.html (достъпен като относителен път от /cipher)
+app.get('/cipher/enigma.html', (_, res) => {
+    res.sendFile(path.join(__dirname, 'tools', 'cipher', 'enigma.html'));
+});
 app.get('/compiler', async (_, res) => {
     const htmlPath = path.join(__dirname, 'tools', 'compiler', 'Frontend', 'compiler.html');
     try {
@@ -172,6 +180,8 @@ server.listen(PORT, () => {
     console.log(`├─ Таймер: http://localhost:${PORT}/planner`);
     console.log(`├─ WPM: http://localhost:${PORT}/wpm`);
     console.log(`├─ QR Code Генератор: http://localhost:${PORT}/qrcode`);
+    console.log(`├─ Мулти-клас: http://localhost:${PORT}/multiclass`);
+    console.log(`├─ Шифър: http://localhost:${PORT}/cipher`);
     console.log(`└─ Компилатор: http://localhost:${PORT}/compiler`);
     console.log(`└─ C# API Target: ${CSHARP_API_URL}`);
 });
