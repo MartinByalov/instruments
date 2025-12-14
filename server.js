@@ -60,6 +60,9 @@ app.get('/wpm', (_, res) => {
 app.get('/qrcode', (_, res) => {
     res.sendFile(path.join(__dirname, 'tools', 'qr_code', 'qr_code.html'));
 });
+app.get('/multiclass', (_, res) => {
+    res.sendFile(path.join(__dirname, 'tools', 'multiclass', 'multiclass.html'));
+});
 app.get('/compiler', async (_, res) => {
     const htmlPath = path.join(__dirname, 'tools', 'compiler', 'Frontend', 'compiler.html');
     try {
