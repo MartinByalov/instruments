@@ -1,3 +1,4 @@
+// server.js
 require('dotenv').config();
 const express = require('express');
 const http = require('http');
@@ -55,6 +56,9 @@ app.get('/planner', (_, res) => {
 });
 app.get('/wpm', (_, res) => {
     res.sendFile(path.join(__dirname, 'tools', 'wpm', 'wpm.html'));
+});
+app.get('/qrcode', (_, res) => {
+    res.sendFile(path.join(__dirname, 'tools', 'qr_code', 'qr_code.html'));
 });
 app.get('/compiler', async (_, res) => {
     const htmlPath = path.join(__dirname, 'tools', 'compiler', 'Frontend', 'compiler.html');
@@ -164,6 +168,7 @@ server.listen(PORT, () => {
     console.log(`├─ Контролен панел: http://localhost:${PORT}/control`);
     console.log(`├─ Таймер: http://localhost:${PORT}/planner`);
     console.log(`├─ WPM: http://localhost:${PORT}/wpm`);
+    console.log(`├─ QR Code Генератор: http://localhost:${PORT}/qrcode`);
     console.log(`└─ Компилатор: http://localhost:${PORT}/compiler`);
     console.log(`└─ C# API Target: ${CSHARP_API_URL}`);
 });

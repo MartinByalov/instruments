@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="bg">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Инструментариум за Часа</title>
     <link rel="stylesheet" href="/dashboard.css">
 </head>
+
 <body>
     <div class="header">
         <h1>Инструментариум</h1>
@@ -27,19 +29,24 @@
             <h2>Въпросник</h2>
             <p>Изходен билет, индивидуални въпроси, др.</p>
         </a>
+        <a href="/qrcode" class="tool-card">
+            <span class="tool-icon">⛶</span>
+            <h2>QR Code Генератор</h2>
+            <p>Генериране на QR кодове за бърз достъп до ресурси.</p>
+        </a>
+        <a href="/wpm" class="tool-card">
+            <span class="tool-icon">⌨️</span>
+            <h2>WPM</h2>
+            <p>Тест за скорост на писане и точност.</p>
+        </a>
         <a href="/compiler" class="tool-card" id="compiler-card">
             <span class="tool-icon">💻</span>
             <span class="development-badge">🛠️</span>
             <h2>Компилатор</h2>
             <p>Онлайн среда за писане и изпълнение на код.</p>
-            <div class="lock-overlay">
-                <span class="lock-icon">🔒</span>
-                <h3>Въведи PIN</h3>
-                <input type="password" id="compiler-pin" placeholder="****" maxlength="4">
-                <p id="lock-message"></p>
-            </div>
         </a>
     </div>
     <script src="/dashboard.js"></script>
 </body>
+
 </html>

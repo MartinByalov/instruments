@@ -297,6 +297,7 @@ main {
 
 #downloadButton:hover {
     background-color: #5baff9;
+    color: white;
 }
 
 #downloadButton:disabled {
