@@ -1,10 +1,12 @@
-
+// compiler.js
 const API_BASE_URL = '/api/run-code';
+// Четем URL от глобална променлива, инжектирана от сървъра (сигурно)
+const CSHARP_API_URL = window.CSHARP_API_URL_GLOBAL; 
 
 let codeEditorInstance;
 const EXERCISES_STORAGE_KEY = 'csharp_exercises';
 const COMPLETED_STORAGE_KEY = 'csharp_completed';
-const TEACHER_PIN = window.TEACHER_PIN_GLOBAL;
+// TEACHER_PIN вече не е нужен тук, проверката се прави на сървъра
 let isAdminMode = false;
 let currentSelectedExerciseId = null;
 
@@ -75,7 +77,6 @@ const INITIAL_EXERCISES = {
 };
 
 let outputWindow, conditionDiv, exerciseSelect, exerciseListAdmin, runButton, statusDiv;
-// ПРОМЯНА: Добавяме adminActions и pinControls
 let addExerciseBtn, addExerciseModal, newExerciseForm, pinInputContainer, pinInput, lockBtn, adminControlsContainer, pinControls, adminActions;
 
 
@@ -121,53 +122,41 @@ function closeModal() {
 function setAdminMode(enabled) {
     isAdminMode = enabled;
 
-    // Защита: Уверете се, че lockBtn е наличен, преди да продължите
-    if (!lockBtn) return;
+    if (!lockBtn || !pinInput || !adminActions) return;
 
     if (enabled) {
         // АДМИН РЕЖИМ (ОТКЛЮЧЕН)
-        lockBtn.textContent = '🔓';
-        lockBtn.onclick = logoutAdmin; 
+        lockBtn.textContent = '🔓'; 
+        lockBtn.onclick = logoutAdmin;
         
-        // ПОКАЗВАМЕ АДМИН КОНТРОЛИТЕ, СКРИВАМЕ ПИН КОНТРОЛИТЕ
-        if (pinControls) pinControls.style.display = 'none';
-        if (adminActions) {
-            adminActions.style.display = 'flex';
-            // Добавяме бутона за заключване към админ контролите
-            adminActions.appendChild(lockBtn); 
-        }
+        // СКРИВАМЕ полето за въвеждане на ПИН
+        pinInput.style.display = 'none'; 
         
-        if (addExerciseBtn) addExerciseBtn.style.display = 'inline-block';
-        if (exerciseSelect) exerciseSelect.style.display = 'none';
-        if (exerciseListAdmin) exerciseListAdmin.style.display = 'block';
-        
+        // ПОКАЗВАМЕ АДМИН КОНТРОЛИТЕ
+        adminActions.style.display = 'flex';
         if (adminControlsContainer) adminControlsContainer.classList.add('admin-enabled');
         
-        // За да не излиза алертът при първо зареждане, го слагаме тук
-        if (pinInput && pinInput.value !== '') {
-            alert("Успешен достъп! Админ панелът е активиран.");
-        }
+        // Съобщението за успех вече е в checkPin()
         
     } else {
         // НОРМАЛЕН РЕЖИМ (ЗАКЛЮЧЕН)
-        lockBtn.textContent = '🔒';
-        lockBtn.onclick = checkPin; 
+        lockBtn.textContent = '🔒'; 
+        lockBtn.onclick = checkPin;
         
-        // ПОКАЗВАМЕ ПИН КОНТРОЛИТЕ, СКРИВАМЕ АДМИН КОНТРОЛИТЕ
-        if (adminActions) adminActions.style.display = 'none';
-        if (pinControls) {
-            pinControls.style.display = 'flex';
-            // Добавяме бутона за отключване обратно към ПИН контролите
-            pinControls.appendChild(lockBtn); 
-        }
+        // ПОКАЗВАМЕ полето за въвеждане на ПИН
+        pinInput.style.display = 'block'; 
         
-        if (addExerciseBtn) addExerciseBtn.style.display = 'none';
-        if (pinInput) pinInput.value = '';
-        if (exerciseSelect) exerciseSelect.style.display = 'block';
-        if (exerciseListAdmin) exerciseListAdmin.style.display = 'none';
-        
+        // СКРИВАМЕ АДМИН КОНТРОЛИТЕ
+        adminActions.style.display = 'none';
         if (adminControlsContainer) adminControlsContainer.classList.remove('admin-enabled');
+        
+        if (pinInput) pinInput.value = '';
+        if (addExerciseBtn) addExerciseBtn.style.display = 'none';
     }
+
+    // Превключване на изгледа за избор на упражнения
+    if (exerciseSelect) exerciseSelect.style.display = enabled ? 'none' : 'block';
+    if (exerciseListAdmin) exerciseListAdmin.style.display = enabled ? 'block' : 'none';
 
     populateExerciseSelect();
 
@@ -177,12 +166,37 @@ function setAdminMode(enabled) {
     loadExercise(currentSelectedExerciseId);
 }
 
-function checkPin() {
-    if (pinInput && pinInput.value === TEACHER_PIN) {
-        setAdminMode(true);
-    } else {
-        alert("Грешен ПИН. Достъпът е отказан.");
-        if (pinInput) pinInput.value = '';
+// ** АКТУАЛИЗИРАНА ФУНКЦИЯ ЗА СИГУРНА ПРОВЕРКА НА ПИН **
+async function checkPin() {
+    if (!pinInput) return;
+
+    const pin = pinInput.value;
+    
+    if (pin.length === 0) {
+        alert("Въведете ПИН.");
+        return;
+    }
+
+    try {
+        // Изпращаме PIN-а към сървърния ендпойнт за проверка
+        const response = await fetch('/api/check-pin', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ pin: pin })
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+            setAdminMode(true);
+            alert("Успешен достъп! Админ панелът е активиран.");
+        } else {
+            alert(data.message || "Грешен ПИН. Достъпът е отказан.");
+            pinInput.value = '';
+        }
+    } catch (error) {
+        console.error('Грешка при проверка на ПИН:', error);
+        alert('Неуспешна комуникация със сървъра за проверка на ПИН.');
     }
 }
 
@@ -552,7 +566,8 @@ async function runCode() {
 
     } catch (error) {
         console.error('Fetch Error:', error);
-        if (outputWindow) outputWindow.value = `Неуспешно свързване със сървъра! Проверете дали C# API е стартиран на http://localhost:5170.\n\nГрешка: ${error.message}`;
+        // Използваме CSHARP_API_URL, зареден от глобалната променлива
+        if (outputWindow) outputWindow.value = `Неуспешно свързване със сървъра! Проверете дали C# API е стартиран на ${CSHARP_API_URL}.\n\nГрешка: ${error.message}`;
     } finally {
         if (runButton) {
             runButton.disabled = false;
@@ -581,6 +596,35 @@ function markExerciseAsCompleted(id) {
 }
 
 
+/**
+ * Изпраща GET заявка към C# API, за да го събуди
+ * ако е в 'спящ' режим (cold start). 
+ */
+async function wakeUpCompilerAPI() {
+    // Използваме CSHARP_API_URL, който е зареден от глобалната променлива
+    if (!CSHARP_API_URL) return;
+
+    console.log(`Изпращане на заявка до ${CSHARP_API_URL} за събуждане...`);
+
+    try {
+        // Изпращаме проста GET заявка към базовия URL. 
+        const response = await fetch(CSHARP_API_URL, {
+            method: 'GET',
+            mode: 'no-cors' 
+        });
+
+        // Тъй като използваме no-cors, не можем да проверим response.ok, 
+        // но заявката вече е изпратена.
+        console.log("Заявката за събуждане е изпратена успешно.");
+
+    } catch (error) {
+        // Грешката при no-cors заявка често е Network Error,
+        // но целта е постигната - сървърът е събуден.
+        console.warn("Внимание: Възможност за грешка при събуждане (но заявката беше изпратена).", error.message);
+    }
+}
+
+
 document.addEventListener('DOMContentLoaded', () => {
 
     outputWindow = document.getElementById('output-window');
@@ -594,18 +638,20 @@ document.addEventListener('DOMContentLoaded', () => {
     addExerciseModal = document.getElementById('add-exercise-modal');
     newExerciseForm = document.getElementById('new-exercise-form');
     
-    // ПРОМЯНА: Инициализация на новите/преименуваните елементи
-    pinControls = document.getElementById('pin-controls');
+    // Инициализация на елементите
     adminActions = document.getElementById('admin-actions');
-    pinInputContainer = pinControls; // Използваме pinControls като контейнер за пин
-    
     pinInput = document.getElementById('pin-input');
     lockBtn = document.getElementById('lock-btn');
-    adminControlsContainer = document.getElementById('admin-controls'); 
+    adminControlsContainer = document.getElementById('admin-controls');
 
     populateExerciseSelect();
 
     initializeMonaco();
+
+    // ******************************************************
+    // ИЗВИКВАНЕ НА ФУНКЦИЯТА ЗА СЪБУЖДАНЕ ПРИ ЗАРЕЖДАНЕ
+    // ******************************************************
+    wakeUpCompilerAPI();
 
     if (exerciseSelect) {
         exerciseSelect.addEventListener('change', (e) => loadExercise(e.target.value));
@@ -626,12 +672,12 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
     
-    // Инициализация на lockBtn и режима
+    // Първоначалното състояние (заключен)
     if (lockBtn) {
-        // Първоначалното състояние (заключен)
         lockBtn.onclick = checkPin;
     }
-    setAdminMode(isAdminMode);
+    
+    setAdminMode(false); 
 
 
     window.closeModal = closeModal;
