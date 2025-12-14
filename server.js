@@ -1,4 +1,3 @@
-// server.js
 require('dotenv').config();
 const express = require('express');
 const http = require('http');
@@ -57,7 +56,9 @@ app.get('/', async (_, res) => {
     const htmlPath = path.join(__dirname, 'index.html');
     try {
         let htmlContent = await fs.promises.readFile(htmlPath, 'utf8');
-        const pinScript = `<script>window.TEACHER_PIN_GLOBAL = "";</script>`; // Оставяме този ПИН празен, тъй като не е нужен
+        // Тъй като вече не инжектираме ПИН-а във фронтенда, тази глобална променлива може да се използва за други цели, или да се премахне,
+        // но за момента я оставяме празна.
+        const pinScript = `<script>window.TEACHER_PIN_GLOBAL = "";</script>`; 
         htmlContent = htmlContent.replace(/<\/head>/i, `${pinScript}<\/head>`);
         res.send(htmlContent);
     } catch (err) {
