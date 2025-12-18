@@ -1,3 +1,4 @@
+// server.js
 require('dotenv').config();
 const express = require('express');
 const http = require('http');
@@ -9,7 +10,6 @@ const fs = require('fs');
 const PORT = process.env.PORT || 3000;
 const CSHARP_API_URL = process.env.CSHARP_API_URL || "http://localhost:5170";
 const IMGBB_API_KEY = process.env.IMGBB_API_KEY;
-// ПИН-ът се зарежда от .env, но остава тук, на сървъра!
 const TEACHER_PIN = process.env.TEACHER_PIN;
 
 const app = express();
@@ -32,32 +32,23 @@ app.use((req, res, next) => {
     next();
 });
 
-/* ----------------------------------------------------------------------- */
-// НОВ МАРШРУТ: СИГУРНА ПРОВЕРКА НА ПИН (ПИН-ът остава на сървъра)
-app.post('/api/check-pin', express.json(), (req, res) => {
+app.post('/api/check-pin', (req, res) => {
     const { pin } = req.body;
-
-    // Проверка дали ПИН-ът е конфигуриран
     if (!TEACHER_PIN || TEACHER_PIN.length === 0) {
         console.error('TEACHER_PIN is not set in environment variables!');
         return res.status(500).json({ success: false, message: 'Server error: TEACHER_PIN is not configured.' });
     }
-
-    // Сравняване на подадения ПИН с този от .env
     if (pin === TEACHER_PIN) {
         res.json({ success: true, message: 'Успешен достъп.' });
     } else {
         res.status(401).json({ success: false, message: 'Невалиден ПИН.' });
     }
 });
-/* ----------------------------------------------------------------------- */
 
 app.get('/', async (_, res) => {
     const htmlPath = path.join(__dirname, 'index.html');
     try {
         let htmlContent = await fs.promises.readFile(htmlPath, 'utf8');
-        // Тъй като вече не инжектираме ПИН-а във фронтенда, тази глобална променлива може да се използва за други цели, или да се премахне,
-        // но за момента я оставяме празна.
         const pinScript = `<script>window.TEACHER_PIN_GLOBAL = "";</script>`; 
         htmlContent = htmlContent.replace(/<\/head>/i, `${pinScript}<\/head>`);
         res.send(htmlContent);
@@ -71,55 +62,25 @@ app.use(express.static(__dirname));
 app.use('/tools', express.static(path.join(__dirname, 'tools')));
 app.use('/node_modules', express.static(path.join(__dirname, 'node_modules')));
 
-app.get('/padlet', (_, res) => {
-    res.sendFile(path.join(__dirname, 'tools', 'padlet', 'padlet-teacher.html'));
-});
+app.get('/padlet', (_, res) => res.sendFile(path.join(__dirname, 'tools', 'padlet', 'padlet-teacher.html')));
+app.get('/student', (_, res) => res.sendFile(path.join(__dirname, 'tools', 'padlet', 'padlet-student.html')));
+app.get('/control', (_, res) => res.sendFile(path.join(__dirname, 'tools', 'control', 'control.html')));
+app.get('/planner', (_, res) => res.sendFile(path.join(__dirname, 'tools', 'planner', 'planner.html')));
+app.get('/wpm', (_, res) => res.sendFile(path.join(__dirname, 'tools', 'wpm', 'wpm.html')));
+app.get('/qrcode', (_, res) => res.sendFile(path.join(__dirname, 'tools', 'qr_code', 'qr_code.html')));
+app.get('/multiclass', (_, res) => res.sendFile(path.join(__dirname, 'tools', 'multiclass', 'multiclass.html')));
+app.get('/cipher', (_, res) => res.sendFile(path.join(__dirname, 'tools', 'cipher', 'cipher.html')));
+app.get('/cipher/enigma.html', (_, res) => res.sendFile(path.join(__dirname, 'tools', 'cipher', 'enigma.html')));
 
-app.get('/student', (_, res) => {
-    res.sendFile(path.join(__dirname, 'tools', 'padlet', 'padlet-student.html'));
-});
-
-app.get('/control', (_, res) => {
-    res.sendFile(path.join(__dirname, 'tools', 'control', 'control.html'));
-});
-
-app.get('/planner', (_, res) => {
-    res.sendFile(path.join(__dirname, 'tools', 'planner', 'planner.html'));
-});
-
-app.get('/wpm', (_, res) => {
-    res.sendFile(path.join(__dirname, 'tools', 'wpm', 'wpm.html'));
-});
-
-app.get('/qrcode', (_, res) => {
-    res.sendFile(path.join(__dirname, 'tools', 'qr_code', 'qr_code.html'));
-});
-
-app.get('/multiclass', (_, res) => {
-    res.sendFile(path.join(__dirname, 'tools', 'multiclass', 'multiclass.html'));
-});
-
-app.get('/cipher', (_, res) => {
-    res.sendFile(path.join(__dirname, 'tools', 'cipher', 'cipher.html'));
-});
-
-app.get('/cipher/enigma.html', (_, res) => {
-    res.sendFile(path.join(__dirname, 'tools', 'cipher', 'enigma.html'));
-});
-
-// АКТУАЛИЗИРАН МАРШРУТ: ИНЖЕКТИРАНЕ САМО НА CSHARP_API_URL
 app.get('/compiler', async (_, res) => {
     const htmlPath = path.join(__dirname, 'tools', 'compiler', 'Frontend', 'compiler.html');
     try {
         let htmlContent = await fs.promises.readFile(htmlPath, 'utf8');
-
-        // Инжектираме CSHARP_API_URL, за да го използва compiler.js за събуждане
         const scriptInjection = `
 <script>
     window.CSHARP_API_URL_GLOBAL = "${CSHARP_API_URL}";
 </script>
 </head>`;
-
         htmlContent = htmlContent.replace(/<\/head>/i, scriptInjection);
         res.send(htmlContent);
     } catch (err) {
@@ -129,109 +90,54 @@ app.get('/compiler', async (_, res) => {
 });
 
 app.get('/socket.io.js', (_, res) => {
-    res.sendFile(path.join(
-        __dirname,
-        'node_modules',
-        'socket.io',
-        'client-dist',
-        'socket.io.js'
-    ));
-});
-
-app.get('/favicon.ico', (_, res) => {
-    res.status(204).end();
+    res.sendFile(path.join(__dirname, 'node_modules', 'socket.io', 'client-dist', 'socket.io.js'));
 });
 
 app.post('/api/upload-image', async (req, res) => {
     const { base64Image, fileName } = req.body;
-    if (!base64Image) {
-        return res.status(400).json({ isSuccess: false, message: 'Missing base64Image in request body.' });
-    }
-    if (!IMGBB_API_KEY) {
-        console.error('IMGBB_API_KEY is not set in environment variables!');
-        return res.status(500).json({ isSuccess: false, message: 'Server configuration error: IMGBB API Key missing.' });
-    }
-    const uploadUrl = `https://api.imgbb.com/1/upload`;
+    if (!base64Image) return res.status(400).json({ isSuccess: false, message: 'Missing base64Image.' });
+    if (!IMGBB_API_KEY) return res.status(500).json({ isSuccess: false, message: 'Imgbb API Key missing.' });
+    
     try {
         const formData = new URLSearchParams();
         formData.append('key', IMGBB_API_KEY);
         formData.append('image', base64Image);
         formData.append('expiration', 600);
-        if (fileName) {
-            formData.append('name', fileName);
-        }
-        const imgbbResponse = await axios.post(uploadUrl, formData.toString(), {
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
-            }
-        });
-        const imgUrl = imgbbResponse.data.data.url;
-        if (!imgUrl) {
-            throw new Error("Imgbb did not return a valid URL.");
-        }
-        res.status(200).json({ url: imgUrl, isSuccess: true });
+        if (fileName) formData.append('name', fileName);
+
+        const imgbbResponse = await axios.post(`https://api.imgbb.com/1/upload`, formData.toString());
+        res.status(200).json({ url: imgbbResponse.data.data.url, isSuccess: true });
     } catch (error) {
-        console.error('--- Imgbb Upload Error ---');
-        let errorMessage = 'Неизвестна грешка при качване.';
-        if (error.response) {
-            console.error(`Imgbb API Status: ${error.response.status}`);
-            console.error(`Imgbb API Data:`, error.response.data);
-            if (error.response.data && error.response.data.error) {
-                errorMessage = `Imgbb API Error: ${error.response.data.error.message}`;
-            } else {
-                errorMessage = `Imgbb API Status ${error.response.status}: ${error.response.statusText}`;
-            }
-            return res.status(error.response.status).json({
-                isSuccess: false,
-                message: errorMessage
-            });
-        }
-        console.error('Network or Connection Error:', error.message);
-        res.status(503).json({
-            isSuccess: false,
-            message: `Грешка при свързване с Imgbb API: ${error.message}`
-        });
+        res.status(500).json({ isSuccess: false, message: error.message });
     }
 });
 
 app.post('/api/run-code', async (req, res) => {
     const targetUrl = `${CSHARP_API_URL}/run-code`;
-    const requestData = req.body;
     try {
-        const response = await axios.post(targetUrl, requestData, {
-            headers: { 'Content-Type': 'application/json' }
+        const response = await axios.post(targetUrl, req.body, {
+            headers: { 'Content-Type': 'application/json' },
+            timeout: 30000 
         });
         res.status(response.status).json(response.data);
     } catch (error) {
-        console.error('--- Axios Proxy Error ---');
-        if (error.response) {
-            console.error(`C# API Status: ${error.response.status}`);
-            console.error(`C# API Data:`, error.response.data);
-            return res.status(error.response.status).json(error.response.data);
+        if (error.response && error.response.status === 429) {
+            return res.status(429).json({
+                isSuccess: false,
+                output: "Сървърът е временно претоварен (Render Rate Limit). Моля, изчакайте 5 секунди и опитайте пак."
+            });
         }
-        console.error('Network or Connection Error:', error.message);
-        res.status(503).json({
-            isSuccess: false,
-            output: `Грешка при свързване с C# API (${CSHARP_API_URL}). Проверете дали C# сървърът работи.`
-        });
+        const status = error.response ? error.response.status : 503;
+        const data = error.response ? error.response.data : { isSuccess: false, output: "C# API не отговаря (Cold Start)." };
+        res.status(status).json(data);
     }
 });
 
-io.on('connection', () => {
+io.on('connection', (socket) => {
     console.log("Нов клиент се свърза!");
 });
 
 server.listen(PORT, () => {
     console.log(`Сървърът работи на: http://localhost:${PORT}`);
-    console.log(`├─ Главна страница: http://localhost:${PORT}/`);
-    console.log(`├─ Padlet Учител: http://localhost:${PORT}/padlet`);
-    console.log(`├─ Padlet Ученик: http://localhost:${PORT}/student`);
-    console.log(`├─ Контролен панел: http://localhost:${PORT}/control`);
-    console.log(`├─ Таймер: http://localhost:${PORT}/planner`);
-    console.log(`├─ WPM: http://localhost:${PORT}/wpm`);
-    console.log(`├─ QR Code Генератор: http://localhost:${PORT}/qrcode`);
-    console.log(`├─ Мулти-клас: http://localhost:${PORT}/multiclass`);
-    console.log(`├─ Шифър: http://localhost:${PORT}/cipher`);
-    console.log(`└─ Компилатор: http://localhost:${PORT}/compiler`);
     console.log(`└─ C# API Target: ${CSHARP_API_URL}`);
 });
