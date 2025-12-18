@@ -1,4 +1,4 @@
-// wpm.js
+// wpm.js - Typing Speed Test с подобрен автоскрол
 const WPM_WORD_LENGTH = 5;
 const DEFAULT_TIME_SECONDS = 600;
 const INITIAL_BUFFER_CHAR = '<span class="buffer-char">&nbsp;</span>';
@@ -24,587 +24,387 @@ let selectedTime = DEFAULT_TIME_SECONDS;
 let remainingTime = selectedTime;
 let correctChars = 0;
 let errors = 0;
+
+// Парсинг на времевия формат (минути:секунди, минути, ∞, ♾️)
 function parseTimeInput(inputString) {
-    const cleanedInput = inputString.toLowerCase().trim();
-    if (cleanedInput === '∞' || cleanedInput === '0:00' || cleanedInput === '0' || cleanedInput === 'без ограничение' || cleanedInput === '♾️') {
-        return 0;
-    }
-    const parts = cleanedInput.split(':');
-    let totalSeconds = 0;
-    if (parts.length === 2) {
-        const minutes = parseInt(parts[0]) || 0;
-        const seconds = parseInt(parts[1]) || 0;
-        totalSeconds = (minutes * 60) + seconds;
-    } else if (parts.length === 1 && !isNaN(parseInt(cleanedInput))) {
-        const minutes = parseInt(cleanedInput);
-        totalSeconds = minutes * 60;
-    }
-    return Math.min(3600, Math.max(0, totalSeconds));
+    const cleanedInput = inputString.toLowerCase().trim();
+    if (cleanedInput === '∞' || cleanedInput === '0:00' || cleanedInput === '0' || cleanedInput === 'без ограничение' || cleanedInput === '♾️') {
+        return 0;
+    }
+    const parts = cleanedInput.split(':');
+    let totalSeconds = 0;
+    if (parts.length === 2) {
+        const minutes = parseInt(parts[0]) || 0;
+        const seconds = parseInt(parts[1]) || 0;
+        totalSeconds = (minutes * 60) + seconds;
+    } else if (parts.length === 1 && !isNaN(parseInt(cleanedInput))) {
+        const minutes = parseInt(cleanedInput);
+        totalSeconds = minutes * 60;
+    }
+    return Math.min(3600, Math.max(0, totalSeconds));
 }
+
+// Форматиране на времето MM:SS или ♾️
 function formatTime(totalSeconds) {
-    if (selectedTime === 0 && totalSeconds < 0) {
-        return "♾️";
-    }
-    if (selectedTime === 0) {
-        const minutes = Math.floor(totalSeconds / 60);
-        const seconds = totalSeconds % 60;
-        return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
-    }
-    const minutes = Math.floor(totalSeconds / 60);
-    const seconds = totalSeconds % 60;
-    return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+    if (selectedTime === 0 && totalSeconds < 0) {
+        return "♾️";
+    }
+    const absSeconds = Math.abs(totalSeconds);
+    const minutes = Math.floor(absSeconds / 60);
+    const seconds = absSeconds % 60;
+    return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
 }
+
+// Актуализиране на времето от input полето
 function updateTimeFromInput() {
-    selectedTime = parseTimeInput(timerInput.value);
-    if (selectedTime === 0) {
-        remainingTime = 0;
-        timerInput.value = "♾️";
-        timerInput.classList.add('no-limit');
-    } else {
-        remainingTime = selectedTime;
-        timerInput.value = formatTime(remainingTime);
-        timerInput.classList.remove('no-limit');
-    }
+    selectedTime = parseTimeInput(timerInput.value);
+    if (selectedTime === 0) {
+        remainingTime = 0;
+        timerInput.value = "♾️";
+        timerInput.classList.add('no-limit');
+    } else {
+        remainingTime = selectedTime;
+        timerInput.value = formatTime(remainingTime);
+        timerInput.classList.remove('no-limit');
+    }
 }
+
+// Показване/скриване на бутона за сваляне
 function setDownloadButtonState(isActive) {
-    if (!downloadButton) return;
-    downloadButton.style.display = isActive ? 'inline-block' : 'none';
-    downloadButton.disabled = !isActive;
+    if (!downloadButton) return;
+    downloadButton.style.display = isActive ? 'inline-block' : 'none';
+    downloadButton.disabled = !isActive;
 }
+
+// Нормализиране на текста (премахване на специални символи)
 function normalizeText(text) {
-    let cleanText = text;
-    cleanText = cleanText.replace(/\ufeff/g, '').replace(/\u00a0/g, ' ');
-    cleanText = cleanText.replace(/\r/g, '');
-    cleanText = cleanText.replace(/[„“”’]/g, '"');
-    cleanText = cleanText.replace(/\n/g, ' ');
-    cleanText = cleanText.replace(/[\u2014\u2013]/g, '-');
-    return cleanText;
+    let cleanText = text;
+    cleanText = cleanText.replace(/\ufeff/g, '').replace(/\u00a0/g, ' ');
+    cleanText = cleanText.replace(/\r/g, '');
+    cleanText = cleanText.replace(/[„“”’]/g, '"');
+    cleanText = cleanText.replace(/\n/g, ' ');
+    cleanText = cleanText.replace(/[\u2014\u2013]/g, '-');
+    return cleanText;
 }
+
+// Задаване на референтния текст
 function setReferenceText(text) {
-    REFERENCE_TEXT = normalizeText(text).replace(/[ \t]+/g, ' ').trim();
-    if (REFERENCE_TEXT) {
-        const wordCount = REFERENCE_TEXT.split(/\s+/).filter(word => word.length > 0).length;
-        wordCountDisplay.textContent = wordCount;
-    } else {
-        wordCountDisplay.textContent = '0';
-    }
-    resetTest();
+    REFERENCE_TEXT = normalizeText(text).replace(/[ \t]+/g, ' ').trim();
+    if (REFERENCE_TEXT) {
+        const wordCount = REFERENCE_TEXT.split(/\s+/).filter(word => word.length > 0).length;
+        wordCountDisplay.textContent = wordCount;
+    } else {
+        wordCountDisplay.textContent = '0';
+    }
+    resetTest();
 }
+
+// Парсинг на DOCX файлове с mammoth.js
 function parseDocx(file) {
-    testStatusDisplay.textContent = 'Обработка на DOCX...';
-    testStatusDisplay.className = 'status-running';
-    const reader = new FileReader();
-    reader.onload = (e) => {
-        mammoth.extractRawText({ arrayBuffer: e.target.result })
-            .then(result => {
-                setReferenceText(result.value);
-            })
-            .catch(error => {
-                alert('Грешка при четене на DOCX файла. Уверете се, че файлът е валиден.');
-                REFERENCE_TEXT = null;
-                resetTest();
-            });
-    };
-    reader.readAsArrayBuffer(file);
+    testStatusDisplay.textContent = 'Обработка на DOCX...';
+    testStatusDisplay.className = 'status-running';
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        mammoth.extractRawText({ arrayBuffer: e.target.result })
+            .then(result => {
+                setReferenceText(result.value);
+            })
+            .catch(error => {
+                alert('Грешка при четене на DOCX файла.');
+                REFERENCE_TEXT = null;
+                resetTest();
+            });
+    };
+    reader.readAsArrayBuffer(file);
 }
+
+// Парсинг на PDF файлове с pdf.js
 function parsePdf(file) {
-    testStatusDisplay.textContent = 'Обработка на PDF...';
-    testStatusDisplay.className = 'status-running';
-    const reader = new FileReader();
-    reader.onload = function () {
-        const pdfData = new Uint8Array(reader.result);
-        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.0.379/pdf.worker.min.js';
-        pdfjsLib.getDocument({ data: pdfData }).promise.then(pdf => {
-            const numPages = pdf.numPages;
-            const pagePromises = [];
-            for (let i = 1; i <= numPages; i++) {
-                pagePromises.push(
-                    pdf.getPage(i).then(page => {
-                        return page.getTextContent();
-                    }).then(content => {
-                        return content.items.map(item => item.str).join(' ');
-                    })
-                );
-            }
-            Promise.all(pagePromises).then(texts => {
-                setReferenceText(texts.join('\n'));
-            }).catch(error => {
-                alert('Грешка при извличане на текст от PDF файла.');
-                REFERENCE_TEXT = null;
-                resetTest();
-            });
-        });
-    };
-    reader.readAsArrayBuffer(file);
+    testStatusDisplay.textContent = 'Обработка на PDF...';
+    testStatusDisplay.className = 'status-running';
+    const reader = new FileReader();
+    reader.onload = function () {
+        const pdfData = new Uint8Array(reader.result);
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.0.379/pdf.worker.min.js';
+        pdfjsLib.getDocument({ data: pdfData }).promise.then(pdf => {
+            const numPages = pdf.numPages;
+            const pagePromises = [];
+            for (let i = 1; i <= numPages; i++) {
+                pagePromises.push(
+                    pdf.getPage(i).then(page => page.getTextContent()).then(content => content.items.map(item => item.str).join(' '))
+                );
+            }
+            Promise.all(pagePromises).then(texts => {
+                setReferenceText(texts.join('\n'));
+            }).catch(error => {
+                alert('Грешка при извличане на текст от PDF.');
+                REFERENCE_TEXT = null;
+                resetTest();
+            });
+        });
+    };
+    reader.readAsArrayBuffer(file);
 }
+
+// Парсинг на TXT файлове
 function parseTxt(file) {
-    const reader = new FileReader();
-    const isFileEmpty = file.size === 0;
-    if (isFileEmpty) {
-        alert('Файлът е празен. Моля, изберете файл със съдържание.');
-        REFERENCE_TEXT = null;
-        resetTest();
-        fileUpload.value = '';
-        return;
-    }
-    reader.onload = (e) => {
-        setReferenceText(e.target.result);
-    };
-    reader.readAsText(file, 'UTF-8');
+    const reader = new FileReader();
+    if (file.size === 0) {
+        alert('Файлът е празен.');
+        REFERENCE_TEXT = null;
+        resetTest();
+        return;
+    }
+    reader.onload = (e) => setReferenceText(e.target.result);
+    reader.readAsText(file, 'UTF-8');
 }
+
+// Обработка на качени файлове (.txt, .docx, .pdf)
 function handleFileUpload(event) {
-    const file = event.target.files[0];
-    if (!file) return;
-    const fileName = file.name.toLowerCase();
-    const fileExtension = fileName.substring(fileName.lastIndexOf('.'));
-    REFERENCE_TEXT = null;
-    resetTest();
-    switch (fileExtension) {
-        case '.txt':
-            parseTxt(file);
-            break;
-        case '.docx':
-            parseDocx(file);
-            break;
-        case '.pdf':
-            parsePdf(file);
-            break;
-        default:
-            alert('Неподдържан файлов формат. Моля, използвайте .txt, .docx или .pdf.');
-            fileUpload.value = '';
-            REFERENCE_TEXT = null;
-            resetTest();
-            break;
-    }
+    const file = event.target.files[0];
+    if (!file) return;
+    const fileName = file.name.toLowerCase();
+    const fileExtension = fileName.substring(fileName.lastIndexOf('.'));
+    REFERENCE_TEXT = null;
+    resetTest();
+    if (fileExtension === '.txt') parseTxt(file);
+    else if (fileExtension === '.docx') parseDocx(file);
+    else if (fileExtension === '.pdf') parsePdf(file);
+    else {
+        alert('Неподдържан файлов формат.');
+        fileUpload.value = '';
+    }
 }
+
+// Експортиране на резултатите като .doc файл
 function exportText() {
-    if (!downloadButton || downloadButton.disabled || !REFERENCE_TEXT) {
-        alert("Моля, изчакайте тестът да приключи или заредете текст, за да изтеглите резултат.");
-        return;
-    }
-    const rawTextWithBuffer = normalizeText(textInput.innerText);
-    const text = rawTextWithBuffer.startsWith(' ') ?
-        rawTextWithBuffer.substring(1) :
-        rawTextWithBuffer;
-    const allCharsCount = charCountDisplay.textContent;
-    const correctCount = correctCharCountDisplay.textContent;
-    const errorCount = errorCountDisplay.textContent;
-    const wpm = wpmCountDisplay.textContent;
-    const wordCount = wordCountDisplay.textContent;
-    let totalTestTimeText;
-    let elapsedTimeSeconds;
-    if (selectedTime > 0) {
-        elapsedTimeSeconds = selectedTime - remainingTime;
-        totalTestTimeText = formatTime(selectedTime);
-    } else {
-        elapsedTimeSeconds = remainingTime;
-        totalTestTimeText = "Без ограничение (започнат в " + new Date(startTime).toLocaleTimeString('bg-BG') + ")";
-    }
-    const PRIMARY_COLOR = '#00796b';
-    const ERROR_COLOR = '#d32f2f';
-    const TEXT_DARK = '#333';
-    const statsHTML = `
-        <h2 style="color: ${TEXT_DARK}; font-size: 18px; margin-bottom: 15px;">Резултати от теста за скорост на писане</h2>
-        <div style="font-family: 'Arial', sans-serif; font-size: 14px; margin-bottom: 20px; color: ${TEXT_DARK}; line-height: 1.8;">
-            <strong style="font-weight: bold;">Дата:</strong> <span style="font-weight: normal;">${new Date().toLocaleDateString('bg-BG') + ' ' + new Date().toLocaleTimeString('bg-BG')}</span><br>
-            <strong style="font-weight: bold;">Зададено време:</strong> <span style="font-weight: normal;">${totalTestTimeText}</span><br>
-            <strong style="font-weight: bold;">Общо думи:</strong> <span style="font-weight: normal;">${wordCount}</span><br>
-            <strong style="font-weight: bold;">Изминало време:</strong> <span style="font-weight: normal;">${formatTime(Math.max(0, Math.floor(elapsedTimeSeconds)))}</span><br>
-            <strong style="color: ${PRIMARY_COLOR}; font-weight: bold;">Нетна скорост (WPM):</strong> <span style="color: ${PRIMARY_COLOR}; font-weight: bold; font-size: 1.1em;">${wpm}</span><br>
-            <strong style="font-weight: bold;">Общо символи:</strong> <span style="font-weight: normal;">${allCharsCount}</span><br>
-            <strong style="font-weight: bold;">Коректни символи:</strong> <span style="color: #4CAF50; font-weight: normal;">${correctCount}</span><br>
-            <strong style="font-weight: bold;">Общо грешки:</strong> <span style="color: ${ERROR_COLOR}; font-weight: bold;">${errorCount}</span>
-        </div>
-        <hr style="margin: 20px 0; border: none; border-top: 1px solid ${TEXT_DARK};">
-        <h2 style="color: ${TEXT_DARK}; font-size: 18px; margin-bottom: 10px;">Въведен текст:</h2>
-        <pre style="
-            font-family: 'Arial', sans-serif; 
-            white-space: pre-wrap; 
-            word-wrap: break-word;
-            padding: 0; 
-            margin: 0;
-            background-color: transparent;
-            color: ${TEXT_DARK};
-            line-height: 1.5;
-        ">${text.replace(/\n/g, '<br>')}</pre>
-    `;
-    const htmlContent = `
-        <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
-        <head>
-            <meta charset="utf-8">
-            <title>WPM Тест Резултат</title>
-            <style>
-                body { 
-                    font-family: 'Arial', sans-serif; 
-                    line-height: 1.5;
-                    color: ${TEXT_DARK};
-                }
-                h2 { 
-                    margin-top: 15px; 
-                }
-                pre {
-                    font-family: 'Arial', sans-serif; 
-                    white-space: pre-wrap; 
-                    word-wrap: break-word;
-                    padding: 0; 
-                    margin: 0;
-                    background-color: transparent;
-                    color: ${TEXT_DARK};
-                    line-height: 1.5;
-                }
-            </style>
-        </head>
-        <body>
-            ${statsHTML}
-        </body>
-        </html>
-    `;
-    const mimeType = 'application/msword';
-    const blob = new Blob([htmlContent], { type: mimeType });
-    const fileName = `WPM_Test_Result_${new Date().toISOString().slice(0, 10)}.doc`;
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = fileName;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(a.href);
+    if (!downloadButton || downloadButton.disabled || !REFERENCE_TEXT) return;
+    const rawTextWithBuffer = normalizeText(textInput.innerText);
+    const text = rawTextWithBuffer.startsWith(' ') ? rawTextWithBuffer.substring(1) : rawTextWithBuffer;
+    const statsHTML = `
+        <h2>Резултати от теста</h2>
+        <p>Дата: ${new Date().toLocaleString('bg-BG')}</p>
+        <p>WPM: ${wpmCountDisplay.textContent}</p>
+        <p>Точност: ${correctCharCountDisplay.textContent} от ${charCountDisplay.textContent}</p>
+        <p>Грешки: ${errorCountDisplay.textContent}</p>
+        <hr>
+        <h3>Въведен текст:</h3>
+        <pre>${text}</pre>
+    `;
+    const blob = new Blob([statsHTML], { type: 'application/msword' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `WPM_Result_${new Date().toISOString().slice(0, 10)}.doc`;
+    a.click();
 }
+
+// ✅ ИНИЦИАЛИЗАЦИЯ С ПОДОБРЕНО СКРОЛ ПОНАСЯНЕ
 function initReferenceText() {
-    if (!REFERENCE_TEXT) {
-        referenceTextDisplay.innerHTML = '<p>Качете текстов файл, за да започнете.</p>';
-        textInput.contentEditable = 'false';
-        testStatusDisplay.textContent = 'Очаква зареждане на текст...';
-        testStatusDisplay.className = 'status-running';
-        textInput.setAttribute('data-placeholder', 'Качете текстов файл, за да започнете.');
-        wordCountDisplay.textContent = '0';
-        setDownloadButtonState(false);
-        timerInput.disabled = false;
-        timerInput.value = formatTime(DEFAULT_TIME_SECONDS);
-        timerInput.classList.remove('no-limit');
-        updateTimeFromInput();
-        return;
-    }
-    REFERENCE_CHARS = REFERENCE_TEXT.split('');
-    referenceTextDisplay.innerHTML = REFERENCE_CHARS.map((char, index) => {
-        const content = char === '\n' ? '↵\n' : char;
-        return `<span id="ref-char-${index}">${content}</span>`;
-    }).join('');
-    highlightReferenceChar(0, 'next-char-ref');
-    textInput.contentEditable = 'true';
-    testStatusDisplay.textContent = 'Очаква старт...';
-    testStatusDisplay.className = 'status-running';
-    textInput.setAttribute('data-placeholder', 'Започнете да пишете тук, за да стартирате таймера...');
-    setDownloadButtonState(false);
-    timerInput.disabled = false;
-    if (selectedTime === 0) {
-        timerInput.value = "♾️";
-    } else {
-        timerInput.value = formatTime(selectedTime);
-    }
-    textInput.innerHTML = INITIAL_BUFFER_CHAR;
-    const range = document.createRange();
-    const selection = window.getSelection();
-    range.selectNodeContents(textInput);
-    range.collapse(false);
-    selection.removeAllRanges();
-    selection.addRange(range);
-    textInput.focus();
-    if (downloadButton) {
-        downloadButton.style.display = 'none';
-    }
-    testStatusDisplay.style.fontWeight = 'normal';
-    testStatusDisplay.style.fontSize = '1em';
+    const container = referenceTextDisplay.parentElement;
+    container.style.overflow = 'auto';
+    container.style.scrollBehavior = 'smooth';
+
+    // ФИКСИРАНЕ НА НАЧАЛОТО - винаги започваме от горе
+    container.scrollTop = 0;
+
+    container.addEventListener('wheel', e => e.preventDefault(), { passive: false });
+    container.addEventListener('touchmove', e => e.preventDefault(), { passive: false });
+
+    if (!REFERENCE_TEXT) {
+        referenceTextDisplay.innerHTML = '<p>Качете текстов файл.</p>';
+        textInput.contentEditable = 'false';
+        return;
+    }
+    REFERENCE_CHARS = REFERENCE_TEXT.split('');
+    referenceTextDisplay.innerHTML = REFERENCE_CHARS.map((char, index) => {
+        const content = char === '\n' ? '↵\n' : char;
+        return `<span id="ref-char-${index}">${content}</span>`;
+    }).join('');
+    highlightReferenceChar(0, 'next-char-ref');
+    textInput.contentEditable = 'true';
+    textInput.innerHTML = INITIAL_BUFFER_CHAR;
+    textInput.focus();
 }
-function highlightReferenceChar(index, className, remove = false) {
-    const charSpan = document.getElementById(`ref-char-${index}`);
-    if (charSpan) {
-        charSpan.classList.remove('next-char-ref', 'correct-char-ref', 'incorrect-char-ref');
-        if (!remove) {
-            charSpan.classList.add(className);
-        }
-    }
+
+// Маркиране на символ в референтния текст
+function highlightReferenceChar(index, className) {
+    const charSpan = document.getElementById(`ref-char-${index}`);
+    if (charSpan) {
+        charSpan.classList.remove('next-char-ref', 'correct-char-ref', 'incorrect-char-ref');
+        charSpan.classList.add(className);
+    }
 }
+
+// ✅ НАЙ-КОНСЕРВАТИВНА ВЕРСИЯ НА АВТОСКРОЛА
 function autoScrollReferenceText(nextIndex) {
-    const refContainer = referenceTextDisplay.parentElement;
-    const nextCharSpan = document.getElementById(`ref-char-${nextIndex}`);
-    const selection = window.getSelection();
-    if (selection.rangeCount === 0) return;
-    const range = selection.getRangeAt(0);
-    const cursorRect = range.getClientRects()[0];
-    if (!cursorRect || !nextCharSpan) return;
-    const inputRect = textInput.getBoundingClientRect();
-    const lineHeight = 26;
-    const cursorYOffset = cursorRect.top - inputRect.top;
-    const scrollTriggerHeight = 3 * lineHeight;
-    if (cursorYOffset > scrollTriggerHeight) {
-        const linesPassed = Math.floor(cursorYOffset / lineHeight);
-        refContainer.scrollTop = linesPassed * lineHeight;
-    } else if (cursorYOffset < lineHeight) {
-        refContainer.scrollTop = 0;
-    }
+    const nextCharSpan = document.getElementById(`ref-char-${nextIndex}`);
+    if (!nextCharSpan || nextIndex < 50) return; // Няма скрол за първите 50 символа
+
+    const container = referenceTextDisplay.parentElement;
+    const containerHeight = container.offsetHeight;
+    const currentScrollTop = container.scrollTop;
+    const viewportBottom = currentScrollTop + containerHeight;
+
+    const spanTop = nextCharSpan.offsetTop;
+
+    // ✅ Скролваме САМО ако символът е 100% невидим ДОЛУ
+    if (spanTop > viewportBottom - 50) {
+        // Само +30px движение - много леко!
+        container.scrollTop += 30;
+    }
 }
+
+// Актуализиране на статистики и подсветка
 function updateStatsAndHighlight() {
-    if (!REFERENCE_TEXT) return;
-    const selection = window.getSelection();
-    let cursorOffsetFromEnd = 0;
-    if (selection.rangeCount > 0 && textInput.contains(selection.anchorNode)) {
-        const currentRange = selection.getRangeAt(0);
-        const postCursorRange = currentRange.cloneRange();
-        postCursorRange.selectNodeContents(textInput);
-        postCursorRange.setStart(currentRange.endContainer, currentRange.endOffset);
-        postCursorRange.deleteContents();
-        cursorOffsetFromEnd = postCursorRange.cloneContents().textContent.length;
-    }
-    let rawInputWithBuffer = normalizeText(textInput.innerText);
-    let isBufferPresent = rawInputWithBuffer.startsWith(' ');
-    let rawInput = isBufferPresent ? rawInputWithBuffer.substring(1) : rawInputWithBuffer;
-    let inputChars = rawInput.split('');
-    const charCount = rawInput.length;
-    let htmlOutput = isBufferPresent ? INITIAL_BUFFER_CHAR : '';
-    correctChars = 0;
-    errors = 0;
-    referenceTextDisplay.querySelectorAll('span').forEach(span => {
-        span.classList.remove('next-char-ref', 'correct-char-ref', 'incorrect-char-ref');
-    });
-    for (let i = 0; i < inputChars.length; i++) {
-        const inputChar = inputChars[i];
-        const refChar = REFERENCE_CHARS[i];
-        let charClass = '';
-        if (refChar !== undefined) {
-            if (inputChar === refChar) {
-                correctChars++;
-                highlightReferenceChar(i, 'correct-char-ref');
-            } else {
-                errors++;
-                highlightReferenceChar(i, 'incorrect-char-ref');
-                charClass = 'error-char-input';
-            }
-        } else {
-            errors++;
-            charClass = 'extra-char-input';
-        }
-        const displayChar = inputChar === ' ' ? '&nbsp;' : inputChar;
-        if (charClass) {
-            htmlOutput += `<span class="${charClass}">${displayChar}</span>`;
-        } else {
-            htmlOutput += displayChar;
-        }
-    }
-    let nextIndex = inputChars.length;
-    if (nextIndex < REFERENCE_CHARS.length) {
-        highlightReferenceChar(nextIndex, 'next-char-ref');
-        autoScrollReferenceText(nextIndex);
-    }
-    const totalCorrectWords = correctChars / WPM_WORD_LENGTH;
-    let elapsedTimeMinutes = 0;
-    if (isTimerRunning) {
-        if (selectedTime > 0) {
-            elapsedTimeMinutes = (selectedTime - remainingTime) / 60;
-        } else {
-            elapsedTimeMinutes = remainingTime / 60;
-        }
-    } else if (remainingTime === 0 && selectedTime > 0) {
-        elapsedTimeMinutes = selectedTime / 60;
-    } else if (nextIndex >= REFERENCE_CHARS.length && selectedTime === 0) {
-        elapsedTimeMinutes = remainingTime / 60;
-    }
-    let wpm = 0;
-    if (elapsedTimeMinutes > 0) {
-        wpm = totalCorrectWords / elapsedTimeMinutes;
-    }
-    wpmCountDisplay.textContent = wpm.toFixed(2);
-    charCountDisplay.textContent = charCount;
-    correctCharCountDisplay.textContent = correctChars;
-    errorCountDisplay.textContent = errors;
-    textInput.innerHTML = htmlOutput;
-    const targetLength = isBufferPresent ? rawInput.length + 1 : rawInput.length;
-    const targetPosition = Math.max(0, targetLength - cursorOffsetFromEnd);
-    const newRange = document.createRange();
-    const newSelection = window.getSelection();
-    newSelection.removeAllRanges();
-    let walker = document.createTreeWalker(
-        textInput,
-        NodeFilter.SHOW_TEXT | NodeFilter.SHOW_ELEMENT,
-        null,
-        false
-    );
-    let currentNode;
-    let charIndex = 0;
-    let found = false;
-    while (currentNode = walker.nextNode()) {
-        if (currentNode.nodeType === Node.TEXT_NODE) {
-            const textLength = currentNode.nodeValue.length;
-            if (charIndex + textLength >= targetPosition) {
-                const offset = targetPosition - charIndex;
-                newRange.setStart(currentNode, offset);
-                found = true;
-                break;
-            }
-            charIndex += textLength;
-        }
-    }
-    if (!found) {
-        newRange.selectNodeContents(textInput);
-        newRange.collapse(false);
-    } else if (found) {
-        newRange.collapse(true);
-    }
-    newSelection.addRange(newRange);
-    textInput.scrollTop = textInput.scrollHeight;
-    if (nextIndex >= REFERENCE_CHARS.length && isTimerRunning) {
-        endTest(true);
-    }
+    if (!REFERENCE_TEXT) return;
+    const selection = window.getSelection();
+    let cursorOffsetFromEnd = 0;
+    if (selection.rangeCount > 0 && textInput.contains(selection.anchorNode)) {
+        const currentRange = selection.getRangeAt(0);
+        const postCursorRange = currentRange.cloneRange();
+        postCursorRange.selectNodeContents(textInput);
+        postCursorRange.setStart(currentRange.endContainer, currentRange.endOffset);
+        cursorOffsetFromEnd = postCursorRange.cloneContents().textContent.length;
+    }
+    let rawInputWithBuffer = normalizeText(textInput.innerText);
+    let isBufferPresent = rawInputWithBuffer.startsWith(' ');
+    let rawInput = isBufferPresent ? rawInputWithBuffer.substring(1) : rawInputWithBuffer;
+    let inputChars = rawInput.split('');
+    let htmlOutput = isBufferPresent ? INITIAL_BUFFER_CHAR : '';
+    correctChars = 0;
+    errors = 0;
+
+    referenceTextDisplay.querySelectorAll('span').forEach(span => {
+        span.classList.remove('next-char-ref', 'correct-char-ref', 'incorrect-char-ref');
+    });
+
+    for (let i = 0; i < inputChars.length; i++) {
+        const inputChar = inputChars[i];
+        const refChar = REFERENCE_CHARS[i];
+        let charClass = '';
+        if (refChar !== undefined) {
+            if (inputChar === refChar) {
+                correctChars++;
+                highlightReferenceChar(i, 'correct-char-ref');
+            } else {
+                errors++;
+                highlightReferenceChar(i, 'incorrect-char-ref');
+                charClass = 'error-char-input';
+            }
+        } else {
+            errors++;
+            charClass = 'extra-char-input';
+        }
+        const displayChar = inputChar === ' ' ? '&nbsp;' : inputChar;
+        htmlOutput += charClass ? `<span class="${charClass}">${displayChar}</span>` : displayChar;
+    }
+
+    let nextIndex = inputChars.length;
+    if (nextIndex < REFERENCE_CHARS.length) {
+        highlightReferenceChar(nextIndex, 'next-char-ref');
+        autoScrollReferenceText(nextIndex);
+    }
+
+    let elapsedTimeMinutes = (selectedTime > 0) ? (selectedTime - remainingTime) / 60 : remainingTime / 60;
+    wpmCountDisplay.textContent = (elapsedTimeMinutes > 0 ? (correctChars / WPM_WORD_LENGTH) / elapsedTimeMinutes : 0).toFixed(2);
+    charCountDisplay.textContent = rawInput.length;
+    correctCharCountDisplay.textContent = correctChars;
+    errorCountDisplay.textContent = errors;
+    textInput.innerHTML = htmlOutput;
+
+    const targetPosition = Math.max(0, (isBufferPresent ? rawInput.length + 1 : rawInput.length) - cursorOffsetFromEnd);
+    const newRange = document.createRange();
+    const newSelection = window.getSelection();
+    newSelection.removeAllRanges();
+    let walker = document.createTreeWalker(textInput, NodeFilter.SHOW_TEXT, null, false);
+    let currentNode, charIndex = 0, found = false;
+    while (currentNode = walker.nextNode()) {
+        const textLength = currentNode.nodeValue.length;
+        if (charIndex + textLength >= targetPosition) {
+            newRange.setStart(currentNode, targetPosition - charIndex);
+            found = true;
+            break;
+        }
+        charIndex += textLength;
+    }
+    if (!found) {
+        newRange.selectNodeContents(textInput);
+        newRange.collapse(false);
+    } else newRange.collapse(true);
+    newSelection.addRange(newRange);
+    textInput.scrollTop = textInput.scrollHeight;
+    if (nextIndex >= REFERENCE_CHARS.length && isTimerRunning) endTest(true);
 }
+
+// Приключване на теста
 function endTest(completed) {
-    clearInterval(timerInterval);
-    isTimerRunning = false;
-    textInput.contentEditable = 'false';
-    textInput.classList.add('test-finished');
-    timerInput.disabled = false;
-    let finalElapsedTimeMinutes = 0;
-    if (selectedTime > 0) {
-        finalElapsedTimeMinutes = (selectedTime - remainingTime) / 60;
-    } else {
-        finalElapsedTimeMinutes = remainingTime / 60;
-    }
-    const totalCorrectWords = correctChars / WPM_WORD_LENGTH;
-    const finalWPM = finalElapsedTimeMinutes > 0 ? totalCorrectWords / finalElapsedTimeMinutes : 0;
-    wpmCountDisplay.textContent = finalWPM.toFixed(2);
-    const statusText = completed ?
-        'Тестът завърши успешно!' :
-        'Времето изтече!';
-    testStatusDisplay.textContent = statusText;
-    testStatusDisplay.className = 'status-success';
-    setDownloadButtonState(true);
-    if (downloadButton) {
-        downloadButton.style.display = 'inline-block';
-    }
+    clearInterval(timerInterval);
+    isTimerRunning = false;
+    textInput.contentEditable = 'false';
+    testStatusDisplay.textContent = completed ? 'Успешно!' : 'Времето изтече!';
+    setDownloadButtonState(true);
 }
+
+// Актуализиране на таймера всяка секунда
 function updateTimer() {
-    if (selectedTime > 0) {
-        if (remainingTime <= 0) {
-            remainingTime = 0;
-            endTest(false);
-        } else {
-            remainingTime--;
-        }
-    } else {
-        remainingTime++;
-    }
-    timerInput.value = formatTime(remainingTime);
-    if (isTimerRunning) {
-        updateStatsAndHighlight();
-    }
+    if (selectedTime > 0) {
+        if (remainingTime <= 0) endTest(false);
+        else remainingTime--;
+    } else remainingTime++;
+    timerInput.value = formatTime(remainingTime);
+    if (isTimerRunning) updateStatsAndHighlight();
 }
+
+// Стартиране на таймера
 function startTimer() {
-    if (isTimerRunning || !REFERENCE_TEXT) return;
-    isTimerRunning = true;
-    startTime = Date.now();
-    timerInterval = setInterval(updateTimer, 1000);
-    textInput.classList.remove('test-finished');
-    textInput.contentEditable = 'true';
-    testStatusDisplay.textContent = 'Тестът тече...';
-    testStatusDisplay.className = 'status-running';
-    timerInput.disabled = true;
-    setDownloadButtonState(false);
+    if (isTimerRunning || !REFERENCE_TEXT) return;
+    isTimerRunning = true;
+    startTime = Date.now();
+    timerInterval = setInterval(updateTimer, 1000);
+    timerInput.disabled = true;
 }
+
+// Нулиране на теста
 function resetTest() {
-    clearInterval(timerInterval);
-    isTimerRunning = false;
-    updateTimeFromInput();
-    correctChars = 0;
-    errors = 0;
-    timerInput.value = formatTime(remainingTime);
-    textInput.innerText = '';
-    textInput.contentEditable = REFERENCE_TEXT ? 'true' : 'false';
-    textInput.classList.remove('test-finished');
-    charCountDisplay.textContent = '0';
-    correctCharCountDisplay.textContent = '0';
-    errorCountDisplay.textContent = '0';
-    wpmCountDisplay.textContent = '0.00';
-    if (REFERENCE_TEXT) {
-        testStatusDisplay.textContent = 'Очаква старт...';
-        textInput.setAttribute('data-placeholder', 'Започнете да пишете тук, за да стартирате таймера...');
-    } else {
-        testStatusDisplay.textContent = 'Очаква зареждане на текст...';
-        textInput.setAttribute('data-placeholder', 'Моля, качете текстов файл, за да започнете теста.');
-        wordCountDisplay.textContent = '0';
-    }
-    testStatusDisplay.className = 'status-running';
-    timerInput.disabled = false;
-    setDownloadButtonState(false);
-    if (downloadButton) {
-        downloadButton.style.display = 'none';
-    }
-    testStatusDisplay.style.fontWeight = 'normal';
-    testStatusDisplay.style.fontSize = '1em';
-    initReferenceText();
-    referenceTextDisplay.parentElement.scrollTop = 0;
-    textInput.scrollTop = 0;
+    clearInterval(timerInterval);
+    isTimerRunning = false;
+    updateTimeFromInput();
+    correctChars = 0;
+    errors = 0;
+    textInput.innerText = '';
+    charCountDisplay.textContent = '0';
+    wpmCountDisplay.textContent = '0.00';
+    timerInput.disabled = false;
+    initReferenceText();
 }
+
+// Блокиране на copy/paste
 function blockCopyPaste(element) {
-    ['copy', 'cut', 'paste'].forEach(event => {
-        element.addEventListener(event, (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            return false;
-        });
-    });
-    if (element === referenceTextDisplay) {
-        element.parentElement.style.userSelect = 'none';
-        element.parentElement.style.webkitUserSelect = 'none';
-        element.parentElement.style.MozUserSelect = 'none';
-        element.parentElement.style.msUserSelect = 'none';
-    }
+    ['copy', 'cut', 'paste'].forEach(event => {
+        element.addEventListener(event, e => {
+            e.preventDefault();
+            return false;
+        });
+    });
 }
-function applyInputStyles() {
-    const fixedHeight = '56px';
-    textInput.style.maxHeight = fixedHeight;
-    textInput.style.overflowY = 'auto';
-    textInput.style.minHeight = fixedHeight;
-}
+
+// EVENT LISTENERS
 fileUpload.addEventListener('change', handleFileUpload);
 timerInput.addEventListener('change', updateTimeFromInput);
-timerInput.addEventListener('blur', updateTimeFromInput);
-timerInput.addEventListener('keydown', (event) => {
-    if (event.key === 'Enter') {
-        event.preventDefault();
-        updateTimeFromInput();
-        textInput.focus();
-    }
+textInput.addEventListener('input', () => {
+    if (!REFERENCE_TEXT) return;
+    if (!isTimerRunning && normalizeText(textInput.innerText).trim().length > 0) startTimer();
+    updateStatsAndHighlight();
 });
-textInput.addEventListener('input', (event) => {
-    if (!REFERENCE_TEXT) return;
-    const rawText = normalizeText(textInput.innerText);
-    const testInputText = rawText.startsWith(' ') ? rawText.substring(1) : rawText;
-    if (!isTimerRunning && testInputText.length > 0) {
-        updateTimeFromInput();
-        startTimer();
-    }
-    updateStatsAndHighlight();
-});
-textInput.addEventListener('keydown', (event) => {
-    if (event.key === 'Enter') {
-        event.preventDefault();
-    }
-    if (event.key === 'Backspace' || event.key === 'Delete') {
-        const rawText = normalizeText(textInput.innerText);
-        if (rawText.length <= 1 && rawText[0] === ' ') {
-            event.preventDefault();
-            return;
-        }
-    }
-    return;
+textInput.addEventListener('keydown', e => {
+    if (e.key === 'Enter') e.preventDefault();
+    if ((e.key === 'Backspace' || e.key === 'Delete') && normalizeText(textInput.innerText).length <= 1) e.preventDefault();
 });
 resetButton.addEventListener('click', resetTest);
-if (downloadButton) {
-    downloadButton.addEventListener('click', exportText);
-}
-applyInputStyles();
+if (downloadButton) downloadButton.addEventListener('click', exportText);
+
+// ИНИЦИАЛИЗАЦИЯ
 updateTimeFromInput();
-textInput.contentEditable = 'false';
 initReferenceText();
-setDownloadButtonState(false);
 blockCopyPaste(textInput);
 blockCopyPaste(referenceTextDisplay);
