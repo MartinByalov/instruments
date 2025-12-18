@@ -4,100 +4,99 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>C# Онлайн Компилатор</title>
-    
     <link rel="stylesheet" href="/tools/compiler/Frontend/compiler.css">
-
     <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.45.0/min/vs/loader.min.js"></script>
-    
 </head>
 <body>
 
     <div id="add-exercise-modal" class="modal-overlay" style="display: none;">
         <div class="modal-content">
-            <span class="close-button" onclick="closeModal()">&times;</span>
+            <span class="close-button" onclick="closeModal('add-exercise-modal')">&times;</span>
             <h2>Създаване на Ново Упражнение</h2>
-            
             <form id="new-exercise-form">
                 <div class="form-group">
                     <label for="new-condition">Условие на Задачата:</label>
                     <textarea id="new-condition" rows="3" required></textarea>
                 </div>
-                
                 <div class="form-group">
                     <label for="new-starter-code">Начален Код (Starter Code):</label>
                     <textarea id="new-starter-code" rows="5"></textarea>
-                    <small>Въведете кода, с който да започне потребителят.</small>
                 </div>
-                
                 <div class="form-group">
-                    <label for="new-expected-output">Очакван Изход / Шаблон (За Проверка):</label>
+                    <label for="new-expected-output">Очакван Изход / Шаблон:</label>
                     <textarea id="new-expected-output" rows="3" required></textarea>
-                    <small>
-                        Ако очаквате **точен стринг** (напр., "Здравей, свят!"), въведете го директно. <br>
-                        Ако очаквате **стойност** (напр., "30" в изхода), използвайте **Regex шаблон** (напр., <span style="font-family: monospace;">/.*30.*/</span>).
-                    </small>
                 </div>
-                
                 <div class="form-group">
-                    <label for="new-solution-code">Пълно Решение (За бъдеща справка):</label>
+                    <label for="new-solution-code">Пълно Решение:</label>
                     <textarea id="new-solution-code" rows="5"></textarea>
-                    <small>Пълният код, който решава задачата (само за учителя).</small>
                 </div>
-
                 <button type="submit" class="submit-button">Запази Упражнението</button>
             </form>
         </div>
     </div>
 
-    <div class="container">
-        <h1 class="main-header">C# Онлайн Среда за Упражнения</h1>
-        
-        <div id="admin-panel" class="admin-panel">
-            
-            <div id="pin-controls" style="display: flex; align-items: center;"> 
-                <input type="password" id="pin-input" placeholder="Въведи ПИН за достъп..." class="pin-input">
-                <button id="lock-btn" class="pin-button">🔒</button> 
-            </div>
-
-            <div id="admin-actions" style="display: none; align-items: center;">
-                <button id="add-exercise-btn" class="add-button">
-                    ➕ Добави Упражнение
-                </button>
+    <div id="add-concept-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-content">
+            <span class="close-button" onclick="closeModal('add-concept-modal')">&times;</span>
+            <h2>Добавяне на Ново Понятие</h2>
+            <form id="new-concept-form">
+                <div class="form-group">
+                    <label for="concept-name">Име на понятието:</label>
+                    <input type="text" id="concept-name" required placeholder="напр. Променлива">
                 </div>
-        </div>
-        
-        <div class="exercise-panel">
-            <div class="select-group">
-                <label for="exercise-select">Избери Упражнение:</label>
-                
-                <select id="exercise-select" style="display: block;">
-                </select>
-
-                <div id="exercise-list-admin" style="display: none;">
+                <div class="form-group">
+                    <label for="concept-desc">Дефиниция / Описание:</label>
+                    <textarea id="concept-desc" rows="5" required placeholder="Въведете обяснението тук..."></textarea>
                 </div>
-            </div>
-            
-            <div id="exercise-condition" class="text-sm">
-            </div>
-        </div>
-
-        <div class="editor-group">
-            <label for="code-editor-container">Вашият C# Код:</label>
-            
-            <div id="code-editor-container"></div>
-            
-            <button id="run-button" onclick="runCode()" class="run-button">
-                ▶️ Изпълни
-            </button>
-
-            </div>
-
-        <div class="output-group">
-            <label for="output-window">Конзола:</label>
-            <textarea id="output-window" rows="10" readonly></textarea>
+                <button type="submit" class="submit-button">Запази Понятието</button>
+            </form>
         </div>
     </div>
 
-    <script src="/tools/compiler/Frontend/compiler.js" type="module"></script>
+    <div class="container">
+        <div class="top-nav" style="display: flex; align-items: center; gap: 15px; margin-bottom: 5px;">
+            <div id="concepts-control-container" class="dropdown">
+                <button id="concepts-btn" class="pin-button" onclick="toggleConceptsDropdown()">☰</button>
+                <div id="concepts-dropdown" class="dropdown-content"></div>
+            </div>
+
+            <div id="admin-actions" style="display: none; align-items: center; gap: 10px;">
+                <button id="add-concept-btn" class="pin-button" title="Добави Понятие" onclick="document.getElementById('add-concept-modal').style.display='flex'">➕</button>
+                <button id="add-exercise-btn" class="add-button">⬆️</button>
+            </div>
+        </div>
+
+        <div class="exercise-panel">
+            <div class="select-group">
+                <label for="exercise-select">Избери Упражнение:</label>
+                <select id="exercise-select"></select>
+                <div id="exercise-list-admin" style="display: none;"></div>
+            </div>
+            <div id="exercise-condition" class="text-sm"></div>
+        </div>
+
+        <div class="editor-group">
+            <label>Вашият C# Код:</label>
+            <div id="code-editor-container" style="height: 400px; border: 1px solid #171717;"></div>
+            <button id="run-button" onclick="runCode()" class="run-button" style="margin-top: 10px;">▶️ Изпълни</button>
+        </div>
+
+        <div class="output-group">
+            <label for="output-window">Конзола:</label>
+            <div style="position: relative;">
+                <textarea id="output-window" rows="10" readonly></textarea>
+                
+                <div id="admin-panel" class="admin-panel">
+                    <div id="pin-controls" style="display: flex; align-items: center; gap: 5px;">
+                        <input type="password" id="pin-input" placeholder="ПИН..." class="pin-input">
+                        <button id="lock-btn" class="pin-button">🔒</button>
+                    </div>
+                </div>
+            </div>
+            <div id="exercise-status"></div>
+        </div>
+    </div>
+
+    <script src="/tools/compiler/Frontend/compiler.js"></script>
 </body>
 </html>
